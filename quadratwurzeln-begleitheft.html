@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Begleitheft · Quadratwurzeln (9. Jgst.)</title>
+<style>
+  :root{ --ink:#1a2233; --muted:#5b6678; --line:#c9d2e0; --accent:#3457d5; --ok:#12805c; --okbg:#eaf6f1;
+         --box:#f4f6fb; --warn:#8a5a00; --warnbg:#fff7e6; --warnline:#f0c674; }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{ font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); line-height:1.5; background:#e9edf5; }
+  .sheet{ background:#fff; max-width:820px; margin:18px auto; padding:26px 34px 40px; box-shadow:0 6px 24px rgba(30,45,90,.12); }
+  h1{ font-size:22px; margin:0 0 2px }
+  h2{ font-size:17px; margin:26px 0 8px; padding-bottom:4px; border-bottom:2px solid var(--accent); color:var(--accent) }
+  h3{ font-size:15px; margin:16px 0 6px }
+  h4{ font-size:13.5px; margin:12px 0 4px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px }
+  p{margin:6px 0}
+  .meta{ display:flex; gap:26px; font-size:13px; color:var(--muted); margin:6px 0 14px; flex-wrap:wrap }
+  .meta span{ border-bottom:1px solid var(--line); flex:1; min-width:150px; padding-bottom:2px }
+  .intro{ background:var(--box); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:14px }
+  .hint{ background:var(--warnbg); border:1px solid var(--warnline); border-radius:10px; padding:12px 14px; font-size:14px; margin:12px 0 }
+  .hint b{color:var(--warn)}
+  .merke{ border:2px solid var(--accent); border-radius:12px; padding:12px 15px; margin:12px 0; break-inside:avoid; page-break-inside:avoid }
+  .merke .tag{ font-size:11px; text-transform:uppercase; letter-spacing:.7px; color:var(--accent); font-weight:700 }
+  .task{ margin:14px 0 8px; padding:14px 16px; border:1px solid var(--line); border-radius:12px; break-inside:avoid; page-break-inside:avoid }
+  code,.kbd{ background:#eef2fb; padding:1px 6px; border-radius:5px; font-size:13px; font-family:"SF Mono",Consolas,monospace }
+  table{ width:100%; border-collapse:collapse; margin:8px 0; font-size:14px }
+  th,td{ border:1px solid var(--line); padding:7px 8px; text-align:center }
+  th{ background:var(--box); font-weight:600; font-size:13px }
+  td.lbl{ text-align:left; font-weight:600; background:#fbfcfe }
+  td.fill{ height:30px }
+  .line{ border-bottom:1px dotted #9aa6bd; height:22px; margin:9px 0 }
+  .foot{ font-size:12px; color:var(--muted); margin-top:22px; text-align:center }
+  sub{font-size:.75em} sup{font-size:.75em}
+  var{ font-family:"Cambria Math",Georgia,serif; font-style:italic }
+  .ctr{text-align:center}
+  .small{font-size:13px}
+  .muted{color:var(--muted)}
+
+  /* ---- Wurzelzeichen ---- */
+  .rt{white-space:nowrap}
+  .rt::before{content:"√"}
+  .rt > span{ border-top:1.3px solid currentColor; padding:1px 3px 0 2px; margin-left:-1px; display:inline-block; line-height:1.2 }
+  .frac{ display:inline-flex; flex-direction:column; text-align:center; vertical-align:middle; margin:0 3px; font-size:.9em }
+  .frac .n{ border-bottom:1.3px solid currentColor; padding:0 5px }
+  .frac .d{ padding:0 5px }
+
+  /* ---- Lücken zum Ausfüllen ---- */
+  .gap{ display:inline-block; min-width:52px; padding:0 5px; border-bottom:1.6px dotted #8b97ad;
+        color:transparent; font-weight:600; text-align:center; line-height:1.35 }
+  body.show-loesung .gap{ color:var(--ok); border-bottom-color:var(--ok) }
+  .gap.w{ min-width:96px } .gap.xw{ min-width:150px } .gap.s{ min-width:34px }
+  /* .fig text setzt fill und ist spezifischer als .gsvg allein — daher hier ebenso spezifisch,
+     sonst stehen die Lösungen in den Abbildungen schon im leeren Heft. */
+  .fig text.gsvg{ fill:transparent; font-weight:600 }
+  body.show-loesung .fig text.gsvg{ fill:var(--ok) }
+  .gbox{ fill:none; stroke:#8b97ad; stroke-dasharray:3 3 }
+  body.show-loesung .gbox{ stroke:var(--ok) }
+
+  /* ---- Abbildungen ---- */
+  figure{ margin:12px 0; break-inside:avoid; page-break-inside:avoid }
+  figure svg{ width:100%; height:auto; display:block }
+  figcaption{ font-size:12.5px; color:var(--muted); text-align:center; margin-top:4px }
+  .fig text{ font-family:-apple-system,"Segoe UI",Arial,sans-serif; fill:var(--ink) }
+  .fig .lbl{ font-size:12px; fill:var(--muted) }
+  .fig .st{ stroke:var(--ink); fill:none; stroke-width:2 }
+  .fig .thin{ stroke:#8b97ad; fill:none; stroke-width:1 }
+  .fig .fillbox{ fill:#eaf0fb; stroke:var(--accent); stroke-width:2 }
+  .fig .accent{ stroke:var(--accent); fill:none; stroke-width:2.5 }
+  .fig .dash{ stroke:#8b97ad; fill:none; stroke-width:1.5; stroke-dasharray:5 4 }
+
+  .toolbar{ position:sticky; top:0; z-index:5; background:#0f1524; color:#fff; padding:10px 16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+  .toolbar button{ font:inherit; font-size:13px; cursor:pointer; border:none; border-radius:8px; padding:7px 13px; background:#2340c8; color:#fff }
+  .toolbar button.ghost{ background:#26304a }
+  .toolbar .sp{ flex:1 }
+  .toolbar a{ color:#9db4ff }
+
+  @media print{
+    body{ background:#fff }
+    .toolbar{ display:none }
+    .sheet{ box-shadow:none; margin:0; max-width:none; padding:0 }
+    .brk{ break-before:page; page-break-before:always }
+    @page{ size:A4; margin:14mm }
+    .task,.merke{ border-color:#bbb }
+    .gap{ border-bottom-color:#666 }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <strong>Begleitheft · Quadratwurzeln</strong>
+  <button onclick="window.print()">🖨 Drucken / als PDF</button>
+  <button class="ghost" id="lbtn">Lösungen einblenden</button>
+  <span class="sp"></span>
+  <a href="quadratwurzeln-lernumgebung.html" target="_blank">→ Lernumgebung öffnen</a>
+</div>
+
+<div class="sheet">
+  <h1>Quadratwurzeln — Begleitheft</h1>
+  <div class="meta"><span>Name:</span><span>Klasse:</span><span>Datum:</span></div>
+
+  <div class="intro">
+    <p style="margin-top:0"><b>So arbeitest du:</b> Öffne die Lernumgebung <code>quadratwurzeln-lernumgebung.html</code>
+      und arbeite die Kapitel der Reihe nach durch. In diesem Heft hältst du die <b>wichtigsten Ergebnisse</b> fest —
+      fülle die gepunkteten Lücken aus. Die Kapitelnummern hier und in der Lernumgebung sind dieselben.</p>
+    <p style="margin-bottom:0"><b>Zum Wiederholen:</b> Am Bildschirm kannst du oben die <b>Lösungen einblenden</b> und
+      dich selbst abfragen. Auf Seite 8 findest du einen Spickzettel für die Schulaufgabe.</p>
+  </div>
+
+  <!-- ============ 1 ============ -->
+  <h2>1 · Was ist eine Quadratwurzel?</h2>
+
+  <div class="merke">
+    <div class="tag">Definition</div>
+    <p style="margin:6px 0">Für eine Zahl <var>a</var> ≥ 0 ist die Quadratwurzel <span class="rt"><span><var>a</var></span></span>
+      diejenige <span class="gap w">nichtnegative</span> Zahl, deren <span class="gap w">Quadrat</span> gleich <var>a</var> ist.</p>
+    <p class="ctr" style="margin:10px 0;font-size:16px">
+      <span class="rt"><span><var>a</var></span></span> = <var>b</var> &nbsp;⟺&nbsp;
+      <var>b</var><sup>2</sup> = <span class="gap s"><var>a</var></span> &nbsp; und &nbsp; <var>b</var> <span class="gap s">≥ 0</span>
+    </p>
+  </div>
+
+  <h4>Die Bezeichnungen</h4>
+  <figure>
+    <svg viewBox="0 0 620 175" class="fig">
+      <path d="M60 62 L70 62 L82 92 L98 22 L200 22" class="st"/>
+      <text x="140" y="72" font-size="28" text-anchor="middle">49</text>
+      <text x="215" y="72" font-size="28">= 7</text>
+      <!-- Leader -->
+      <path d="M82 96 L82 118" class="thin"/>
+      <path d="M140 80 L200 118" class="thin"/>
+      <path d="M250 80 L390 118" class="thin"/>
+      <rect x="20" y="120" width="130" height="26" rx="5" class="gbox"/>
+      <text x="85" y="138" font-size="13" text-anchor="middle" class="gsvg">Wurzelzeichen</text>
+      <rect x="170" y="120" width="120" height="26" rx="5" class="gbox"/>
+      <text x="230" y="138" font-size="13" text-anchor="middle" class="gsvg">Radikand</text>
+      <rect x="330" y="120" width="120" height="26" rx="5" class="gbox"/>
+      <text x="390" y="138" font-size="13" text-anchor="middle" class="gsvg">Wurzelwert</text>
+    </svg>
+    <figcaption>Beschrifte die drei Bestandteile.</figcaption>
+  </figure>
+
+  <div class="hint">
+    <b>Zwei Bedingungen — und warum beide nötig sind:</b><br>
+    · <b>Radikand ≥ 0:</b> <span class="rt"><span>−9</span></span> gibt es <b>nicht</b>, denn kein
+      <span class="gap w">Quadrat</span> ist negativ.<br>
+    · <b>Wurzelwert ≥ 0:</b> Es gilt 5² = 25 <b>und</b> (−5)² = 25. Trotzdem ist
+      <span class="rt"><span>25</span></span> = <span class="gap s">5</span>, <b>nicht</b> ±5 —
+      sonst wäre die Wurzel keine <span class="gap w">eindeutige</span> Zahl.
+  </div>
+
+  <!-- ============ 2 ============ -->
+  <h2>2 · Wurzelziehen als Umkehrung des Quadrierens</h2>
+
+  <figure>
+    <svg viewBox="0 0 620 120" class="fig">
+      <rect x="20" y="34" width="86" height="50" rx="8" class="fillbox"/>
+      <text x="63" y="65" font-size="17" text-anchor="middle">x</text>
+      <rect x="150" y="34" width="76" height="50" rx="8" fill="#fff" stroke="#8b97ad" stroke-width="1.5"/>
+      <text x="188" y="60" font-size="15" text-anchor="middle">x²</text>
+      <text x="188" y="76" font-size="10" text-anchor="middle" class="lbl">quadrieren</text>
+      <rect x="270" y="34" width="86" height="50" rx="8" class="fillbox"/>
+      <text x="313" y="65" font-size="17" text-anchor="middle">x²</text>
+      <rect x="400" y="34" width="76" height="50" rx="8" fill="#fff" stroke="#8b97ad" stroke-width="1.5"/>
+      <text x="438" y="60" font-size="15" text-anchor="middle">√</text>
+      <text x="438" y="76" font-size="10" text-anchor="middle" class="lbl">Wurzel ziehen</text>
+      <rect x="520" y="34" width="86" height="50" rx="8" class="fillbox"/>
+      <text x="563" y="65" font-size="17" text-anchor="middle" class="gsvg">| x |</text>
+      <path d="M108 59 L146 59 M228 59 L266 59 M358 59 L396 59 M478 59 L516 59" class="st" marker-end="url(#ar)"/>
+      <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <path d="M0 0 L8 4 L0 8 z" fill="#1a2233"/></marker></defs>
+      <text x="563" y="24" font-size="11" text-anchor="middle" class="lbl">Ergebnis?</text>
+    </svg>
+    <figcaption>Was kommt am Ende heraus? Trage es in das rechte Feld ein.</figcaption>
+  </figure>
+
+  <div class="merke">
+    <div class="tag">Merke</div>
+    <p class="ctr" style="margin:8px 0;font-size:16px">
+      ( <span class="rt"><span><var>a</var></span></span> )<sup>2</sup> = <span class="gap s"><var>a</var></span>
+      &nbsp;&nbsp;<span class="small muted">für <var>a</var> ≥ 0</span>
+    </p>
+    <p class="ctr" style="margin:8px 0;font-size:16px">
+      <span class="rt"><span><var>x</var><sup>2</sup></span></span> = <span class="gap">|<var>x</var>|</span>
+      &nbsp;&nbsp;<span class="small muted">für <b>alle</b> <var>x</var> ∈ ℝ</span>
+    </p>
+    <p class="small" style="margin:6px 0">Begründung: Beim Quadrieren geht das <span class="gap w">Vorzeichen</span>
+      verloren. Die Wurzel liefert nie ein negatives Ergebnis, kann es also nicht zurückholen.</p>
+  </div>
+
+  <table>
+    <tr><th><var>x</var></th><th>−7</th><th>−0,5</th><th>0</th><th>3</th></tr>
+    <tr><td class="lbl"><var>x</var><sup>2</sup></td>
+      <td><span class="gap s">49</span></td><td><span class="gap s">0,25</span></td>
+      <td><span class="gap s">0</span></td><td><span class="gap s">9</span></td></tr>
+    <tr><td class="lbl"><span class="rt"><span><var>x</var><sup>2</sup></span></span></td>
+      <td><span class="gap s">7</span></td><td><span class="gap s">0,5</span></td>
+      <td><span class="gap s">0</span></td><td><span class="gap s">3</span></td></tr>
+    <tr><td class="lbl">Ist <span class="rt"><span><var>x</var><sup>2</sup></span></span> = <var>x</var>?</td>
+      <td><span class="gap s">nein</span></td><td><span class="gap s">nein</span></td>
+      <td><span class="gap s">ja</span></td><td><span class="gap s">ja</span></td></tr>
+  </table>
+
+  <!-- ============ 3 ============ -->
+  <h2 class="brk">3 · Wurzelziehen ohne Taschenrechner</h2>
+
+  <h4>Quadratzahlen — die musst du auswendig können</h4>
+  <table>
+    <tr><th><var>n</var></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+        <th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>20</th><th>25</th></tr>
+    <tr><td class="lbl"><var>n</var><sup>2</sup></td>
+      <td><span class="gap s">1</span></td><td><span class="gap s">4</span></td><td><span class="gap s">9</span></td>
+      <td><span class="gap s">16</span></td><td><span class="gap s">25</span></td><td><span class="gap s">36</span></td>
+      <td><span class="gap s">49</span></td><td><span class="gap s">64</span></td><td><span class="gap s">81</span></td>
+      <td><span class="gap s">100</span></td><td><span class="gap s">121</span></td><td><span class="gap s">144</span></td>
+      <td><span class="gap s">169</span></td><td><span class="gap s">196</span></td><td><span class="gap s">225</span></td>
+      <td><span class="gap s">400</span></td><td><span class="gap s">625</span></td></tr>
+  </table>
+
+  <div class="merke">
+    <div class="tag">Die drei Tricks</div>
+    <p style="margin:8px 0"><b>1 · Zehnerpotenzen:</b> Immer <span class="gap s">zwei</span> Nullen unter der Wurzel
+      geben <span class="gap s">eine</span> Null davor.<br>
+      <span class="small"><span class="rt"><span>900</span></span> = <span class="gap s">30</span> &nbsp;·&nbsp;
+      <span class="rt"><span>1600</span></span> = <span class="gap s">40</span> &nbsp;·&nbsp;
+      <span class="rt"><span>250000</span></span> = <span class="gap s">500</span></span></p>
+    <p style="margin:8px 0"><b>2 · Dezimalzahlen:</b> <span class="gap s">Zwei</span> Nachkommastellen unter der Wurzel
+      geben <span class="gap s">eine</span> Nachkommastelle.<br>
+      <span class="small"><span class="rt"><span>0,49</span></span> = <span class="gap s">0,7</span> &nbsp;·&nbsp;
+      <span class="rt"><span>0,0004</span></span> = <span class="gap s">0,02</span> &nbsp;·&nbsp;
+      <span class="rt"><span>1,44</span></span> = <span class="gap s">1,2</span></span></p>
+    <p style="margin:8px 0"><b>3 · Brüche:</b> Zähler und Nenner <span class="gap w">einzeln</span>.<br>
+      <span class="small"><span class="rt"><span><span class="frac"><span class="n">16</span><span class="d">81</span></span></span></span>
+      = <span class="frac"><span class="n"><span class="rt"><span>16</span></span></span><span class="d"><span class="rt"><span>81</span></span></span></span>
+      = <span class="gap">4/9</span></span></p>
+    <p class="small muted" style="margin:6px 0">Kontrolle immer durch Rückwärtsrechnen: 0,7² = 0,49 ✓</p>
+  </div>
+
+  <!-- ============ 4 ============ -->
+  <h2>4 · Einfache quadratische Gleichungen <var>x</var><sup>2</sup> = <var>a</var></h2>
+
+  <div class="hint">
+    <b>Der wichtigste Unterschied der ganzen Lektion:</b><br>
+    · <span class="rt"><span>25</span></span> = 5 &nbsp;— eine <b>Zahl</b>. Immer <span class="gap w">nichtnegativ</span>,
+      immer <span class="gap w">eindeutig</span>.<br>
+    · <var>x</var><sup>2</sup> = 25 &nbsp;— eine <b>Gleichung</b> mit <span class="gap s">zwei</span> Lösungen:
+      𝕃 = <span class="gap w">{−5; 5}</span><br>
+    <span class="small">Das ± setzt <b>du</b> beim Lösen. Es gehört zur Gleichung, <b>nicht</b> zum Wurzelzeichen.</span>
+  </div>
+
+  <table>
+    <tr><th style="width:18%">Fall</th><th>Lösungsmenge</th><th style="width:32%">Beispiel</th></tr>
+    <tr><td><var>a</var> &gt; 0</td>
+        <td><span class="gap xw">𝕃 = {−√a ; √a}</span> — <span class="gap s">zwei</span> Lösungen</td>
+        <td><var>x</var><sup>2</sup> = 9 → <span class="gap w">𝕃 = {−3; 3}</span></td></tr>
+    <tr><td><var>a</var> = 0</td>
+        <td><span class="gap xw">𝕃 = {0}</span> — <span class="gap s">eine</span> Lösung</td>
+        <td><var>x</var><sup>2</sup> = 0 → <span class="gap w">𝕃 = {0}</span></td></tr>
+    <tr><td><var>a</var> &lt; 0</td>
+        <td><span class="gap xw">𝕃 = { }</span> — <span class="gap s">keine</span> Lösung in ℝ</td>
+        <td><var>x</var><sup>2</sup> = −4 → <span class="gap w">𝕃 = { }</span></td></tr>
+  </table>
+  <p class="small muted">Merke: <b>Erst</b> <var>x</var><sup>2</sup> alleinstellen, <b>dann</b> Wurzel ziehen.
+    Beispiel: 3<var>x</var><sup>2</sup> = 108 ⟹ <var>x</var><sup>2</sup> = <span class="gap s">36</span>
+    ⟹ 𝕃 = <span class="gap w">{−6; 6}</span></p>
+
+  <!-- ============ 5 ============ -->
+  <h2 class="brk">5 · <span class="rt"><span>2</span></span> — die Wurzel als neues Zahlsymbol</h2>
+  <p>Löse <var>x</var><sup>2</sup> = 2. Der Kopfrechen-Trick hilft nicht: 1² = 1 ist zu klein, 2² = 4 ist zu groß.
+     <b>Gibt es diese Zahl überhaupt?</b></p>
+
+  <h3>5.1 Erster Schritt: Wie lang ist die Diagonale des Einheitsquadrats?</h3>
+  <p class="small">Wir rechnen nicht mit Längen, sondern mit <b>Flächeninhalten</b>.</p>
+
+  <figure>
+    <svg viewBox="0 0 620 265" class="fig">
+      <!-- zwei Einheitsquadrate -->
+      <rect x="40" y="150" width="80" height="80" fill="#eaf0fb" stroke="#3457d5" stroke-width="2"/>
+      <line x1="40" y1="230" x2="120" y2="150" class="accent"/>
+      <text x="67" y="182" font-size="13" text-anchor="middle">½</text>
+      <text x="95" y="215" font-size="13" text-anchor="middle">½</text>
+      <rect x="140" y="150" width="80" height="80" fill="#eaf0fb" stroke="#3457d5" stroke-width="2"/>
+      <line x1="140" y1="230" x2="220" y2="150" class="accent"/>
+      <text x="167" y="182" font-size="13" text-anchor="middle">½</text>
+      <text x="195" y="215" font-size="13" text-anchor="middle">½</text>
+      <text x="80" y="248" font-size="12" text-anchor="middle" class="lbl">1</text>
+      <text x="28" y="194" font-size="12" text-anchor="middle" class="lbl">1</text>
+      <text x="130" y="138" font-size="12" text-anchor="middle" class="lbl">2 Einheitsquadrate = 4 Dreiecke</text>
+      <!-- Pfeil -->
+      <path d="M240 190 L360 190" class="st" marker-end="url(#ar2)"/>
+      <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+        <path d="M0 0 L9 4.5 L0 9 z" fill="#1a2233"/></marker></defs>
+      <text x="300" y="182" font-size="11" text-anchor="middle" class="lbl">umlegen</text>
+      <!-- gekipptes Quadrat -->
+      <path d="M460 70 L540 150 L460 230 L380 150 Z" fill="#eaf0fb" stroke="#3457d5" stroke-width="2.5"/>
+      <line x1="460" y1="150" x2="540" y2="150" class="thin"/>
+      <line x1="460" y1="150" x2="380" y2="150" class="thin"/>
+      <line x1="460" y1="150" x2="460" y2="70" class="thin"/>
+      <line x1="460" y1="150" x2="460" y2="230" class="thin"/>
+      <text x="487" y="128" font-size="13" text-anchor="middle">½</text>
+      <text x="433" y="128" font-size="13" text-anchor="middle">½</text>
+      <text x="433" y="182" font-size="13" text-anchor="middle">½</text>
+      <text x="487" y="182" font-size="13" text-anchor="middle">½</text>
+      <text x="512" y="104" font-size="13" font-style="italic" class="gsvg">d</text>
+      <text x="404" y="104" font-size="13" font-style="italic" class="gsvg">d</text>
+      <text x="404" y="202" font-size="13" font-style="italic" class="gsvg">d</text>
+      <text x="512" y="202" font-size="13" font-style="italic" class="gsvg">d</text>
+      <rect x="380" y="40" width="160" height="22" rx="5" class="gbox"/>
+      <text x="460" y="56" font-size="12" text-anchor="middle" class="gsvg">Fläche = 4 · ½ = 2</text>
+    </svg>
+    <figcaption>Die vier Dreiecke werden nur <b>umgelegt</b> — der Flächeninhalt ändert sich dabei nicht.</figcaption>
+  </figure>
+
+  <div class="merke">
+    <div class="tag">Die Herleitung in vier Schritten</div>
+    <ol class="small" style="margin:6px 0;padding-left:20px">
+      <li>Das Einheitsquadrat hat den Flächeninhalt <span class="gap s">1</span>.</li>
+      <li>Die Diagonale zerteilt es in zwei Dreiecke mit je <span class="gap s">½</span>.
+          Die Länge der Diagonale nennen wir <var>d</var>.</li>
+      <li>Vier solche Dreiecke haben zusammen den Flächeninhalt 4 · ½ = <span class="gap s">2</span>.</li>
+      <li>Legt man sie mit den <span class="gap w">rechten Winkeln</span> in die Mitte, entsteht ein
+          <b>Quadrat</b> mit der Seitenlänge <span class="gap s"><var>d</var></span> und dem Flächeninhalt
+          <span class="gap s">2</span>.</li>
+    </ol>
+    <p class="ctr" style="margin:10px 0;font-size:17px">
+      <var>d</var><sup>2</sup> = <span class="gap s">2</span> &nbsp;⟹&nbsp;
+      <var>d</var> = <span class="gap"><span class="rt"><span>2</span></span></span>
+      &nbsp;<span class="small muted">(denn <var>d</var> ist eine Länge, also <var>d</var> &gt; 0)</span>
+    </p>
+    <p class="small" style="margin:4px 0">Die Zahl <b>existiert</b> also — sie ist die Länge einer Strecke,
+      die du zeichnen kannst.</p>
+  </div>
+
+  <h3>5.2 Zweiter Schritt: Die Diagonale auf den Zahlenstrahl klappen</h3>
+  <figure>
+    <svg viewBox="0 0 620 175" class="fig">
+      <rect x="60" y="30" width="66" height="66" fill="#eaf0fb" stroke="#3457d5" stroke-width="1.5"/>
+      <line x1="60" y1="96" x2="126" y2="30" class="accent"/>
+      <!-- Zirkelbogen um (60,96) mit r = Diagonale = 93,34: vom Diagonalenende (126,30) auf die Waagerechte -->
+      <path d="M126 30 A 93.34 93.34 0 0 1 153.3 96" class="dash"/>
+      <line x1="153.3" y1="96" x2="153.3" y2="130" class="dash"/>
+      <line x1="60" y1="130" x2="590" y2="130" class="st"/>
+      <g class="thin">
+        <line x1="60" y1="124" x2="60" y2="136"/><line x1="126" y1="124" x2="126" y2="136"/>
+        <line x1="192" y1="124" x2="192" y2="136"/><line x1="258" y1="124" x2="258" y2="136"/>
+        <line x1="324" y1="124" x2="324" y2="136"/>
+      </g>
+      <text x="60" y="152" font-size="12" text-anchor="middle" class="lbl">0</text>
+      <text x="126" y="152" font-size="12" text-anchor="middle" class="lbl">1</text>
+      <text x="192" y="152" font-size="12" text-anchor="middle" class="lbl">2</text>
+      <text x="258" y="152" font-size="12" text-anchor="middle" class="lbl">3</text>
+      <text x="324" y="152" font-size="12" text-anchor="middle" class="lbl">4</text>
+      <circle cx="153.3" cy="130" r="4.5" fill="#12805c"/>
+      <rect x="118" y="158" width="70" height="17" rx="4" class="gbox"/>
+      <text x="153.3" y="171" font-size="11" text-anchor="middle" class="gsvg">√2 ≈ 1,41</text>
+    </svg>
+    <figcaption>Die Diagonale wird mit dem Zirkel auf den Zahlenstrahl geklappt. Trage den Punkt ein.</figcaption>
+  </figure>
+  <p class="small">Der Punkt liegt eindeutig auf dem Zahlenstrahl — zwischen <span class="gap s">1,4</span>
+    und <span class="gap s">1,5</span>. Die Frage ist nur: <b>Welche</b> Zahl steht dort?</p>
+
+  <h3 class="brk">5.3 Irrationalität: <span class="rt"><span>2</span></span> ist kein Bruch</h3>
+  <p class="small">Ein <b>indirekter Beweis</b> (Widerspruchsbeweis): Man nimmt das <b>Gegenteil</b> an
+    und führt es zum Widerspruch. Ergänze die Lücken.</p>
+  <div class="task">
+    <ol class="small" style="margin:4px 0;padding-left:20px;line-height:1.9">
+      <li><b>Annahme:</b> <span class="rt"><span>2</span></span> ist <span class="gap w">rational</span>,
+          also <span class="rt"><span>2</span></span> = <var>p</var>/<var>q</var> mit <var>p</var>, <var>q</var> ∈ ℤ,
+          <var>q</var> ≠ 0, vollständig <span class="gap w">gekürzt</span>.</li>
+      <li>Quadrieren: 2 = <var>p</var>²/<var>q</var>², also <var>p</var>² = <span class="gap w">2<var>q</var>²</span>.</li>
+      <li>Also ist <var>p</var>² <span class="gap w">gerade</span>.</li>
+      <li>Ist <var>p</var>² gerade, so ist auch <span class="gap s"><var>p</var></span> gerade
+          (Quadrate ungerader Zahlen sind ungerade). Also <var>p</var> = <span class="gap s">2<var>k</var></span>.</li>
+      <li>Einsetzen: (2<var>k</var>)² = 2<var>q</var>² ⟹ 4<var>k</var>² = 2<var>q</var>² ⟹
+          <var>q</var>² = <span class="gap w">2<var>k</var>²</span>.</li>
+      <li>Also ist auch <var>q</var>² gerade — und damit auch <span class="gap s"><var>q</var></span>.</li>
+      <li><b>Widerspruch:</b> <var>p</var> und <var>q</var> sind <b>beide gerade</b>, ließen sich also noch durch
+          <span class="gap s">2</span> kürzen. Der Bruch war aber vollständig gekürzt.</li>
+      <li>Die Annahme ist <span class="gap w">falsch</span>: <span class="rt"><span>2</span></span> ist
+          <span class="gap w">irrational</span>. ∎</li>
+    </ol>
+  </div>
+  <div class="merke">
+    <div class="tag">Ergebnis</div>
+    <p style="margin:6px 0"><span class="rt"><span>2</span></span> lässt sich <b>nicht</b> als Bruch schreiben.
+      Ihre Dezimaldarstellung ist <span class="gap w">unendlich</span> und <span class="gap xw">nicht periodisch</span>.</p>
+    <p class="small" style="margin:6px 0">Deshalb ist <span class="rt"><span>2</span></span> selbst ein
+      <b>neues Zahlsymbol</b> — und das <b>exakte</b> Ergebnis. 1,41421356 ist nur ein
+      <span class="gap w">Näherungswert</span>. In der Mathematik lässt man <span class="rt"><span>2</span></span> stehen;
+      nur in Sachaufgaben (cm, €) rundet man am Schluss.</p>
+  </div>
+
+  <h3>5.4 Zahlbereichserweiterung ℚ → ℝ</h3>
+  <p class="small"><span class="rt"><span>2</span></span> hat einen Platz auf dem Zahlenstrahl (5.2), aber keinen in ℚ (5.3).
+    Der Zahlenstrahl hat also <b>Lücken</b>, wenn man nur Brüche zulässt. Diese Lücken füllen die
+    <span class="gap xw">irrationalen Zahlen</span>.</p>
+  <p class="ctr" style="font-size:16px;margin:10px 0">
+    ℕ <span class="gap s">⊂</span> ℤ <span class="gap s">⊂</span> ℚ <span class="gap s">⊂</span> ℝ
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 620 220" class="fig">
+      <rect x="20" y="14" width="580" height="192" rx="14" fill="#fffdf3" stroke="#c9a227" stroke-width="2"/>
+      <text x="32" y="32" font-size="13" font-weight="700" fill="#8a6d0b">ℝ  reelle Zahlen</text>
+      <rect x="34" y="40" width="342" height="156" rx="12" fill="#eef3fd" stroke="#3457d5" stroke-width="2"/>
+      <text x="46" y="58" font-size="13" font-weight="700" fill="#3457d5">ℚ  rationale Zahlen</text>
+      <rect x="48" y="66" width="250" height="98" rx="10" fill="#eafaf2" stroke="#12805c" stroke-width="2"/>
+      <text x="60" y="84" font-size="13" font-weight="700" fill="#12805c">ℤ  ganze Zahlen</text>
+      <rect x="62" y="92" width="146" height="62" rx="8" fill="#fff" stroke="#5b6678" stroke-width="1.5"/>
+      <text x="74" y="109" font-size="12" font-weight="700">ℕ  natürliche</text>
+      <text x="74" y="132" font-size="12" class="gsvg">0  1  2  17  √49</text>
+      <text x="220" y="132" font-size="12" class="gsvg">−5  −12  −√81</text>
+      <text x="52" y="184" font-size="12" class="gsvg">¾   0,25   0,3̅   −7/3</text>
+      <text x="398" y="58" font-size="13" font-weight="700" fill="#8a6d0b">ℝ \ ℚ  irrationale Zahlen</text>
+      <text x="398" y="84" font-size="12" class="gsvg">√2   √3   √10   π</text>
+      <text x="398" y="112" font-size="11" class="lbl">nicht als Bruch darstellbar;</text>
+      <text x="398" y="128" font-size="11" class="lbl">unendliche, nicht periodische</text>
+      <text x="398" y="144" font-size="11" class="lbl">Dezimalzahl</text>
+    </svg>
+    <figcaption>Trage je zwei bis drei Beispiele in die passende Menge ein.
+      <b>Achtung:</b> Ein Wurzelzeichen allein macht eine Zahl noch nicht irrational!</figcaption>
+  </figure>
+
+  <table>
+    <tr><th style="width:14%">Menge</th><th style="width:30%">Name</th><th>Dezimaldarstellung</th></tr>
+    <tr><td>ℚ</td><td><span class="gap w">rationale Zahlen</span></td>
+        <td><span class="gap xw">endlich oder periodisch</span></td></tr>
+    <tr><td>ℝ\ℚ</td><td><span class="gap w">irrationale Zahlen</span></td>
+        <td><span class="gap xw">unendlich, nicht periodisch</span></td></tr>
+  </table>
+  <p class="small muted">Prüffrage: Ist <span class="rt"><span>0,04</span></span> rational?
+    <span class="gap w">Ja: = 0,2 = ⅕</span> &nbsp;·&nbsp; Ist 1,4142 gleich <span class="rt"><span>2</span></span>?
+    <span class="gap xw">Nein, nur ungefähr</span></p>
+
+  <!-- ============ 6 ============ -->
+  <h2 class="brk">6 · Näherungswerte bestimmen</h2>
+  <div class="hint">
+    Der Taschenrechner zeigt <b><span class="rt"><span>2</span></span> ≈ 1,414213562</b> — mit
+    <b><span class="gap s">≈</span></b>, nicht mit „=“. Denn <span class="rt"><span>2</span></span> ist
+    <span class="gap w">irrational</span>: Die Ziffern hören nie auf, jede Anzeige ist zwangsläufig
+    <span class="gap w">gerundet</span>.
+  </div>
+
+  <h3>6.1 Dezimale Intervallschachtelung — Ziffer für Ziffer</h3>
+  <p class="small">Wir suchen die Nachbarn durch <b>Quadrieren</b> und vergleichen mit 2. Fülle die Tabelle aus.</p>
+  <table>
+    <tr><th>Stelle</th><th>untere Grenze <var>u</var></th><th><var>u</var>²  (&lt; 2)</th>
+        <th>obere Grenze <var>o</var></th><th><var>o</var>²  (&gt; 2)</th><th>Länge</th></tr>
+    <tr><td>0</td><td>1</td><td>1</td><td>2</td><td>4</td><td>1</td></tr>
+    <tr><td>1</td><td><span class="gap s">1,4</span></td><td><span class="gap s">1,96</span></td>
+        <td><span class="gap s">1,5</span></td><td><span class="gap s">2,25</span></td><td><span class="gap s">0,1</span></td></tr>
+    <tr><td>2</td><td><span class="gap s">1,41</span></td><td><span class="gap s">1,9881</span></td>
+        <td><span class="gap s">1,42</span></td><td><span class="gap s">2,0164</span></td><td><span class="gap s">0,01</span></td></tr>
+    <tr><td>3</td><td><span class="gap s">1,414</span></td><td class="fill"></td>
+        <td><span class="gap s">1,415</span></td><td class="fill"></td><td><span class="gap s">0,001</span></td></tr>
+  </table>
+
+  <figure>
+    <svg viewBox="0 0 620 96" class="fig">
+      <line x1="40" y1="52" x2="580" y2="52" class="st"/>
+      <g class="thin">
+        <line x1="40" y1="46" x2="40" y2="58"/><line x1="580" y1="46" x2="580" y2="58"/>
+      </g>
+      <text x="40" y="76" font-size="12" text-anchor="middle" class="lbl">1</text>
+      <text x="580" y="76" font-size="12" text-anchor="middle" class="lbl">2</text>
+      <rect x="256" y="34" width="54" height="36" fill="#eef3fd" stroke="#3457d5" stroke-width="1.5"/>
+      <text x="283" y="26" font-size="10" text-anchor="middle" class="lbl">1,4 … 1,5</text>
+      <rect x="264" y="38" width="6" height="28" fill="#dbe6fb" stroke="#3457d5" stroke-width="1"/>
+      <circle cx="264" cy="52" r="4" fill="#12805c"/>
+      <text x="264" y="16" font-size="11" text-anchor="middle" fill="#12805c" font-weight="700">√2</text>
+      <text x="360" y="28" font-size="11" class="lbl">jedes Intervall liegt im vorigen und wird 10-mal kürzer</text>
+    </svg>
+  </figure>
+
+  <div class="merke">
+    <div class="tag">Definition: Intervallschachtelung</div>
+    <p class="small" style="margin:6px 0">Eine Folge von Intervallen heißt Intervallschachtelung, wenn
+      <b>beide</b> Bedingungen gelten:</p>
+    <p style="margin:8px 0"><b>(1)</b> Sie liegen <span class="gap xw">echt ineinander</span>:
+      jedes Intervall liegt <span class="gap w">vollständig</span> im vorigen.</p>
+    <p style="margin:8px 0"><b>(2)</b> Sie werden <span class="gap xw">beliebig klein</span>:
+      die Längen unterschreiten jede noch so kleine Schranke.</p>
+    <p style="margin:8px 0">Dann gibt es <b><span class="gap w">genau eine</span></b> Zahl, die in
+      <b>allen</b> Intervallen liegt.</p>
+    <p class="small" style="margin:6px 0"><b>Warum beide?</b>
+      <b>(1)</b> sorgt dafür, dass <span class="gap xw">mindestens eine</span> Zahl gefangen bleibt.
+      <b>(2)</b> sorgt dafür, dass <span class="gap xw">höchstens eine</span> übrig bleibt.</p>
+  </div>
+
+  <div class="task">
+    <h4 style="margin-top:0">Gegenbeispiele — welche Bedingung fehlt?</h4>
+    <p class="small" style="margin:4px 0"><b>a)</b> <code>[1; 2], [1,4; 2], [1,41; 2], [1,414; 2], …</code><br>
+      Es fehlt Bedingung <span class="gap s">(2)</span>. Die Länge wird nie kleiner als
+      <span class="gap w">2 − √2 ≈ 0,586</span>.<br>
+      Folge: <span class="gap xw">Alle Zahlen von √2 bis 2</span> liegen in allen Intervallen — keine eindeutige Zahl.</p>
+    <p class="small" style="margin:10px 0 4px"><b>b)</b> <code>[0; 1], [2; 2,5], [4; 4,25], [6; 6,125], …</code><br>
+      Es fehlt Bedingung <span class="gap s">(1)</span>. Die Intervalle <span class="gap w">springen davon</span>.<br>
+      Folge: <span class="gap xw">Gar keine Zahl</span> liegt in allen Intervallen.</p>
+  </div>
+
+  <h3 class="brk">6.2 Heron-Verfahren — die geometrische Idee</h3>
+  <figure>
+    <svg viewBox="0 0 620 200" class="fig">
+      <rect x="40" y="90" width="160" height="80" fill="#eaf0fb" stroke="#3457d5" stroke-width="2"/>
+      <text x="120" y="136" font-size="12" text-anchor="middle">Fläche 2</text>
+      <text x="120" y="188" font-size="12" text-anchor="middle" class="lbl">x = 2</text>
+      <text x="26" y="134" font-size="12" text-anchor="middle" class="lbl">2/x = 1</text>
+      <path d="M225 130 L305 130" class="st" marker-end="url(#ar3)"/>
+      <defs><marker id="ar3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+        <path d="M0 0 L9 4.5 L0 9 z" fill="#1a2233"/></marker></defs>
+      <text x="265" y="122" font-size="10" text-anchor="middle" class="lbl">Mittelwert</text>
+      <rect x="330" y="112" width="120" height="58" fill="#eaf0fb" stroke="#3457d5" stroke-width="2"/>
+      <text x="390" y="146" font-size="11" text-anchor="middle">Fläche 2</text>
+      <text x="390" y="188" font-size="11" text-anchor="middle" class="lbl">x = 1,5</text>
+      <path d="M470 130 L520 130" class="st" marker-end="url(#ar3)"/>
+      <rect x="480" y="57" width="113" height="113" class="dash"/>
+      <text x="536" y="118" font-size="11" text-anchor="middle" font-weight="700" fill="#12805c">Quadrat</text>
+      <text x="536" y="134" font-size="11" text-anchor="middle" fill="#12805c">Fläche 2</text>
+      <text x="536" y="188" font-size="11" text-anchor="middle" class="gsvg">Seite = √2</text>
+    </svg>
+    <figcaption>Ein Rechteck mit Flächeninhalt 2 wird Schritt für Schritt <b>quadratischer</b>.</figcaption>
+  </figure>
+
+  <div class="merke">
+    <div class="tag">Der Algorithmus</div>
+    <p class="small" style="margin:6px 0">Rechteck mit Flächeninhalt <var>a</var>, eine Seite <var>x</var>.
+      Dann ist die andere Seite <span class="gap"><var>a</var>/<var>x</var></span>.</p>
+    <p class="small" style="margin:6px 0"><b>Schlüsselbeobachtung:</b> Ist eine Seite zu klein, ist die andere
+      automatisch <span class="gap w">zu groß</span>. <span class="rt"><span><var>a</var></span></span> liegt also
+      <b>immer zwischen</b> den beiden Seiten — auch das ist eine Intervallschachtelung, nur eine viel schnellere.</p>
+    <p class="ctr" style="margin:10px 0;font-size:17px">
+      <var>x</var><sub>neu</sub> = <span class="gap xw">½ · ( x + a/x )</span>
+    </p>
+    <p class="small" style="margin:6px 0">Start: <var>x</var><sub>0</sub> = <span class="gap s"><var>a</var></span>
+      (der Radikand selbst). Die Zahl der richtigen Stellen <span class="gap w">verdoppelt</span> sich pro Schritt.</p>
+  </div>
+
+  <h4>Rechne selbst nach — <span class="rt"><span>2</span></span>, Start <var>x</var><sub>0</sub> = 2</h4>
+  <table>
+    <tr><th><var>n</var></th><th><var>x<sub>n</sub></var></th><th>Kontrolle: <var>x<sub>n</sub></var>²</th></tr>
+    <tr><td>0</td><td>2</td><td>4</td></tr>
+    <tr><td>1</td><td><span class="gap w">1,5</span></td><td><span class="gap w">2,25</span></td></tr>
+    <tr><td>2</td><td><span class="gap w">1,416667</span></td><td><span class="gap w">2,006944</span></td></tr>
+    <tr><td>3</td><td><span class="gap w">1,414216</span></td><td class="fill"></td></tr>
+    <tr><td>4</td><td><span class="gap w">1,414214</span></td><td class="fill"></td></tr>
+  </table>
+  <p class="small muted">TR-Tipp: <span class="kbd">2 =</span> eingeben, dann
+    <span class="kbd">( ANS + 2 ÷ ANS ) ÷ 2 =</span> und danach nur noch <span class="kbd">=</span> drücken.</p>
+
+  <h3>6.3 Umsetzung mit der Tabellenkalkulation</h3>
+  <table>
+    <tr><th></th><th>A</th><th>B</th></tr>
+    <tr><td class="lbl">1</td><td>a</td><td>2 &nbsp;<span class="muted small">(Radikand)</span></td></tr>
+    <tr><td class="lbl">3</td><td>0</td><td><code><span class="gap w">=$B$1</span></code></td></tr>
+    <tr><td class="lbl">4</td><td><code>=A3+1</code></td><td><code><span class="gap xw">=(B3+$B$1/B3)/2</span></code></td></tr>
+    <tr><td class="lbl">5</td><td class="muted">↓ ziehen</td><td class="muted">↓ ziehen</td></tr>
+  </table>
+  <p class="small"><b>Warum das <code>$</code>?</b> <code>$B$1</code> ist ein <span class="gap w">absoluter</span>
+    Bezug — er bleibt beim Ziehen auf B1 stehen. <code>B3</code> ist <span class="gap w">relativ</span>
+    und wandert mit nach unten. Ohne <code>$</code> ginge der <span class="gap w">Radikand</span> verloren.</p>
+
+  <!-- ============ 7 ============ -->
+  <h2 class="brk">7 · Rechnen mit Quadratwurzeln und Termen</h2>
+
+  <h3>7.1 Definitionsmenge</h3>
+  <p class="small"><b>Erste Frage immer:</b> Wann ist der <span class="gap w">Radikand</span> ≥ 0?
+    Das führt auf eine <span class="gap w">Ungleichung</span>.</p>
+  <table>
+    <tr><th style="width:30%">Term</th><th>Bedingung</th><th style="width:26%">𝔻</th></tr>
+    <tr><td><span class="rt"><span><var>x</var> − 3</span></span></td>
+        <td><span class="gap w">x − 3 ≥ 0 ⟺ x ≥ 3</span></td><td><span class="gap w">[3; ∞[</span></td></tr>
+    <tr><td><span class="rt"><span>3 − <var>x</var></span></span></td>
+        <td><span class="gap w">3 − x ≥ 0 ⟺ x ≤ 3</span></td><td><span class="gap w">]−∞; 3]</span></td></tr>
+    <tr><td><span class="rt"><span><var>x</var><sup>2</sup> + 1</span></span></td>
+        <td><span class="gap xw">immer erfüllt (x² ≥ 0)</span></td><td><span class="gap s">ℝ</span></td></tr>
+    <tr><td><span class="frac"><span class="n">4</span><span class="d"><span class="rt"><span><var>x</var> − 2</span></span></span></span></td>
+        <td><span class="gap xw">x − 2 ≥ 0 und Nenner ≠ 0</span></td><td><span class="gap w">]2; ∞[</span></td></tr>
+  </table>
+  <div class="hint"><b>Fallen:</b> Beim Umformen mit <b>negativen</b> Zahlen dreht sich das Ungleichheitszeichen
+    <span class="gap s">um</span>. Steht die Wurzel im <b>Nenner</b>, braucht man
+    <span class="gap s">zwei</span> Bedingungen — dann wird die Klammer <span class="gap w">rund</span>.</div>
+
+  <h3>7.2 Warum Betragsstriche?</h3>
+  <div class="merke">
+    <div class="tag">Der meistvergessene Punkt</div>
+    <p class="ctr" style="margin:10px 0;font-size:18px">
+      <span class="rt"><span><var>x</var><sup>2</sup></span></span> = <span class="gap">|<var>x</var>|</span>
+      &nbsp;&nbsp;&nbsp;<span class="small muted">nicht</span>&nbsp;&nbsp;&nbsp;
+      <span class="rt"><span><var>x</var><sup>2</sup></span></span> = <var>x</var>
+    </p>
+    <p class="small" style="margin:6px 0"><b>Gegenprobe</b> mit <var>x</var> = −7:
+      <span class="rt"><span>(−7)<sup>2</sup></span></span> = <span class="rt"><span>49</span></span> =
+      <span class="gap s">7</span> = |−7| &nbsp; — und <b>nicht</b> −7.</p>
+    <p class="small" style="margin:6px 0"><b>Aber Vorsicht — auf die Reihenfolge achten:</b>
+      Bei ( <span class="rt"><span><var>x</var></span></span> )² = <var>x</var> braucht man
+      <span class="gap w">keinen</span> Betrag, denn die Definitionsmenge erzwingt dort schon
+      <var>x</var> <span class="gap s">≥ 0</span>.</p>
+  </div>
+
+  <h3>7.3 Umformungen mit Binomen</h3>
+  <p class="small">Erkennst du unter der Wurzel ein <b>vollständiges Quadrat</b>, kannst du die Wurzel ziehen —
+    <b>mit Betrag</b>.</p>
+  <div class="task">
+    <p class="ctr" style="margin:6px 0;font-size:15px">
+      <span class="rt"><span><var>x</var><sup>2</sup> − 6<var>x</var> + 9</span></span> =
+      <span class="rt"><span><span class="gap w">(x − 3)²</span></span></span> =
+      <span class="gap w">|x − 3|</span>
+    </p>
+    <p class="small muted ctr" style="margin:6px 0">Schritt 1: 2. binomische Formel erkennen (9 = 3², 6x = 2·x·3).
+      Schritt 2: Wurzel ziehen — mit Betrag, denn x − 3 kann negativ sein.</p>
+  </div>
+  <table>
+    <tr><th style="width:44%">Term</th><th>vereinfacht</th></tr>
+    <tr><td><span class="rt"><span><var>x</var><sup>2</sup> + 10<var>x</var> + 25</span></span></td>
+        <td><span class="gap w">|x + 5|</span></td></tr>
+    <tr><td><span class="rt"><span>4<var>x</var><sup>2</sup> + 12<var>x</var> + 9</span></span></td>
+        <td><span class="gap w">|2x + 3|</span></td></tr>
+    <tr><td><span class="rt"><span>9<var>x</var><sup>2</sup></span></span></td>
+        <td><span class="gap w">3|x|</span></td></tr>
+  </table>
+  <div class="hint"><b>Immer das mittlere Glied prüfen!</b> Bei <var>x</var>² + 5<var>x</var> + 25 wäre das doppelte
+    Produkt 2 · <var>x</var> · 5 = <span class="gap s">10x</span> — es steht aber 5<var>x</var>.
+    Also <span class="gap w">kein Binom</span>, die Wurzel lässt sich nicht vereinfachen.</div>
+
+  <!-- ============ 8 ============ -->
+  <h2 class="brk">8 · Spickzettel</h2>
+  <p class="small muted">Diese Übersicht ist bereits ausgefüllt — zum Wiederholen vor der Schulaufgabe.</p>
+  <table style="font-size:13px">
+    <tr><th style="width:38%">Regel</th><th>Bedeutung / Falle</th></tr>
+    <tr><td class="lbl"><span class="rt"><span><var>a</var></span></span> = <var>b</var> ⟺ <var>b</var>²=<var>a</var> und <var>b</var>≥0</td>
+        <td>Definition. Wurzelwert nie negativ, Radikand nie negativ.</td></tr>
+    <tr><td class="lbl">( <span class="rt"><span><var>a</var></span></span> )² = <var>a</var></td>
+        <td>für <var>a</var> ≥ 0 — Wurzel und Quadrat heben sich auf.</td></tr>
+    <tr><td class="lbl"><span class="rt"><span><var>x</var><sup>2</sup></span></span> = |<var>x</var>|</td>
+        <td>für <b>alle</b> <var>x</var> ∈ ℝ. <b>Betrag nicht vergessen!</b></td></tr>
+    <tr><td class="lbl"><var>x</var>² = <var>a</var> (<var>a</var>&gt;0) ⟹ <var>x</var> = ±<span class="rt"><span><var>a</var></span></span></td>
+        <td>Gleichung: zwei Lösungen. Das ± kommt von <b>dir</b>, nicht vom Wurzelzeichen.</td></tr>
+    <tr><td class="lbl"><span class="rt"><span>2</span></span> ∉ ℚ</td>
+        <td>irrational: unendliche, nicht periodische Dezimaldarstellung. Beweis durch Widerspruch.</td></tr>
+    <tr><td class="lbl"><var>d</var>² = 2 (Flächenargument)</td>
+        <td>4 halbe Einheitsquadrate ergeben ein Quadrat der Seite <var>d</var> und der Fläche 2.</td></tr>
+    <tr><td class="lbl">ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ</td>
+        <td>ℝ füllt die Lücken von ℚ auf dem Zahlenstrahl.</td></tr>
+    <tr><td class="lbl">Intervallschachtelung</td>
+        <td>(1) echt ineinander <b>und</b> (2) beliebig klein ⟹ genau eine Zahl.</td></tr>
+    <tr><td class="lbl"><var>x</var><sub>n+1</sub> = ½(<var>x<sub>n</sub></var> + <var>a</var>/<var>x<sub>n</sub></var>)</td>
+        <td>Heron, Start <var>x</var><sub>0</sub> = <var>a</var>. Verdoppelt die Stellen pro Schritt.</td></tr>
+    <tr><td class="lbl">𝔻 bei <span class="rt"><span><var>T</var>(<var>x</var>)</span></span></td>
+        <td>Radikand ≥ 0 lösen. Im Nenner zusätzlich ≠ 0 ⟹ runde Klammer.</td></tr>
+    <tr><td class="lbl"><span class="rt"><span><var>x</var>²−6<var>x</var>+9</span></span> = |<var>x</var>−3|</td>
+        <td>Binom rückwärts erkennen, dann Wurzel <b>mit Betrag</b>.</td></tr>
+  </table>
+
+  <div class="hint" style="margin-top:16px">
+    <b>Die drei häufigsten Fehler in der Schulaufgabe:</b><br>
+    1. <span class="rt"><span><var>x</var><sup>2</sup></span></span> = <var>x</var> statt |<var>x</var>| —
+       <b>Betrag vergessen</b>.<br>
+    2. <span class="rt"><span>36</span></span> = ±6 — <b>das ± gehört zur Gleichung</b>, nicht zur Wurzel.<br>
+    3. Definitionsmenge nicht angegeben oder das Ungleichheitszeichen beim Umformen nicht gedreht.
+  </div>
+
+  <p class="foot">Begleitheft zur Lernumgebung <code>quadratwurzeln-lernumgebung.html</code> ·
+     Quadratwurzeln · 9. Jahrgangsstufe Gymnasium Bayern</p>
+</div>
+
+<script>
+  const btn = document.getElementById('lbtn');
+  btn.onclick = () => {
+    const on = document.body.classList.toggle('show-loesung');
+    btn.textContent = on ? 'Lösungen ausblenden' : 'Lösungen einblenden';
+  };
+</script>
+</body>
+</html>
