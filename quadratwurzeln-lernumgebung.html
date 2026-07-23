@@ -1,0 +1,2973 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadratwurzeln – Lernumgebung (9. Jgst.)</title>
+<style>
+  :root{
+    --bg:#0f1220; --bg2:#161a2e; --panel:#1c2138; --panel2:#232a48;
+    --ink:#eaf0ff; --muted:#9aa6c8; --accent:#ffcf5c; --accent2:#5cd6ff;
+    --good:#5fe39a; --bad:#ff7a7a; --line:#2c3556; --shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, #23305e 0%, transparent 55%),
+               radial-gradient(900px 600px at -10% 20%, #2a1f4d 0%, transparent 50%),
+               var(--bg);
+    color:var(--ink); line-height:1.55; min-height:100vh;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+  header.top{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+  .logo{font-size:34px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+  h1{font-size:26px;margin:0;letter-spacing:.3px}
+  h1 .sub{display:block;font-size:13px;color:var(--muted);font-weight:400;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+    border-radius:16px;padding:22px;box-shadow:var(--shadow);margin:18px 0}
+  h2{font-size:20px;margin:0 0 4px}
+  h3{font-size:16px;margin:18px 0 6px;color:var(--accent2)}
+  h4{margin:14px 0 4px;font-size:14px}
+  p{margin:8px 0}
+  .muted{color:var(--muted)}
+  .small{font-size:13px}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,#ffd873,#f5b73c);
+    color:#241a00;border:none;border-radius:12px;padding:11px 18px;font-size:15px;font-weight:700;cursor:pointer;
+    box-shadow:0 6px 16px rgba(245,183,60,.3);transition:transform .08s ease, filter .15s ease}
+  .btn:hover{filter:brightness(1.06)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none;font-weight:600}
+  .btn.small{padding:7px 13px;font-size:13px}
+  .btn:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.3)}
+  input[type=text]{background:#0c1020;border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;padding:10px 12px;font-size:16px}
+  input[type=text]:focus{outline:2px solid var(--accent2);border-color:transparent}
+  select{background:#0c1020;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:15px}
+  a{color:var(--accent2)}
+  var{font-style:italic;font-family:"Cambria Math",Georgia,serif}
+  sub{font-size:.72em} sup{font-size:.72em}
+
+  /* ---- Wurzelzeichen ---- */
+  .rt{white-space:nowrap}
+  .rt::before{content:"√";font-size:1.02em}
+  .rt > span{border-top:1.4px solid currentColor;padding:1px 3px 0 2px;margin-left:-1px;display:inline-block;line-height:1.2}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 3px;font-size:.92em}
+  .frac .n{border-bottom:1.4px solid currentColor;padding:0 5px}
+  .frac .d{padding:0 5px}
+
+  /* ---- Navigation ---- */
+  nav.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 6px;position:sticky;top:0;z-index:20;
+    background:rgba(15,18,32,.92);backdrop-filter:blur(8px);padding:10px 0;border-bottom:1px solid var(--line)}
+  .chip{font-size:12.5px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);
+    color:var(--muted);cursor:pointer;user-select:none;transition:all .12s}
+  .chip:hover{color:var(--ink);border-color:var(--accent2)}
+  .chip.active{color:#2a2100;background:var(--accent);border-color:transparent;font-weight:700}
+  .chip.done::after{content:" ✓";color:var(--good);font-weight:700}
+  .chip.active.done::after{color:#1c5c36}
+
+  .defbox{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:10px;padding:14px 16px;margin:12px 0}
+  .defbox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--accent);font-weight:700}
+  .formula{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--accent2);
+    border-radius:10px;padding:10px 14px;margin:8px 0;font-size:17px}
+  .keybox{background:linear-gradient(180deg,#12243a,#0e1a2e);border:2px solid var(--accent2);
+    border-radius:14px;padding:16px 18px;margin:16px 0;box-shadow:0 0 0 3px rgba(92,214,255,.08)}
+  .keybox .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--accent2);font-weight:700}
+  .keybox .big{text-align:center;font-size:22px;margin:12px 0;color:var(--ink)}
+  .warn{background:#2b1d16;border:1px solid #6b4327;border-left:4px solid #ff9d5c;border-radius:10px;padding:12px 16px;margin:12px 0}
+  .warn .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#ff9d5c;font-weight:700}
+  .hint{background:#1a2540;border:1px dashed var(--accent2);border-radius:10px;padding:10px 14px;margin:8px 0;font-size:14px;color:#cfe6ff}
+  .solution{background:#12261a;border:1px solid #1f5f3c;border-radius:12px;padding:12px 16px;margin-top:12px;font-size:14.5px}
+  .solution h4{margin:0 0 6px;color:var(--good)}
+  details summary{cursor:pointer;color:var(--accent2);font-weight:600;margin-top:8px;user-select:none}
+  .msg{margin-top:10px;font-weight:600;min-height:22px}
+  .msg.ok{color:var(--good)} .msg.no{color:var(--bad)}
+  .state{font-size:19px;width:22px;display:inline-block;text-align:center}
+  .state.ok{color:var(--good)} .state.no{color:var(--bad)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .hidden{display:none}
+  .center{text-align:center}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:center}
+  th{background:var(--panel2);color:var(--accent2);font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+  td.mono,th.mono{font-family:"SF Mono",Consolas,monospace}
+  .tbl-scroll{overflow-x:auto}
+  .score{font-size:13px;color:var(--muted)}
+  .score b{color:var(--accent)}
+
+  /* ---- Quiz / Trainer ---- */
+  .task{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0}
+  .task .q{font-size:18px;margin-bottom:10px}
+  .opt{display:block;width:100%;text-align:left;background:#0c1020;border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;padding:11px 14px;margin:7px 0;cursor:pointer;font-size:15px;transition:all .12s}
+  .opt:hover:not(:disabled){border-color:var(--accent2)}
+  .opt.ok{background:#12331f;border-color:var(--good)}
+  .opt.no{background:#331414;border-color:var(--bad)}
+  .opt:disabled{cursor:default}
+
+  /* ---- Beweis-Puzzle ---- */
+  .pz-pool,.pz-target{min-height:60px;border:1px dashed var(--line);border-radius:12px;padding:8px;margin:8px 0}
+  .pz-target{border-style:solid;background:#0c1020;counter-reset:pz}
+  .pz-item{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:6px 0;
+    cursor:pointer;font-size:14px;transition:all .12s;display:flex;gap:10px;align-items:flex-start}
+  .pz-item:hover{border-color:var(--accent2)}
+  .pz-target .pz-item::before{counter-increment:pz;content:counter(pz);flex:0 0 22px;height:22px;border-radius:50%;
+    background:var(--accent);color:#241a00;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .pz-item.ok{border-color:var(--good);background:#12261a}
+  .pz-item.no{border-color:var(--bad);background:#2a1414}
+
+  /* ---- Sortier-Aufgabe Zahlbereiche ---- */
+  .sort-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+  @media(max-width:760px){.sort-grid{grid-template-columns:repeat(2,1fr)}}
+  .bin{background:#0c1020;border:1px solid var(--line);border-radius:12px;padding:8px;min-height:90px}
+  .bin h5{margin:0 0 6px;text-align:center;font-size:13px;color:var(--accent2);letter-spacing:.3px}
+  .bin.hl{border-color:var(--accent2);background:#101a33}
+  .tok{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:6px 9px;margin:5px 0;
+    font-size:15px;cursor:grab;text-align:center;user-select:none}
+  .tok.sel{outline:2px solid var(--accent);background:#2e3660}
+  .tok.ok{border-color:var(--good);background:#12261a}
+  .tok.no{border-color:var(--bad);background:#2a1414}
+  .tok-pool{display:flex;flex-wrap:wrap;gap:8px;background:#0c1020;border:1px dashed var(--line);
+    border-radius:12px;padding:10px;min-height:56px}
+  .tok-pool .tok{margin:0;min-width:70px}
+
+  /* ---- anklickbare Zellen im Aufbau-Schema ---- */
+  td.xp,th.xp{cursor:pointer;transition:background .12s}
+  td.xp:hover,th.xp:hover{background:#2a3358}
+  td.xp.sel,th.xp.sel{background:var(--accent);color:#241a00;font-weight:700}
+  td.xp.sel .muted{color:#5a4300}
+  .xpbox{background:#1a2540;border:1px solid var(--accent2);border-left:4px solid var(--accent2);
+    border-radius:10px;padding:12px 14px;margin:10px 0;font-size:14px;min-height:64px}
+  .xpbox .ref{font-family:"SF Mono",Consolas,monospace;font-weight:700;color:var(--accent);font-size:15px}
+
+  /* ---- Mini-Tabellenkalkulation ---- */
+  .xgrid{display:grid;grid-template-columns:34px repeat(3,1fr);gap:2px;background:var(--line);
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:8px 0;min-width:420px}
+  .xh{background:var(--panel2);color:var(--accent2);font-size:12px;font-weight:700;text-align:center;padding:5px 2px}
+  .xgrid input{background:#0c1020;border:none;color:var(--ink);padding:6px 7px;font-size:13.5px;
+    font-family:"SF Mono",Consolas,monospace;width:100%;border-radius:0;text-align:right}
+  .xgrid input:focus{outline:2px solid var(--accent2);outline-offset:-2px;text-align:left;background:#141b33}
+  .xgrid input.err{color:var(--bad)}
+  .xgrid input.txt{text-align:left;color:var(--muted)}
+  .xgrid input:read-only{background:#151a2e;color:var(--muted)}
+  .fbar{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap}
+  .fbar .cellref{font-family:"SF Mono",Consolas,monospace;background:var(--panel2);border:1px solid var(--line);
+    border-radius:6px;padding:6px 10px;font-size:13px;min-width:44px;text-align:center;color:var(--accent)}
+  .fbar input{flex:1;min-width:200px;font-family:"SF Mono",Consolas,monospace}
+  canvas{max-width:100%;border-radius:12px;background:#0c1020;border:1px solid var(--line);display:block;margin:10px auto}
+  .slider-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0}
+  input[type=range]{flex:1;min-width:180px;accent-color:var(--accent)}
+  .valbox{font-family:"SF Mono",Consolas,monospace;background:#0c1020;border:1px solid var(--line);
+    border-radius:8px;padding:5px 10px;font-size:14px;min-width:96px;text-align:center}
+  .foot{color:var(--muted);font-size:12px;text-align:center;margin-top:34px}
+  .kbd{font-family:"SF Mono",Consolas,monospace;background:#0c1020;border:1px solid var(--line);
+    border-radius:6px;padding:2px 6px;font-size:13px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  section.step{scroll-margin-top:64px}
+  @media print{
+    body{background:#fff;color:#000}
+    .card{box-shadow:none;border-color:#bbb;background:#fff}
+    nav.chips,.btn{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo">√</div>
+    <h1>Quadratwurzeln<span class="sub">Jgst. 9 · Gymnasium Bayern · Interaktive Lernumgebung</span></h1>
+  </header>
+  <p class="muted small">Arbeite die Kapitel der Reihe nach durch. Erledigte Kapitel bekommen ein ✓.
+     Dein Fortschritt bleibt beim Neuladen erhalten.</p>
+
+  <nav class="chips" id="nav"></nav>
+
+  <!-- ==================== 0. MOTIVATION ==================== -->
+  <section class="step card" id="s0">
+    <h2>0 · Wozu das Ganze?</h2>
+    <p class="muted small">Eine Frage, die du heute noch nicht beantworten kannst — am Ende der Lektion schon</p>
+
+    <div class="defbox" style="border-left-color:var(--good)">
+      <div class="lbl" style="color:var(--good)">Die Aufgabe</div>
+      <p style="margin:6px 0;font-size:16px">Du legst ein <b>quadratisches Beet</b> an. Es soll genau
+        <b>2 m²</b> groß werden — nicht 1,9 m², nicht 2,1 m², sondern <b>genau 2</b>.</p>
+      <p style="margin:6px 0;font-size:16px">Wie lang musst du die Seite abmessen?</p>
+    </div>
+
+    <p>Von der Seite zur Fläche ist es leicht: <b>A = s · s = s²</b>. Aber hier ist die Fläche gegeben
+       und die <b>Seite gesucht</b> — die Rechnung läuft <b>rückwärts</b>. Probiere es aus:</p>
+
+    <div class="task">
+      <div class="slider-row">
+        <span>Seitenlänge <var>s</var> =</span>
+        <input type="range" id="m0Sl" min="500" max="2500" value="1000" step="1">
+        <input type="text" id="m0In" value="1" style="width:120px" autocomplete="off">
+        <span class="muted small">m</span>
+        <button class="btn small ghost" id="m0Best">Bestes Ergebnis zeigen</button>
+      </div>
+      <canvas id="m0Cv" width="640" height="290"></canvas>
+      <p id="m0Txt" style="min-height:56px"></p>
+      <p class="small muted">Tipp: Du kannst rechts auch Zahlen mit vielen Nachkommastellen <b>eintippen</b>,
+         z. B. <span class="kbd">1,41421356</span>. Kommst du auf <b>genau</b> 2?</p>
+    </div>
+
+    <div id="m0Reveal" class="hidden">
+      <div class="defbox" style="border-left-color:var(--bad)">
+        <div class="lbl" style="color:var(--bad)">Das Verblüffende</div>
+        <p style="margin:6px 0">Du kommst beliebig nah heran — aber <b>nie exakt</b> auf 2. Egal wie viele
+          Nachkommastellen du eintippst.</p>
+        <p style="margin:6px 0">Das liegt <b>nicht</b> an dir und nicht am Rechner. Die gesuchte Zahl
+          <b>lässt sich als Dezimalzahl gar nicht aufschreiben</b> — sie hat unendlich viele Nachkommastellen,
+          die nie ein Muster bilden. Trotzdem <b>existiert</b> sie: Das Beet kannst du ja anlegen.</p>
+      </div>
+
+      <h3>Drei Fragen — und wo sie beantwortet werden</h3>
+      <div class="tbl-scroll">
+      <table>
+        <tr><th style="width:52%">Frage</th><th>Antwort in</th></tr>
+        <tr><td>Wie <b>schreibt</b> man diese Zahl überhaupt auf, wenn keine Dezimalzahl passt?</td>
+            <td><b>Kapitel 1</b> — ein neues Symbol: <span class="rt"><span>2</span></span></td></tr>
+        <tr><td><b>Gibt</b> es die Zahl wirklich — oder ist sie ein Trick?</td>
+            <td><b>Kapitel 5</b> — sie ist die Diagonale eines Quadrats</td></tr>
+        <tr><td>Wie <b>berechnet</b> man sie, wenn nicht durch Raten?</td>
+            <td><b>Kapitel 6</b> — mit einem Verfahren, das dein TR auch benutzt</td></tr>
+      </table>
+      </div>
+    </div>
+
+    <h3>Was du schon kannst — und was noch fehlt</h3>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th style="width:34%">Rechnung</th><th>Umkehrung</th><th style="width:22%">kannst du?</th></tr>
+      <tr><td>7 + 5 = 12</td><td>12 − 5 = 7</td><td style="color:var(--good)">✓ Subtrahieren</td></tr>
+      <tr><td>7 · 5 = 35</td><td>35 : 5 = 7</td><td style="color:var(--good)">✓ Dividieren</td></tr>
+      <tr><td>7<sup>2</sup> = 49</td><td>? = 7</td><td style="color:var(--accent)"><b>Das lernst du jetzt</b></td></tr>
+    </table>
+    </div>
+    <p class="small muted">Jede Rechenart hat eine Umkehrung. Zum Quadrieren fehlt dir noch eine —
+      und genau die heißt <b>Quadratwurzel</b>.</p>
+  </section>
+
+  <!-- ==================== 1. DEFINITION ==================== -->
+  <section class="step card" id="s1">
+    <h2>1 · Was ist eine Quadratwurzel?</h2>
+    <p class="muted small">Definition, Schreibweise, Radikand</p>
+
+    <p>Du kennst das Quadrieren: <span class="formula" style="display:inline-block;padding:4px 10px;font-size:16px">
+      5 <sup>2</sup> = 25</span> Die Frage der Quadratwurzel ist die <b>umgekehrte</b>:</p>
+    <p style="font-size:17px">„Welche Zahl muss ich quadrieren, um <b>25</b> zu erhalten?“ &nbsp;→&nbsp; <span class="rt"><span>25</span></span> = 5</p>
+
+    <div class="defbox">
+      <div class="lbl">Definition</div>
+      <p style="margin:6px 0">Für eine Zahl <var>a</var> ≥ 0 ist die <b>Quadratwurzel</b> <span class="rt"><span><var>a</var></span></span>
+      diejenige <b>nichtnegative</b> Zahl, deren Quadrat <var>a</var> ergibt.</p>
+      <div class="formula" style="background:#0c1020">
+        <span class="rt"><span><var>a</var></span></span> = <var>b</var> &nbsp;⟺&nbsp; <var>b</var><sup>2</sup> = <var>a</var> &nbsp;<b>und</b>&nbsp; <var>b</var> ≥ 0
+      </div>
+      <p style="margin:6px 0">Die Zahl <var>a</var> unter dem Wurzelzeichen heißt <b>Radikand</b> (von lat. <i>radix</i> = Wurzel).</p>
+    </div>
+
+    <h3>Die zwei Bedingungen – warum beide nötig sind</h3>
+    <div class="grid2">
+      <div class="warn">
+        <div class="lbl">Radikand ≥ 0</div>
+        <p style="margin:4px 0"><span class="rt"><span>−9</span></span> existiert <b>nicht</b>, denn kein Quadrat ist negativ:
+        jede Zahl mit sich selbst multipliziert ergibt etwas ≥ 0.</p>
+      </div>
+      <div class="warn">
+        <div class="lbl">Wurzelwert ≥ 0</div>
+        <p style="margin:4px 0">Es gilt 5<sup>2</sup> = 25 <b>und</b> (−5)<sup>2</sup> = 25. Trotzdem ist
+        <span class="rt"><span>25</span></span> = 5, <b>nicht</b> ±5 — sonst wäre die Wurzel keine eindeutige Zahl.</p>
+      </div>
+    </div>
+
+    <h3>Bezeichnungen – zieh die Begriffe an die richtige Stelle</h3>
+    <p class="small muted">Klicke ein Wort an, dann das passende Feld.</p>
+    <div id="labelGame"></div>
+
+    <h3>Verständnis-Check</h3>
+    <div id="quiz1"></div>
+  </section>
+
+  <!-- ==================== 2. UMKEHROPERATION ==================== -->
+  <section class="step card" id="s2">
+    <h2>2 · Wurzelziehen als Umkehrung des Quadrierens</h2>
+    <p class="muted small">Die Wurzel als Rechenoperation („Radizieren“)</p>
+
+    <p>Quadrieren und Wurzelziehen sind <b>Gegenoperationen</b> — wie Addieren/Subtrahieren oder Malnehmen/Teilen.
+       Schicke eine Zahl durch beide Maschinen:</p>
+
+    <div class="task">
+      <div class="slider-row">
+        <span>Startzahl <var>x</var> =</span>
+        <input type="range" id="machSl" min="-50" max="50" value="30" step="1">
+        <span class="valbox" id="machV">3</span>
+      </div>
+      <div class="slider-row" style="margin-top:2px">
+        <span class="small">Reihenfolge:</span>
+        <button class="btn small" id="machSq">erst x² , dann √</button>
+        <button class="btn small ghost" id="machRt">erst √ , dann x²</button>
+      </div>
+      <canvas id="machCv" width="730" height="230"></canvas>
+      <p id="machTxt" class="small" style="min-height:44px"></p>
+    </div>
+
+    <div class="defbox">
+      <div class="lbl">Merke</div>
+      <div class="formula" style="background:#0c1020">
+        (<span class="rt"><span><var>a</var></span></span>)<sup>2</sup> = <var>a</var> &nbsp;&nbsp;für alle <var>a</var> ≥ 0
+      </div>
+      <div class="formula" style="background:#0c1020;border-left-color:#ff9d5c">
+        <span class="rt"><span><var>x</var><sup>2</sup></span></span> = |<var>x</var>| &nbsp;&nbsp;für alle <var>x</var> ∈ ℝ
+      </div>
+      <p class="small" style="margin:6px 0"><b>Vertausche oben die Reihenfolge</b> und schiebe den Regler ins Negative —
+      jede Merkzeile gehört zu einer Reihenfolge:</p>
+      <ul class="small" style="margin:4px 0;padding-left:20px">
+        <li><b>Erst √, dann x²:</b> Die Wurzel verlangt <var>x</var> ≥ 0. Wo sie definiert ist, kommt <b>exakt <var>x</var></b>
+          zurück — das ist die <b>erste</b> Zeile (<span class="rt"><span><var>a</var></span></span>)<sup>2</sup> = <var>a</var> für <var>a</var> ≥ 0.</li>
+        <li><b>Erst x², dann √:</b> klappt für <b>alle</b> <var>x</var>, liefert aber <b>|<var>x</var>|</b> — bei negativen <var>x</var>
+          ist das Vorzeichen weg. Das ist die <b>zweite</b> Zeile <span class="rt"><span><var>x</var><sup>2</sup></span></span> = |<var>x</var>|.</li>
+      </ul>
+      <p class="small" style="margin:6px 0">Deshalb die <b>Betragsstriche</b>. Darauf kommen wir in Kapitel 7 zurück.</p>
+    </div>
+
+    <h3>Übung: Umkehren</h3>
+    <div id="quiz2"></div>
+  </section>
+
+  <!-- ==================== 3. KOPFRECHNEN ==================== -->
+  <section class="step card" id="s3">
+    <h2>3 · Wurzelziehen ohne Taschenrechner</h2>
+    <p class="muted small">Quadratzahlen und ihre „Verwandten“</p>
+
+    <h3>Die Quadratzahlen musst du können</h3>
+    <div class="tbl-scroll">
+      <table id="sqTable"></table>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <button class="btn small ghost" id="sqHide">Werte verdecken / aufdecken</button>
+      <span class="small muted">Tipp: erst verdecken, dann laut aufsagen.</span>
+    </div>
+
+    <h3>Die drei Tricks</h3>
+    <div class="defbox">
+      <div class="lbl">1 · Zehnerpotenzen abspalten</div>
+      <p style="margin:4px 0">Immer <b>zwei</b> Nullen unter der Wurzel geben <b>eine</b> Null davor:</p>
+      <div class="formula" style="background:#0c1020;font-size:16px">
+        <span class="rt"><span>900</span></span> = <span class="rt"><span>9 · 100</span></span> = 3 · 10 = 30 &nbsp;·&nbsp;
+        <span class="rt"><span>1&thinsp;600</span></span> = 40 &nbsp;·&nbsp;
+        <span class="rt"><span>250&thinsp;000</span></span> = 500
+      </div>
+    </div>
+    <div class="defbox">
+      <div class="lbl">2 · Dezimalzahlen: Kommastellen halbieren</div>
+      <p style="margin:4px 0"><b>Zwei</b> Nachkommastellen unter der Wurzel geben <b>eine</b> Nachkommastelle:</p>
+      <div class="formula" style="background:#0c1020;font-size:16px">
+        <span class="rt"><span>0,49</span></span> = 0,7 &nbsp;·&nbsp;
+        <span class="rt"><span>0,0004</span></span> = 0,02 &nbsp;·&nbsp;
+        <span class="rt"><span>1,44</span></span> = 1,2
+      </div>
+      <p class="small muted" style="margin:4px 0">Kontrolle immer durch Rückwärtsrechnen: 0,7<sup>2</sup> = 0,49 ✓</p>
+    </div>
+    <div class="defbox">
+      <div class="lbl">3 · Brüche: Zähler und Nenner einzeln</div>
+      <div class="formula" style="background:#0c1020;font-size:16px">
+        <span class="rt"><span><span class="frac"><span class="n">16</span><span class="d">81</span></span></span></span>
+        = <span class="frac"><span class="n"><span class="rt"><span>16</span></span></span><span class="d"><span class="rt"><span>81</span></span></span></span>
+        = <span class="frac"><span class="n">4</span><span class="d">9</span></span>
+      </div>
+    </div>
+
+    <h3>Kopfrechen-Trainer</h3>
+    <p class="small muted">Brüche als <span class="kbd">4/9</span>, Dezimalzahlen mit Komma oder Punkt. 10 Aufgaben.</p>
+    <div id="trainer"></div>
+  </section>
+
+  <!-- ==================== 4. QUADRATISCHE GLEICHUNGEN ==================== -->
+  <section class="step card" id="s4">
+    <h2>4 · Einfache quadratische Gleichungen <var>x</var><sup>2</sup> = <var>a</var></h2>
+    <p class="muted small">Hier ist die Wurzel ein Werkzeug zum Lösen — und liefert <b>zwei</b> Lösungen</p>
+
+    <div class="warn">
+      <div class="lbl">Wichtigster Unterschied der ganzen Lektion</div>
+      <p style="margin:6px 0"><span class="rt"><span>25</span></span> = 5 &nbsp;— eine <b>Zahl</b>, immer nichtnegativ, eindeutig.</p>
+      <p style="margin:6px 0"><var>x</var><sup>2</sup> = 25 &nbsp;⟹&nbsp; <var>x</var> = 5 <b>oder</b> <var>x</var> = −5 &nbsp;— eine <b>Gleichung</b> mit zwei Lösungen: 𝕃 = {−5; 5}</p>
+      <p class="small" style="margin:6px 0">Beim Lösen zieht man die Wurzel und setzt <b>selbst</b> das ±.
+         Das ± gehört zur Gleichung, <b>nicht</b> zum Wurzelzeichen.</p>
+    </div>
+
+    <div class="defbox">
+      <div class="lbl">Lösungsformel für <var>x</var><sup>2</sup> = <var>a</var></div>
+      <table style="margin-top:8px">
+        <tr><th>Fall</th><th>Lösungsmenge</th><th>Beispiel</th></tr>
+        <tr><td><var>a</var> &gt; 0</td><td>𝕃 = {−<span class="rt"><span><var>a</var></span></span>; <span class="rt"><span><var>a</var></span></span>} — zwei Lösungen</td><td><var>x</var><sup>2</sup> = 9 → 𝕃 = {−3; 3}</td></tr>
+        <tr><td><var>a</var> = 0</td><td>𝕃 = {0} — eine Lösung</td><td><var>x</var><sup>2</sup> = 0 → 𝕃 = {0}</td></tr>
+        <tr><td><var>a</var> &lt; 0</td><td>𝕃 = { } — keine Lösung in ℝ</td><td><var>x</var><sup>2</sup> = −4 → 𝕃 = { }</td></tr>
+      </table>
+    </div>
+
+    <h3>Übung: Lösungsmengen</h3>
+    <div id="quiz4"></div>
+  </section>
+
+  <!-- ==================== 5. WURZEL 2 ==================== -->
+  <section class="step card" id="s5">
+    <h2>5 · <span class="rt"><span>2</span></span> — die Wurzel als <i>neues Zahlsymbol</i></h2>
+    <p class="muted small">Existenz · Irrationalität · Zahlbereichserweiterung</p>
+
+    <p>Löse <var>x</var><sup>2</sup> = 2. Der Trainer aus Kapitel 3 hilft nicht: 1<sup>2</sup> = 1 ist zu klein,
+       2<sup>2</sup> = 4 ist zu groß. Gibt es diese Zahl überhaupt?</p>
+
+    <h3>5.1 Erster Schritt: Wie lang ist die Diagonale des Einheitsquadrats?</h3>
+    <p>Ein Quadrat mit der Seitenlänge 1 heißt <b>Einheitsquadrat</b>. Seine Diagonale kannst du <b>sehen</b> und
+       <b>zeichnen</b> — aber wie <b>lang</b> ist sie? Wir nennen ihre Länge <var>d</var>.</p>
+    <p>Die Länge selbst können wir noch nicht berechnen. Aber wir müssen gar nicht mit Längen rechnen —
+       es geht auch mit <b>Flächeninhalten</b>:</p>
+    <div class="task">
+      <canvas id="areaCv" width="520" height="250"></canvas>
+      <div class="row-btns">
+        <button class="btn" id="arNext">▶ Nächster Schritt</button>
+        <button class="btn ghost small" id="arReset">Zurücksetzen</button>
+      </div>
+      <p id="arTxt" style="min-height:66px;margin-top:10px"></p>
+      <details><summary>Woher wissen wir, dass wirklich ein <b>Quadrat</b> entsteht?</summary>
+        <div class="hint">Die Diagonale halbiert den rechten Winkel des Einheitsquadrats. Jedes der vier Dreiecke hat also
+          die Winkel 90°, <b>45°</b> und <b>45°</b>.<br>
+          · <b>In der Mitte</b> stoßen die vier rechten Winkel zusammen: 4 · 90° = 360° — die Dreiecke passen also
+            lückenlos und ohne Überlappung aneinander.<br>
+          · <b>An jeder Außenecke</b> treffen zwei 45°-Winkel aufeinander: 45° + 45° = <b>90°</b>.<br>
+          · Alle <b>vier Seiten</b> sind Diagonalen, also gleich lang (<var>d</var>).<br>
+          Vier gleich lange Seiten und vier rechte Winkel — das ist genau ein Quadrat.</div>
+      </details>
+    </div>
+    <div class="defbox" style="border-left-color:var(--good)">
+      <div class="lbl" style="color:var(--good)">Ergebnis des ersten Schritts</div>
+      <p style="margin:6px 0">Das große Quadrat hat die Seitenlänge <var>d</var> und den Flächeninhalt 2. Also:</p>
+      <div class="formula" style="background:#0c1020;text-align:center">
+        <var>d</var><sup>2</sup> = 2 &nbsp;&nbsp;⟹&nbsp;&nbsp; <var>d</var> = <span class="rt"><span>2</span></span>
+        &nbsp;&nbsp;<span class="small muted">(denn <var>d</var> ist eine Länge, also <var>d</var> &gt; 0)</span>
+      </div>
+      <p class="small" style="margin:6px 0">Damit ist die Frage von oben beantwortet: Die Zahl mit <var>x</var><sup>2</sup> = 2
+        <b>existiert</b> — sie ist die Länge einer Strecke, die du mit dem Lineal zeichnen kannst.
+        Kein Kunstgriff, sondern eine ganz gewöhnliche Diagonale.</p>
+    </div>
+
+    <h3>5.2 Zweiter Schritt: Die Diagonale auf den Zahlenstrahl klappen</h3>
+    <p>Wenn <span class="rt"><span>2</span></span> eine Länge ist, dann hat sie auch einen <b>Platz auf dem Zahlenstrahl</b>.
+       Wir klappen die Diagonale mit dem Zirkel herunter:</p>
+    <div class="task">
+      <canvas id="diagCv" width="700" height="320"></canvas>
+      <div class="row-btns">
+        <button class="btn small" id="diagPlay">▶ Diagonale auf den Zahlenstrahl klappen</button>
+        <button class="btn small ghost" id="diagReset">Zurücksetzen</button>
+      </div>
+      <p class="small muted" style="margin-top:8px">Der Punkt liegt eindeutig auf dem Zahlenstrahl, zwischen 1,4 und 1,5.
+         Die Frage ist nur: <b>Welche</b> Zahl steht dort?</p>
+    </div>
+
+    <h4 style="color:var(--accent)">Die Lupe: Lies den Punkt so genau wie möglich ab</h4>
+    <p>Nimm eine Lupe und zoome in den Zahlenstrahl. Jede Stufe zerlegt das Intervall in <b>zehn</b> Teilintervalle —
+       in welchem liegt der Punkt? Dessen Ziffer ist die nächste Nachkommastelle.</p>
+    <div class="task">
+      <div class="slider-row">
+        <span>Zoomstufe</span>
+        <input type="range" id="zmSl" min="0" max="7" value="0" step="1">
+        <span class="valbox" id="zmV">1 : 1</span>
+        <button class="btn small" id="zmIn">🔍 Tiefer zoomen</button>
+        <button class="btn small ghost" id="zmOut">Zurück</button>
+      </div>
+      <canvas id="zmCv" width="680" height="215"></canvas>
+      <p id="zmTxt" style="min-height:62px"></p>
+    </div>
+
+    <h3>5.3 Irrationalität: Ein Widerspruchsbeweis als Puzzle</h3>
+    <p>Vielleicht ist <span class="rt"><span>2</span></span> ja ein Bruch, den wir nur noch nicht gefunden haben?
+       Der folgende <b>indirekte Beweis</b> zeigt: unmöglich. Er startet mit dem <b>Gegenteil</b> der Behauptung
+       und führt es zum Widerspruch.</p>
+    <p class="small muted">Bring die Beweisschritte in die richtige Reihenfolge: Klicke unten einen Schritt an —
+       er wandert nach oben. Klicke ihn oben an, um ihn zurückzunehmen.</p>
+    <div>
+      <h4 style="color:var(--accent)">Der Beweis (deine Reihenfolge):</h4>
+      <div class="pz-target" id="pzTarget"></div>
+      <h4 style="color:var(--muted)">Vorrat:</h4>
+      <div class="pz-pool" id="pzPool"></div>
+      <div class="row-btns">
+        <button class="btn" id="pzCheck">Beweis prüfen</button>
+        <button class="btn ghost small" id="pzReset">Neu mischen</button>
+        <button class="btn ghost small" id="pzSol">Lösung zeigen</button>
+      </div>
+      <div class="msg" id="pzMsg"></div>
+      <details id="pzHelp"><summary>Hilfe: Warum ist <var>p</var> gerade, wenn <var>p</var><sup>2</sup> gerade ist?</summary>
+        <div class="hint">Wäre <var>p</var> ungerade, also <var>p</var> = 2<var>k</var>+1, dann wäre
+          <var>p</var><sup>2</sup> = 4<var>k</var><sup>2</sup>+4<var>k</var>+1 = 2·(2<var>k</var><sup>2</sup>+2<var>k</var>)+1 — wieder <b>ungerade</b>.
+          Quadrate ungerader Zahlen sind stets ungerade. Ist <var>p</var><sup>2</sup> also gerade, muss <var>p</var> gerade gewesen sein.</div>
+      </details>
+    </div>
+
+    <div class="defbox" style="border-left-color:var(--good)">
+      <div class="lbl" style="color:var(--good)">Ergebnis</div>
+      <p style="margin:6px 0"><span class="rt"><span>2</span></span> lässt sich <b>nicht</b> als Bruch
+        <span class="frac"><span class="n"><var>p</var></span><span class="d"><var>q</var></span></span> schreiben — sie ist <b>irrational</b>.
+        Ihre Dezimaldarstellung ist unendlich und <b>nicht periodisch</b>.</p>
+      <p style="margin:6px 0">Damit ist <span class="rt"><span>2</span></span> selbst ein <b>neues Zahlsymbol</b>, genau wie
+        <sup>1</sup>⁄<sub>3</sub> oder π. Der Ausdruck <span class="rt"><span>2</span></span> ist das <b>exakte Ergebnis</b> —
+        1,41421356 ist nur ein Näherungswert.</p>
+      <p class="small" style="margin:6px 0">Deshalb: In der Mathematik lässt man <span class="rt"><span>2</span></span> stehen.
+        Nur in Sachaufgaben (Länge in cm, Geld in €) rundet man am Schluss.</p>
+    </div>
+
+    <h3>5.4 Zahlbereichserweiterung ℚ → ℝ</h3>
+    <p>Die Zahl <span class="rt"><span>2</span></span> hat einen Platz auf dem Zahlenstrahl (5.2), aber keinen in ℚ (5.3).
+      Der Zahlenstrahl hat also <b>Lücken</b>, wenn wir nur Brüche zulassen. Diese Lücken füllen die
+      <b>irrationalen Zahlen</b>. Zusammen ergeben sie ℝ:</p>
+    <div class="formula" style="text-align:center">ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ &nbsp;&nbsp;und&nbsp;&nbsp; ℝ = ℚ ∪ (ℝ \ ℚ)</div>
+    <canvas id="setCv" width="880" height="290"></canvas>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Menge</th><th>Name</th><th>Beispiele</th><th>Dezimaldarstellung</th></tr>
+      <tr><td>ℕ</td><td>natürliche Zahlen</td><td class="mono">0; 1; 2; 3; …</td><td>—</td></tr>
+      <tr><td>ℤ</td><td>ganze Zahlen</td><td class="mono">…; −2; −1; 0; 1; …</td><td>—</td></tr>
+      <tr><td>ℚ</td><td>rationale Zahlen (Brüche)</td><td class="mono">−<sup>3</sup>⁄<sub>4</sub>; 0,25; 0,3̅</td><td>endlich <b>oder</b> periodisch</td></tr>
+      <tr><td>ℝ\ℚ</td><td>irrationale Zahlen</td><td class="mono">√2; √3; π; 0,101001000100001…</td><td>unendlich, <b>nicht</b> periodisch</td></tr>
+      <tr><td>ℝ</td><td>reelle Zahlen</td><td class="mono">alle Punkte des Zahlenstrahls</td><td>—</td></tr>
+    </table>
+    </div>
+
+    <div class="defbox" style="border-left-color:#ff9d5c">
+      <div class="lbl" style="color:#ff9d5c">Worauf es ankommt: <u>beide</u> Eigenschaften</div>
+      <p style="margin:6px 0">Irrational heißt: die Dezimaldarstellung ist <b>unendlich</b> <u>und</u>
+        <b>nicht periodisch</b>. <b>Eine</b> der beiden allein genügt nicht!</p>
+      <div class="tbl-scroll">
+      <table style="margin:8px 0">
+        <tr><th>Zahl</th><th>unendlich?</th><th>periodisch?</th><th>also</th></tr>
+        <tr><td class="mono">0,25</td><td style="color:var(--bad)">nein ✗</td><td class="muted">—</td>
+            <td style="color:var(--accent2)">rational (= ¼)</td></tr>
+        <tr><td class="mono">0,3̅ = 0,333…</td><td style="color:var(--good)">ja ✓</td>
+            <td style="color:var(--bad)">ja, „3“ ✗</td><td style="color:var(--accent2)">rational (= ⅓)</td></tr>
+        <tr><td class="mono">0,1̅2̅3̅ = 0,123123123…</td><td style="color:var(--good)">ja ✓</td>
+            <td style="color:var(--bad)">ja, „123“ ✗</td><td style="color:var(--accent2)">rational (= <sup>123</sup>⁄<sub>999</sub>)</td></tr>
+        <tr style="background:#2b1d16"><td class="mono">0,101001000100001…</td><td style="color:var(--good)">ja ✓</td>
+            <td style="color:var(--good)">nein ✓</td><td style="color:var(--accent)"><b>irrational</b></td></tr>
+        <tr><td class="mono">√2 = 1,41421356…</td><td style="color:var(--good)">ja ✓</td>
+            <td style="color:var(--good)">nein ✓</td><td style="color:var(--accent)"><b>irrational</b></td></tr>
+      </table>
+      </div>
+      <p style="margin:8px 0"><b>Schau dir 0,101001000100001… genau an:</b> nach jeder 1 kommt <b>eine Null mehr</b> —
+        erst eine, dann zwei, dann drei, dann vier …</p>
+      <p class="small" style="margin:6px 0">Die Zahl ist überhaupt nicht geheimnisvoll: Du kannst jede Ziffer
+        vorhersagen und sie beliebig weit hinschreiben. Aber sie <b>wiederholt sich nie in einem festen Block</b> —
+        weil die Nullblöcke immer länger werden, kann keine Periode entstehen. Also ist sie <b>irrational</b>,
+        obwohl man sie so einfach beschreiben kann.</p>
+      <div class="hint" style="margin:8px 0 0">
+        <b>Das räumt ein Missverständnis aus:</b> „Irrational“ bedeutet <b>nicht</b> „zufällig“, „chaotisch“ oder
+        „unberechenbar“. Es bedeutet <b>nur</b>: keine Periode — und damit nicht als Bruch schreibbar.
+        <span class="small">Auch 0,123456789101112131415… (einfach alle natürlichen Zahlen hintereinander)
+        ist aus demselben Grund irrational.</span>
+      </div>
+    </div>
+
+    <h3>Übung: Zahlen einsortieren</h3>
+    <p class="small muted">Ordne jede Zahl der <b>kleinsten</b> Menge zu, in der sie liegt.
+      Achtung: manche Wurzeln sehen irrational aus, sind es aber nicht! Zahl anklicken, dann Feld anklicken (oder ziehen).</p>
+    <div id="sortGame"></div>
+  </section>
+
+  <!-- ==================== 6. INTERVALLSCHACHTELUNG ==================== -->
+  <section class="step card" id="s6">
+    <h2>6 · Näherungswerte bestimmen</h2>
+    <p class="muted small">Intervallschachtelung · Heron-Verfahren · Tabellenkalkulation · Vergleich mit dem TR</p>
+
+    <p>Der Taschenrechner zeigt <b><span class="rt"><span>2</span></span> ≈ 1,414213562</b> — mit <b>≈</b>, nicht mit „=“.
+       Denn <span class="rt"><span>2</span></span> ist irrational (Kapitel 5): Die Ziffern hören nie auf, jede Anzeige ist
+       zwangsläufig <b>gerundet</b>.</p>
+    <p>Aber <b>wie</b> kommt der Rechner überhaupt auf diese Ziffern? Und wie kämen wir ohne ihn dahin?
+       Beide Wege beruhen auf derselben Idee: <span class="rt"><span>2</span></span> in immer kleinere Intervalle
+       <b>einsperren</b>, deren Grenzen wir kennen.</p>
+
+    <h3>6.1 Dezimale Intervallschachtelung — Ziffer für Ziffer</h3>
+    <p><span class="rt"><span>2</span></span> selbst können wir nicht direkt ausrechnen — aber <b>quadrieren</b> können wir.
+       Also <b>probieren</b> wir die nächste Nachkommastelle aus: Wir raten eine Ziffer, quadrieren die Zahl und
+       <b>vergleichen mit 2</b>.</p>
+    <ul class="small" style="margin:6px 0;padding-left:20px">
+      <li>Ist das Quadrat <b>noch kleiner als 2</b>, war die Ziffer erlaubt — wir probieren die nächste.</li>
+      <li>Wird es <b>zum ersten Mal größer als 2</b>, sind wir einen Schritt <b>zu weit</b>.</li>
+    </ul>
+    <p>Die letzte Zahl, deren Quadrat noch <b>unter 2</b> liegt, ist die <b>untere</b> Grenze, die erste darüber die
+       <b>obere</b>. So schließt jede Stelle <span class="rt"><span>2</span></span> in ein immer kleineres <b>Intervall</b> ein.</p>
+    <div class="task">
+      <p class="small muted">Jeder Klick probiert <b>eine</b> Ziffer. Ist das Quadrat &gt; 2, übernimmt der nächste Klick das Intervall.</p>
+      <div class="tbl-scroll"><table id="isTable"></table></div>
+      <div class="row-btns">
+        <button class="btn" id="isNext">Nächste Stelle einschachteln</button>
+        <button class="btn ghost small" id="isReset">Zurücksetzen</button>
+      </div>
+      <canvas id="isCv" width="680" height="225"></canvas>
+      <p id="isTxt" class="small" style="min-height:40px"></p>
+    </div>
+    <div class="defbox">
+      <div class="lbl">Definition: Intervallschachtelung</div>
+      <p style="margin:6px 0">Eine Folge von Intervallen <var>I</var><sub>1</sub>, <var>I</var><sub>2</sub>, <var>I</var><sub>3</sub>, …
+        heißt <b>Intervallschachtelung</b>, wenn <b>beide</b> Bedingungen gelten:</p>
+      <div class="formula" style="background:#0c1020;margin:8px 0">
+        <b style="color:var(--accent)">(1) Sie liegen echt ineinander.</b><br>
+        Jedes Intervall liegt <b>vollständig</b> im vorigen:
+        <span class="mono"><var>I</var><sub>1</sub> ⊇ <var>I</var><sub>2</sub> ⊇ <var>I</var><sub>3</sub> ⊇ …</span>
+      </div>
+      <div class="formula" style="background:#0c1020;margin:8px 0">
+        <b style="color:var(--accent)">(2) Sie werden beliebig klein.</b><br>
+        Die Längen unterschreiten jede noch so kleine Schranke — egal wie klein du sie vorgibst,
+        irgendein Intervall ist kürzer.
+      </div>
+      <p style="margin:6px 0">Dann gibt es <b>genau eine</b> Zahl, die in <b>allen</b> Intervallen liegt.</p>
+      <p class="small" style="margin:6px 0"><b>Bei uns oben:</b>
+        (1) [1,4; 1,5] liegt in [1; 2], [1,41; 1,42] liegt in [1,4; 1,5], … ✓ &nbsp;·&nbsp;
+        (2) die Längen sind 10<sup>−1</sup>, 10<sup>−2</sup>, 10<sup>−3</sup>, … und werden beliebig klein ✓
+        &nbsp;⟹&nbsp; die eine Zahl, die übrig bleibt, ist <span class="rt"><span>2</span></span>.
+        Das ist zugleich die saubere Begründung dafür, dass es diese Zahl in ℝ überhaupt gibt.</p>
+      <details><summary>Warum braucht man wirklich <b>beide</b> Bedingungen?</summary>
+        <div class="hint">
+          <b>Nur (1), ohne (2)</b> — geschachtelt, aber nicht beliebig klein:
+          <p class="mono small" style="margin:4px 0">[1; 2], [1,4; 2], [1,41; 2], [1,414; 2], …</p>
+          Die untere Grenze wandert auf <span class="rt"><span>2</span></span> zu, die obere bleibt bei 2 stehen.
+          Geschachtelt sind sie ✓ — aber die Längen 1; 0,6; 0,59; 0,586; … werden <b>nie</b> kleiner als
+          2 − <span class="rt"><span>2</span></span> ≈ 0,586. <b>Folge:</b> In allen Intervallen liegen <b>alle</b> Zahlen
+          von <span class="rt"><span>2</span></span> bis 2 — unendlich viele. Keine eindeutige Zahl.
+          <hr style="border:none;border-top:1px solid var(--line);margin:10px 0">
+          <b>Nur (2), ohne (1)</b> — beliebig klein, aber nicht geschachtelt:
+          <p class="mono small" style="margin:4px 0">[0; 1], [2; 2,5], [4; 4,25], [6; 6,125], …</p>
+          Die Längen 1; 0,5; 0,25; 0,125; … werden beliebig klein ✓ — aber [2; 2,5] liegt nicht in [0; 1],
+          die Intervalle <b>springen davon</b>. <b>Folge:</b> Es gibt <b>gar keine</b> Zahl, die in allen liegt.
+          <hr style="border:none;border-top:1px solid var(--line);margin:10px 0">
+          <b>Kurz gesagt:</b> Bedingung <b>(1)</b> sorgt dafür, dass die gesuchte Zahl nie entwischt —
+          <b>mindestens eine</b> bleibt gefangen. Bedingung <b>(2)</b> sorgt dafür, dass <b>höchstens eine</b>
+          übrig bleibt. Zusammen: <b>genau eine</b>.
+        </div>
+      </details>
+      <p class="small" style="margin:8px 0 0">Nachteil des Verfahrens: Pro Nachkommastelle brauchst du bis zu 9 Quadrierungen. Es geht schneller.</p>
+    </div>
+
+    <h3>Jetzt du: <span class="rt"><span>3</span></span> einschachteln</h3>
+    <p>Oben hast du zugesehen — jetzt probierst du selbst. Finde die Intervallgrenzen für
+       <span class="rt"><span>3</span></span> bis zur <b>3. Nachkommastelle</b>.</p>
+    <p class="small muted">Du gibst <b>nur die Grenzen</b> ein. Die Quadrate und der Vergleich mit 3 werden dir sofort
+       angezeigt — genau so probierst du dich heran. Eine Stelle wird erst freigeschaltet, wenn die vorige stimmt.</p>
+    <div class="task">
+      <div class="tbl-scroll"><table id="ex3Table"></table></div>
+      <div class="msg" id="ex3Msg"></div>
+      <div class="row-btns">
+        <button class="btn ghost small" id="ex3Reset">Zurücksetzen</button>
+        <button class="btn ghost small" id="ex3Tip">Tipp</button>
+      </div>
+      <div id="ex3Tipp"></div>
+    </div>
+
+    <h3>6.2 Heron-Verfahren — die geometrische Herleitung</h3>
+    <p>Aus <b>5.1</b> weißt du: <span class="rt"><span>2</span></span> ist die Seitenlänge eines <b>Quadrats</b> mit
+       Flächeninhalt 2. Ein Quadrat ist ein Rechteck, bei dem <b>beide Seiten gleich lang</b> sind. Wir starten mit einem
+       Rechteck, das schon den <b>Flächeninhalt 2</b> hat, aber noch <b>kein Quadrat</b> ist:</p>
+    <p>Die Seiten sind der <b>Radikand 2</b> und <b>1</b> (denn 2 · 1 = 2). Eine Seite (2) ist <b>zu groß</b>, die andere (1)
+       <b>zu klein</b> — <span class="rt"><span>2</span></span> ≈ 1,41 liegt <b>dazwischen</b>. Jetzt machen wir das Rechteck
+       Schritt für Schritt <b>quadratischer</b>: Als neue Seite <var>x</var> nehmen wir den <b>Mittelwert</b> der beiden alten
+       Seiten. Die andere Seite <var>y</var> ergibt sich aus der Bedingung, dass die <b>Fläche 2 bleiben</b> soll —
+       also <var>y</var> = 2 / <var>x</var>.</p>
+    <p class="small muted">Jeder Klick zeigt <b>einen</b> dieser Teilschritte. Unten kannst du auch einen anderen Radikanden ausprobieren.</p>
+    <div class="task">
+      <canvas id="herCv" width="640" height="320"></canvas>
+      <div class="row-btns">
+        <button class="btn" id="herStep">▶ 1. Mittelwert bilden</button>
+        <button class="btn ghost small" id="herReset">Zurücksetzen</button>
+      </div>
+      <p id="herTxt" style="min-height:46px"></p>
+      <div class="slider-row" style="border-top:1px solid var(--line);padding-top:12px;margin-top:4px">
+        <span class="small"><b>Erweiterung:</b> anderer Radikand <var>a</var> =</span>
+        <input type="text" id="herA" value="2" style="width:80px" autocomplete="off">
+        <button class="btn small ghost" id="herSet">Übernehmen</button>
+        <span class="small muted">Start ist immer <var>x</var><sub>0</sub> = <var>a</var>. Probiere 9, 0,25 oder 100.</span>
+      </div>
+      <div class="msg small" id="herMsg"></div>
+    </div>
+    <div class="defbox">
+      <div class="lbl">Der Algorithmus</div>
+      <p style="margin:4px 0">Das Rechteck hat die Seiten <b><var>x</var></b> und <b><var>y</var></b> und den
+        Flächeninhalt <var>x</var> · <var>y</var> = <var>a</var>. Gibst du <var>x</var> vor, ist die andere Seite
+        festgelegt:</p>
+      <div class="formula" style="background:#0c1020;text-align:center">
+        <var>y</var> = <span class="frac"><span class="n"><var>a</var></span><span class="d"><var>x</var></span></span>
+        &nbsp;<span class="small muted">(denn <var>x</var> · <span class="frac"><span class="n"><var>a</var></span><span class="d"><var>x</var></span></span> = <var>a</var>)</span>
+      </div>
+      <p style="margin:8px 0"><b>Schlüsselbeobachtung:</b> Ist <var>x</var> zu klein, ist <var>y</var> automatisch
+        zu groß — sonst wäre die Fläche nicht <var>a</var>. <span class="rt"><span><var>a</var></span></span> liegt
+        also <b>immer zwischen <var>x</var> und <var>y</var></b>. Auch das ist eine Intervallschachtelung,
+        nur eine viel schnellere!</p>
+      <p style="margin:8px 0"><b>Ein Schritt besteht aus zwei Teilen</b> — genau die ersten beiden Klicks der Animation oben
+        (der dritte zeigt dann das fertige neue Rechteck):</p>
+      <div class="formula" style="background:#0c1020;text-align:center">
+        <b style="color:var(--accent)">①</b>&nbsp; <var>x</var><sub>neu</sub> =
+        <span class="frac"><span class="n">1</span><span class="d">2</span></span> · ( <var>x</var> + <var>y</var> )
+        &nbsp;&nbsp;<span class="small muted">Mittelwert der beiden Seiten → „quadratischer“</span>
+      </div>
+      <div class="formula" style="background:#0c1020;text-align:center">
+        <b style="color:var(--accent)">②</b>&nbsp; <var>y</var><sub>neu</sub> =
+        <span class="frac"><span class="n"><var>a</var></span><span class="d"><var>x</var><sub>neu</sub></span></span>
+        &nbsp;&nbsp;<span class="small muted">damit die Fläche wieder genau <var>a</var> ist</span>
+      </div>
+      <p class="small" style="margin:8px 0">Setzt man ② direkt in ① ein (<var>y</var> = <var>a</var>/<var>x</var>),
+        werden die beiden Teilschritte zu <b>einer</b> Formel — der eigentlichen Iterationsformel:</p>
+    </div>
+
+    <div class="keybox">
+      <div class="lbl">Die Iterationsformel des Heron-Verfahrens</div>
+      <div class="big">
+        <var>x</var><sub><var>n</var>+1</sub> =
+        <span class="frac"><span class="n">1</span><span class="d">2</span></span> ·
+        ( <var>x</var><sub><var>n</var></sub> +
+        <span class="frac"><span class="n"><var>a</var></span><span class="d"><var>x</var><sub><var>n</var></sub></span></span> )
+      </div>
+      <p style="margin:8px 0"><b>Was „Iteration“ bedeutet:</b> Dieselbe Formel wird <b>immer wieder</b> angewandt —
+        und das <b>Ergebnis eines Schritts ist die Eingabe des nächsten</b>. Aus <var>x</var><sub><var>n</var></sub>
+        (dem aktuellen Näherungswert) macht sie <var>x</var><sub><var>n</var>+1</sub> (den nächsten, besseren).</p>
+      <p class="ctr" style="margin:10px 0;font-size:15px">
+        <var>x</var><sub>0</sub> <span style="color:var(--accent2)">→</span>
+        <var>x</var><sub>1</sub> <span style="color:var(--accent2)">→</span>
+        <var>x</var><sub>2</sub> <span style="color:var(--accent2)">→</span>
+        <var>x</var><sub>3</sub> <span style="color:var(--accent2)">→</span> …
+        <span style="color:var(--accent2)">→</span> <span class="rt"><span><var>a</var></span></span>
+      </p>
+      <p style="margin:8px 0"><b>Startwert:</b> <var>x</var><sub>0</sub> = <var>a</var> (der Radikand selbst).
+        Dann einsetzen, Ergebnis wieder einsetzen, wieder … — immer mit <b>derselben</b> Formel.
+        Genau diese Formel benutzt du in <b>6.3</b> von Hand am TR und programmierst sie in <b>6.4</b>
+        in die Tabellenkalkulation.</p>
+      <details><summary>Warum geht das so schnell?</summary>
+        <div class="hint">Die Zahl der richtigen Stellen <b>verdoppelt</b> sich pro Schritt (1 → 2 → 5 → 11 → …).
+          Schon nach <b>4–5 Schritten</b> bist du am Anzeigelimit des Taschenrechners.
+          <span class="small">Der Grund: Der Fehler wird bei jedem Schritt ungefähr <b>quadriert</b> — aus einem
+          Fehler von 0,01 wird 0,0001, daraus 0,00000001. So etwas nennt man „quadratische Konvergenz“.</span></div>
+      </details>
+    </div>
+
+    <h3>Iteration Schritt für Schritt — sieh der Formel beim Arbeiten zu</h3>
+    <p>Gib einen Radikanden <var>a</var> und einen Startwert <var>x</var><sub>0</sub> ein. Jeder Klick setzt das
+       <b>Ergebnis</b> des letzten Schritts an <b>beide <var>x</var>-Stellen</b> der Formel ein und rechnet den nächsten aus —
+       genau das ist die Iteration.</p>
+    <div class="task">
+      <div class="slider-row">
+        <span><var>a</var> =</span>
+        <input type="text" id="itA" value="2" style="width:76px" autocomplete="off">
+        <span><var>x</var><sub>0</sub> =</span>
+        <input type="text" id="itX" value="2" style="width:76px" autocomplete="off">
+        <button class="btn small" id="itSet">Übernehmen</button>
+      </div>
+      <canvas id="itCv" width="644" height="180"></canvas>
+      <div class="row-btns">
+        <button class="btn" id="itNext">▶ Nächster Schritt</button>
+        <button class="btn ghost small" id="itReset">Zurücksetzen</button>
+      </div>
+      <div class="tbl-scroll"><table id="itTable"></table></div>
+      <p id="itTxt" class="small" style="min-height:22px"></p>
+    </div>
+
+    <h3>6.3 Von Hand mit dem Taschenrechner</h3>
+    <p>Rechne die Heron-Schritte für <span class="rt"><span>2</span></span> selbst am TR nach — Startwert <var>x</var><sub>0</sub> = 2, wie oben der Radikand.
+       Tippe jeweils <span class="kbd">( x + 2 ÷ x ) ÷ 2 =</span> und übertrage das Ergebnis.
+       Runde auf <b>6 Nachkommastellen</b>.</p>
+    <div id="heronDrill"></div>
+
+    <h3>6.4 Umsetzung mit der Tabellenkalkulation</h3>
+    <p>Der Algorithmus ist eine <b>Iteration</b>: Jede Zeile benutzt das Ergebnis der Zeile darüber.
+       Genau dafür ist eine Tabellenkalkulation gemacht — eine Formel, dann nach unten ziehen.</p>
+    <div class="task">
+      <h4>Aufbau in Excel / LibreOffice Calc / GeoGebra-Tabelle</h4>
+      <p class="small muted">Tippe (oder klicke) auf eine <b>farbige Zelle</b> — dann wird dir erklärt, was dort
+         mathematisch passiert.</p>
+      <div class="tbl-scroll">
+      <table>
+        <tr><th class="xp" data-x="ecke" style="cursor:pointer"></th>
+            <th class="xp" data-x="colA" style="cursor:pointer">A</th>
+            <th class="xp" data-x="colB" style="cursor:pointer">B</th>
+            <th class="xp" data-x="colC" style="cursor:pointer">C</th></tr>
+        <tr><th class="xp" data-x="row1" style="cursor:pointer">1</th>
+            <td class="mono xp" data-x="A1">a</td><td class="mono xp" data-x="B1">2</td><td class="mono muted xp" data-x="C1">Radikand</td></tr>
+        <tr><th class="xp" data-x="row2" style="cursor:pointer">2</th>
+            <td class="mono xp" data-x="A2">n</td><td class="mono xp" data-x="B2">x_n</td><td class="mono xp" data-x="C2">Kontrolle x_n^2</td></tr>
+        <tr><th class="xp" data-x="row3" style="cursor:pointer">3</th>
+            <td class="mono xp" data-x="A3">0</td><td class="mono xp" data-x="B3">=$B$1</td><td class="mono xp" data-x="C3">=B3^2</td></tr>
+        <tr><th class="xp" data-x="row4" style="cursor:pointer">4</th>
+            <td class="mono xp" data-x="A4">=A3+1</td><td class="mono xp" data-x="B4">=(B3+$B$1/B3)/2</td><td class="mono xp" data-x="C4">=B4^2</td></tr>
+        <tr><th class="xp" data-x="row5" style="cursor:pointer">5</th>
+            <td class="mono muted xp" data-x="Z">↓ ziehen</td><td class="mono muted xp" data-x="Z">↓ ziehen</td><td class="mono muted xp" data-x="Z">↓ ziehen</td></tr>
+      </table>
+      </div>
+      <div class="xpbox" id="xpBox"></div>
+      <div class="hint">
+        <b>Das <span class="kbd">$</span> ist entscheidend:</b> <span class="kbd">$B$1</span> ist ein <b>absoluter</b> Bezug —
+        er bleibt beim Ziehen auf B1 stehen. <span class="kbd">B3</span> ist <b>relativ</b> und wandert mit nach unten
+        (B4, B5, …). Ohne <span class="kbd">$</span> würde die Formel den Radikanden verlieren.
+      </div>
+    </div>
+
+    <h3>Jetzt du: Programmiere das Blatt selbst</h3>
+    <p>Hier ist eine echte kleine Tabellenkalkulation — sie versteht Zahlen, Zellbezüge, <span class="kbd">$</span>,
+       Klammern und <span class="kbd">+ − · / ^</span>. Baue das Blatt von oben nach und teste es.</p>
+    <p class="small muted">Zelle antippen, Formel eintippen, mit <span class="kbd">Enter</span> bestätigen.
+       Formeln beginnen mit <span class="kbd">=</span>. Die Zeilen 1 und 2 sind schon ausgefüllt.</p>
+    <div class="task">
+      <div class="fbar">
+        <span class="cellref" id="xsRef">B3</span>
+        <input type="text" id="xsFx" placeholder="Formel eingeben, z. B. =$B$1" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="tbl-scroll"><div class="xgrid" id="xsGrid"></div></div>
+      <div class="row-btns">
+        <button class="btn small" id="xsFill">↓ Zeile 4 nach unten ziehen (bis Zeile 14)</button>
+        <button class="btn" id="xsCheck">Blatt prüfen</button>
+        <button class="btn ghost small" id="xsReset">Zurücksetzen</button>
+        <button class="btn ghost small" id="xsHelp">Schritt-für-Schritt-Anleitung</button>
+      </div>
+      <div class="msg" id="xsMsg"></div>
+      <div id="xsGuide"></div>
+    </div>
+
+    <h3>Wie schnell konvergiert dein Blatt?</h3>
+    <p>Jetzt wird dein Blatt zum <b>Messinstrument</b>. Ändere <b>B1</b> (Radikand) und <b>B3</b> (Startwert)
+       und beobachte, ab welcher Zeile sich nichts mehr ändert.</p>
+    <div class="task">
+      <p class="small muted">Die Knöpfe schreiben die Werte direkt in dein Blatt oben. „Messen“ liest dann
+         <b>aus deinem Blatt</b> ab, nach wie vielen Schritten der Wert konstant bleibt.</p>
+      <div class="row-btns">
+        <button class="btn small ghost" data-preset="2|2">a = 2, x₀ = 2</button>
+        <button class="btn small ghost" data-preset="2|100">a = 2, x₀ = 100</button>
+        <button class="btn small ghost" data-preset="9|9">a = 9, x₀ = 9</button>
+        <button class="btn small ghost" data-preset="100|100">a = 100, x₀ = 100</button>
+        <button class="btn small ghost" data-preset="10000|10000">a = 10000, x₀ = 10000</button>
+        <button class="btn small ghost" data-preset="10000|200">a = 10000, x₀ = 200</button>
+        <button class="btn" id="xsMeasure">📏 Messen</button>
+      </div>
+      <div class="tbl-scroll"><table id="xsConvTable"></table></div>
+      <div class="msg" id="xsConvMsg"></div>
+      <details><summary>Was solltest du beobachten? (erst selbst messen!)</summary>
+        <div class="hint">
+          · <b>Ein schlechter Startwert kostet echte Schritte.</b> Für <span class="rt"><span>2</span></span> brauchst du
+            mit x₀ = 2 nur <b>4</b> Schritte, mit x₀ = 100 aber <b>10</b>. Der Grund: Ist <var>x</var> viel zu groß, ist
+            <var>a</var>/<var>x</var> winzig, und der Mittelwert ist ungefähr <var>x</var>/2 — die Formel <b>halbiert</b>
+            dann nur (100 → 50 → 25 → 12,5 → …). Das ist die zähe „Anmarsch-Phase“.<br>
+          · <b>In der Nähe wird es schlagartig schnell.</b> Erst wenn <var>x</var> in die Gegend von
+            <span class="rt"><span><var>a</var></span></span> kommt, verdoppelt sich die Zahl der richtigen Stellen
+            pro Schritt. Die letzten 3–4 Schritte erledigen fast die ganze Genauigkeit.<br>
+          · <b>Deshalb reichen die Zeilen bei a = 10000 mit x₀ = 10000 nicht!</b> Der Startwert ist 100-mal zu groß —
+            erst müssen etwa sieben Halbierungen passieren. Probiere dieselbe Aufgabe mit <b>x₀ = 200</b>:
+            plötzlich bist du nach ~5 Schritten fertig.<br>
+          · <b>Fazit:</b> x₀ = <var>a</var> ist bequem und funktioniert <b>immer</b> — aber bei großen Radikanden ist
+            ein klug geratener Startwert deutlich schneller. (Genau das macht dein Taschenrechner intern auch.)<br>
+          · <b>Vergleich mit 6.1:</b> Dort brauchtest du bis zu 9 Quadrierungen für <b>eine einzige</b> Nachkommastelle.
+            Hier bekommst du nach ein paar Zeilen <b>alle</b> Stellen, die der Rechner anzeigt.
+        </div>
+      </details>
+    </div>
+
+    <div class="task">
+      <h4>Live-Simulation <span class="small muted">— zum Vergleichen und Weiterspielen</span></h4>
+      <div class="slider-row">
+        <span>Radikand <b>B1</b> =</span>
+        <input type="text" id="tkA" value="2" style="width:90px">
+        <span>Startwert <b>B3</b> =</span>
+        <input type="text" id="tkX" value="2" style="width:90px">
+        <button class="btn small" id="tkRun">Neu berechnen</button>
+      </div>
+      <div class="tbl-scroll"><table id="tkTable"></table></div>
+      <p id="tkTxt" class="small"></p>
+    </div>
+
+    <h3>6.5 Vergleich mit der TR-Anzeige</h3>
+    <div class="defbox">
+      <div class="lbl">Wichtige Einsicht</div>
+      <p style="margin:4px 0">Der Taschenrechner zeigt <b><span class="rt"><span>2</span></span> ≈ 1,414213562</b>. Das ist <b>gerundet</b> —
+        die Anzeige ist zu kurz. Und: Eine irrationale Zahl <b>kann</b> auf keiner Anzeige exakt stehen,
+        denn ihre Dezimaldarstellung bricht nie ab.</p>
+      <p style="margin:4px 0">Probe: Tippe <span class="kbd">1,414213562</span> ein und quadriere.
+        Der TR zeigt nicht exakt 2 — der Näherungswert ist eben nicht <span class="rt"><span>2</span></span>.</p>
+      <div class="formula" style="background:#0c1020;border-left-color:var(--bad)">
+        <span class="rt"><span>2</span></span> <b>≠</b> 1,414213562 &nbsp;&nbsp;·&nbsp;&nbsp;
+        <span class="rt"><span>2</span></span> <b>≈</b> 1,414213562
+      </div>
+      <p class="small" style="margin:4px 0">Der TR macht innerlich nichts grundsätzlich anderes als du in 6.3 —
+        er iteriert nur schneller und rechnet mit mehr Stellen, als er anzeigt.</p>
+    </div>
+    <div id="quiz6"></div>
+  </section>
+
+  <!-- ==================== 7. TERME ==================== -->
+  <section class="step card" id="s7">
+    <h2>7 · Rechnen mit Quadratwurzeln und Termen</h2>
+    <p class="muted small">Definitionsmenge · Betragsstriche · Umformungen mit Binomen</p>
+
+    <h3>7.1 Definitionsmenge: Der Radikand darf nicht negativ werden</h3>
+    <p>Steht eine Variable unter der Wurzel, ist der Term nicht für alle <var>x</var> definiert.
+       <b>Erste Frage immer:</b> Wann ist der Radikand ≥ 0? Das führt auf eine <b>Ungleichung</b>.</p>
+    <div class="defbox">
+      <div class="lbl">Beispiel</div>
+      <p style="margin:4px 0"><var>T</var>(<var>x</var>) = <span class="rt"><span><var>x</var> − 3</span></span></p>
+      <p style="margin:4px 0">Bedingung: <var>x</var> − 3 ≥ 0 &nbsp;⟺&nbsp; <var>x</var> ≥ 3 &nbsp;⟹&nbsp;
+        <b>𝔻 = [3; ∞[</b> &nbsp;<span class="muted small">(oder: 𝔻 = {<var>x</var> ∈ ℝ | <var>x</var> ≥ 3})</span></p>
+    </div>
+    <div class="warn">
+      <div class="lbl">Typische Fallen</div>
+      <p style="margin:4px 0">· <span class="rt"><span>3 − <var>x</var></span></span>: 3 − <var>x</var> ≥ 0 ⟺ <var>x</var> ≤ 3 — beim Teilen/Multiplizieren
+        mit <b>negativen</b> Zahlen dreht sich das Ungleichheitszeichen!</p>
+      <p style="margin:4px 0">· <span class="rt"><span><var>x</var><sup>2</sup></span></span>: Ein Quadrat ist <b>nie</b> negativ ⟹ 𝔻 = ℝ.</p>
+      <p style="margin:4px 0">· <span class="rt"><span><var>x</var><sup>2</sup> + 4</span></span>: immer ≥ 4 &gt; 0 ⟹ 𝔻 = ℝ.</p>
+      <p style="margin:4px 0">· Wurzel im <b>Nenner</b>, z.&thinsp;B. <span class="frac"><span class="n">1</span><span class="d"><span class="rt"><span><var>x</var></span></span></span></span>:
+        zwei Bedingungen — Radikand ≥ 0 <b>und</b> Nenner ≠ 0 ⟹ <var>x</var> &gt; 0 ⟹ 𝔻 = ]0; ∞[.</p>
+    </div>
+    <h4>Übung: Definitionsmengen</h4>
+    <div id="quiz7a"></div>
+
+    <h3>7.2 Warum Betragsstriche?</h3>
+    <p>Der wichtigste — und meistvergessene — Punkt des Kapitels:</p>
+    <div class="defbox" style="border-left-color:#ff9d5c">
+      <div class="lbl" style="color:#ff9d5c">Merksatz</div>
+      <div class="formula" style="background:#0c1020;text-align:center;font-size:19px">
+        <span class="rt"><span><var>x</var><sup>2</sup></span></span> = |<var>x</var>| &nbsp;&nbsp;&nbsp;&nbsp;<b>nicht</b>&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="rt"><span><var>x</var><sup>2</sup></span></span> = <var>x</var>
+      </div>
+      <p style="margin:6px 0"><b>Begründung:</b> Die Wurzel liefert laut Definition (Kap. 1) nie ein negatives Ergebnis.
+        Für <var>x</var> = −7 wäre „<span class="rt"><span><var>x</var><sup>2</sup></span></span> = <var>x</var>“ die Aussage
+        <span class="rt"><span>49</span></span> = −7 — <b>falsch</b>. Richtig: <span class="rt"><span>49</span></span> = 7 = |−7|.</p>
+      <p class="small" style="margin:6px 0">Die Betragsstriche sind <b>keine Formalität</b>, sondern der Reparaturmechanismus
+        für das Vorzeichen, das beim Quadrieren verlorengeht.</p>
+    </div>
+    <div class="task">
+      <p class="small muted">Prüfe selbst: Setze ein <var>x</var> ein und vergleiche alle drei Terme.</p>
+      <div class="slider-row">
+        <span><var>x</var> =</span>
+        <input type="range" id="absSl" min="-60" max="60" value="-35" step="1">
+        <span class="valbox" id="absV">−3,5</span>
+      </div>
+      <div class="tbl-scroll"><table id="absTable"></table></div>
+    </div>
+    <p class="small muted">Beachte auch: Bei <span class="rt"><span><var>x</var></span></span><sup>2</sup> ist alles harmlos —
+      hier steht schon <var>x</var> ≥ 0 in der Definitionsmenge, also ist (<span class="rt"><span><var>x</var></span></span>)<sup>2</sup> = <var>x</var>
+      ohne Betrag korrekt. Die Reihenfolge macht den Unterschied.</p>
+    <h4>Übung: Mit oder ohne Betrag?</h4>
+    <div id="quiz7b"></div>
+
+    <h3>7.3 Umformungen mit Binomen</h3>
+    <p>Jetzt kommen die binomischen Formeln zurück — <b>rückwärts</b> gelesen. Erkennst du unter der Wurzel
+       ein vollständiges Quadrat, kannst du die Wurzel ziehen:</p>
+    <div class="defbox">
+      <div class="lbl">Musterlösung</div>
+      <p class="mono" style="margin:6px 0;font-size:15px">
+        <span class="rt"><span><var>x</var><sup>2</sup> − 6<var>x</var> + 9</span></span>
+        &nbsp;=&nbsp; <span class="rt"><span>(<var>x</var> − 3)<sup>2</sup></span></span>
+        &nbsp;=&nbsp; |<var>x</var> − 3|
+      </p>
+      <p class="small" style="margin:6px 0">Schritt 1: 2. binomische Formel erkennen (9 = 3², 6<var>x</var> = 2·<var>x</var>·3).
+        Schritt 2: Wurzel ziehen — <b>mit Betrag</b>, denn <var>x</var> − 3 kann negativ sein (für <var>x</var> &lt; 3).</p>
+      <p class="small" style="margin:6px 0">Fallunterscheidung, wenn man den Betrag auflösen soll:</p>
+      <p class="mono small" style="margin:2px 0">für <var>x</var> ≥ 3: &nbsp;|<var>x</var> − 3| = <var>x</var> − 3</p>
+      <p class="mono small" style="margin:2px 0">für <var>x</var> &lt; 3: &nbsp;|<var>x</var> − 3| = 3 − <var>x</var></p>
+    </div>
+    <div class="hint">
+      <b>Die drei Werkzeuge zum Erkennen:</b><br>
+      1. binomische Formel: <var>a</var><sup>2</sup> + 2<var>ab</var> + <var>b</var><sup>2</sup> = (<var>a</var>+<var>b</var>)<sup>2</sup> &nbsp;·&nbsp;
+      2. binomische Formel: <var>a</var><sup>2</sup> − 2<var>ab</var> + <var>b</var><sup>2</sup> = (<var>a</var>−<var>b</var>)<sup>2</sup> &nbsp;·&nbsp;
+      3. binomische Formel: (<var>a</var>+<var>b</var>)(<var>a</var>−<var>b</var>) = <var>a</var><sup>2</sup> − <var>b</var><sup>2</sup><br>
+      <span class="small">Suche das Quadrat der ersten Zahl, das Quadrat der zweiten — und prüfe, ob das mittlere Glied
+      wirklich das doppelte Produkt ist.</span>
+    </div>
+    <h4>Übung: Binome unter der Wurzel</h4>
+    <div id="quiz7c"></div>
+
+    <h3>7.4 Gemischte Abschlussaufgaben</h3>
+    <p class="small muted">Alles zusammen: Definitionsmenge bestimmen, umformen, Betrag beachten.</p>
+    <div id="quiz7d"></div>
+  </section>
+
+  <!-- ==================== ZUSAMMENFASSUNG ==================== -->
+  <section class="step card" id="s8">
+    <h2>8 · Spickzettel</h2>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th style="width:32%">Regel</th><th>Bedeutung / Falle</th></tr>
+      <tr><td><span class="rt"><span><var>a</var></span></span> = <var>b</var> ⟺ <var>b</var><sup>2</sup>=<var>a</var> und <var>b</var>≥0</td><td>Definition. Wurzelwert nie negativ, Radikand nie negativ.</td></tr>
+      <tr><td>(<span class="rt"><span><var>a</var></span></span>)<sup>2</sup> = <var>a</var></td><td>für <var>a</var> ≥ 0 — Wurzel und Quadrat heben sich auf.</td></tr>
+      <tr><td><span class="rt"><span><var>x</var><sup>2</sup></span></span> = |<var>x</var>|</td><td>für <b>alle</b> <var>x</var> ∈ ℝ. <b>Betrag nicht vergessen!</b></td></tr>
+      <tr><td><var>x</var><sup>2</sup> = <var>a</var> (<var>a</var>&gt;0) ⟹ <var>x</var> = ±<span class="rt"><span><var>a</var></span></span></td><td>Gleichung: zwei Lösungen. Das ± kommt von <b>dir</b>, nicht vom Wurzelzeichen.</td></tr>
+      <tr><td><span class="rt"><span>2</span></span> ∉ ℚ</td><td>irrational: unendliche, nicht periodische Dezimaldarstellung. Beweis durch Widerspruch.</td></tr>
+      <tr><td>ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ</td><td>ℝ füllt die Lücken von ℚ auf dem Zahlenstrahl.</td></tr>
+      <tr><td><var>x</var><sub>n+1</sub> = ½(<var>x</var><sub>n</sub> + <var>a</var>/<var>x</var><sub>n</sub>)</td><td>Heron: Rechteck (Fläche <var>a</var>) wird quadratisch. Verdoppelt die Stellen pro Schritt.</td></tr>
+      <tr><td>𝔻 bei <span class="rt"><span><var>T</var>(<var>x</var>)</span></span></td><td>Radikand ≥ 0 lösen. Im Nenner zusätzlich ≠ 0.</td></tr>
+      <tr><td><span class="rt"><span><var>x</var><sup>2</sup>−6<var>x</var>+9</span></span> = |<var>x</var>−3|</td><td>Binom rückwärts erkennen, dann Wurzel mit Betrag.</td></tr>
+    </table>
+    </div>
+    <div class="row-btns">
+      <button class="btn ghost small" id="resetAll">↺ Alles zurücksetzen</button>
+      <button class="btn ghost small" onclick="window.print()">Drucken / als PDF</button>
+    </div>
+  </section>
+
+  <p class="foot">Quadratwurzeln · 9. Jgst. Gymnasium Bayern · offline lauffähig, keine externen Ressourcen</p>
+</div>
+
+<script>
+/* ============ Helfer ============ */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const rt = s => `<span class="rt"><span>${s}</span></span>`;
+const fr = (n,d) => `<span class="frac"><span class="n">${n}</span><span class="d">${d}</span></span>`;
+const de = x => String(x).replace('.',',');
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+// Zoomfahrt zwischen zwei Ausschnitten: Mitte linear, Breite *geometrisch*.
+// Linear interpoliert wirkt ein 10-facher Zoom erst rasend und dann kriechend.
+const lerpView = (src,tgt,t)=>{
+  const c0=(src[0]+src[1])/2, w0=src[1]-src[0];
+  const c1=(tgt[0]+tgt[1])/2, w1=tgt[1]-tgt[0];
+  const c=c0+(c1-c0)*t, w=w0*Math.pow(w1/w0,t);
+  return [c-w/2, c+w/2];
+};
+
+/* ============ Fortschritt ============ */
+const KEY = 'wurzeln9-progress';
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem(KEY)||'{}'); } catch(e){ progress = {}; }
+const saveP = ()=>{ try{ localStorage.setItem(KEY, JSON.stringify(progress)); }catch(e){} };
+const markDone = id => { if(!progress[id]){ progress[id]=true; saveP(); buildNav(); } };
+
+const SECTIONS = [
+  {id:'s0', t:'0 · Wozu?'},
+  {id:'s1', t:'1 · Definition'},
+  {id:'s2', t:'2 · Umkehrung'},
+  {id:'s3', t:'3 · Ohne TR'},
+  {id:'s4', t:'4 · Gleichungen'},
+  {id:'s5', t:'5 · √2 & ℝ'},
+  {id:'s6', t:'6 · Näherung'},
+  {id:'s7', t:'7 · Terme'},
+  {id:'s8', t:'8 · Spickzettel'}
+];
+function buildNav(){
+  const nav = $('#nav');
+  nav.innerHTML = SECTIONS.map(s=>
+    `<div class="chip ${progress[s.id]?'done':''}" data-go="${s.id}">${s.t}</div>`).join('')
+    + '<div class="chip" id="navReset" title="Fortschritt löschen und alle Aufgaben neu starten" '
+    + 'style="margin-left:auto;border-color:#5a3a4a;color:#ff9d9d">↺ Alles zurücksetzen</div>';
+  $$('[data-go]',nav).forEach(c=>c.onclick=()=>{
+    const el = document.getElementById(c.dataset.go);
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  $('#navReset').onclick = resetEverything;
+  highlightNav();
+}
+// Setzt alles zurück: Fortschritt, Eingaben, Animationen, Tabellenblatt.
+// Neuladen ist hier der ehrlichste Weg — es gibt keinen Zustand, der überlebt.
+function resetEverything(){
+  if(!confirm('Alles zurücksetzen?\n\nFortschritt (✓), alle Eingaben, das Tabellenblatt und alle Aufgaben werden neu gestartet.')) return;
+  progress = {}; saveP();
+  location.reload();
+}
+function highlightNav(){
+  let cur = SECTIONS[0].id;
+  for(const s of SECTIONS){
+    const r = document.getElementById(s.id).getBoundingClientRect();
+    if(r.top < 140) cur = s.id;
+  }
+  $$('#nav .chip').forEach(c=>c.classList.toggle('active', c.dataset.go===cur));
+}
+window.addEventListener('scroll', highlightNav, {passive:true});
+buildNav();
+$('#resetAll').onclick = resetEverything;
+
+/* ============ Generisches Multiple-Choice-Quiz ============ */
+function mcQuiz(mount, items, sectionId){
+  const el = typeof mount==='string' ? $(mount) : mount;
+  let solved = 0;
+  // Antwortoptionen mischen: in der Quelle steht die richtige Antwort stets zuerst (c:0),
+  // angezeigt wird sie aber an zufälliger Position — sonst rät man einfach immer die erste.
+  const view = items.map(it=>{
+    const opts = shuffle(it.a.map((text,j)=>({text, correct:j===it.c})));
+    return {q:it.q, e:it.e, opts, c:opts.findIndex(o=>o.correct)};
+  });
+  el.innerHTML = view.map((it,i)=>`
+    <div class="task" data-i="${i}">
+      <div class="q">${it.q}</div>
+      <div class="opts">${it.opts.map((o,j)=>`<button class="opt" data-j="${j}">${o.text}</button>`).join('')}</div>
+      <div class="msg"></div>
+    </div>`).join('');
+  $$('.task',el).forEach((t,i)=>{
+    const it = view[i];
+    $$('.opt',t).forEach(b=>b.onclick=()=>{
+      const j = +b.dataset.j, ok = (j===it.c);
+      $$('.opt',t).forEach(x=>{x.disabled=true; if(+x.dataset.j===it.c) x.classList.add('ok');});
+      if(!ok) b.classList.add('no');
+      const m = $('.msg',t);
+      m.className = 'msg '+(ok?'ok':'no');
+      m.innerHTML = (ok?'✓ Richtig. ':'✗ Nicht ganz. ') + (it.e||'');
+      solved++;
+      if(solved===items.length && sectionId) markDone(sectionId);
+    });
+  });
+}
+
+/* ============ 0. Motivation: das Beet mit genau 2 m² ============ */
+(function(){
+  const ZIEL=2, cv=$('#m0Cv'), ctx=cv.getContext('2d'), txt=$('#m0Txt');
+  const sl=$('#m0Sl'), inp=$('#m0In');
+  let best=Infinity, versuche=0;
+  const nf=(v,k)=>v.toFixed(k).replace('.',',');
+  // Nahe an der 2 mehr Stellen zeigen — sonst steht dort „2,000000“ und es sieht
+  // aus, als wäre die 2 getroffen. Genau das darf hier nicht passieren.
+  const nfA=(v,d)=>nf(v, d<1e-4 ? 12 : 6);
+  function draw(s){
+    const W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+    const A=s*s, u=88, bx=60, by=H-38;
+    // Zielquadrat (2 m²) als gestrichelte Referenz
+    const zs=Math.sqrt(ZIEL)*u;
+    ctx.strokeStyle='rgba(95,227,154,.55)'; ctx.setLineDash([6,5]); ctx.lineWidth=2;
+    ctx.strokeRect(bx,by-zs,zs,zs); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(95,227,154,.75)'; ctx.font='11px Segoe UI'; ctx.textAlign='left';
+    ctx.fillText('Ziel: genau 2 m²', bx+zs+8, by-zs+12);
+    // dein Quadrat
+    const ps=s*u;
+    ctx.fillStyle='rgba(92,214,255,.16)'; ctx.fillRect(bx,by-ps,ps,ps);
+    ctx.strokeStyle='#5cd6ff'; ctx.lineWidth=2.5; ctx.strokeRect(bx,by-ps,ps,ps);
+    ctx.fillStyle='#5cd6ff'; ctx.font='bold 13px Segoe UI'; ctx.textAlign='center';
+    ctx.fillText('s = '+nf(s,6)+' m', bx+ps/2, by+22);
+    ctx.save(); ctx.translate(bx-14,by-ps/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('s = '+nf(s,6)+' m',0,0); ctx.restore();
+    const d=Math.abs(A-ZIEL);
+    ctx.fillStyle='#eaf0ff'; ctx.font='bold 15px Segoe UI';
+    if(ps>76) ctx.fillText('A = '+nf(A,4)+' m²', bx+ps/2, by-ps/2+5);
+    // Anzeige rechts
+    ctx.textAlign='left'; ctx.font='12px Segoe UI'; ctx.fillStyle='#9aa6c8';
+    ctx.fillText('Flächeninhalt A = s²', 380, 40);
+    ctx.font='bold '+(d<1e-4?'17':'26')+'px Segoe UI'; ctx.fillStyle = d===0 ? '#5fe39a' : '#eaf0ff';
+    ctx.fillText(nfA(A,d), 380, 72);
+    ctx.font='12px Segoe UI'; ctx.fillStyle='#9aa6c8';
+    ctx.fillText('Abweichung von 2:', 380, 104);
+    ctx.font='bold 15px Segoe UI'; ctx.fillStyle = d<0.001 ? '#ffcf5c' : '#ff7a7a';
+    ctx.fillText(d===0?'0':d.toExponential(3).replace('.',','), 380, 128);
+  }
+  function upd(s, fromInput){
+    if(!(s>0)) return;
+    if(!fromInput) inp.value=nf(s,6).replace(/,?0+$/,'');
+    sl.value=Math.round(Math.min(2500,Math.max(500,s*1000)));
+    draw(s);
+    const A=s*s, d=Math.abs(A-ZIEL);
+    versuche++;
+    if(d<best) best=d;
+    const dTxt = d<1e-4 ? d.toExponential(2).replace('.',',') : nf(d,6);
+    let m;
+    if(A<ZIEL) m=`<span style="color:var(--bad)">Zu klein.</span> A = ${nfA(A,d)} m² — es fehlen noch ${dTxt} m².`;
+    else if(A>ZIEL) m=`<span style="color:var(--bad)">Zu groß.</span> A = ${nfA(A,d)} m² — ${dTxt} m² zu viel.`;
+    else m='<span style="color:var(--good)">Exakt!</span>';
+    if(d<1e-6 && d>0) m += ` <b>Schon verblüffend nah</b> — aber eben <b>nicht</b> genau 2.
+      Schau auf die Nachkommastellen: Die Abweichung ist winzig, aber sie ist <b>da</b>.
+      Und sie geht auch mit mehr Stellen nie weg.`;
+    txt.innerHTML=m;
+    if(versuche>=6 || d<1e-4) $('#m0Reveal').classList.remove('hidden');
+  }
+  sl.oninput=()=>upd((+sl.value)/1000);
+  inp.oninput=()=>{ const v=parseFloat(inp.value.trim().replace(',','.')); if(!isNaN(v)&&v>0) upd(v,true); };
+  $('#m0Best').onclick=()=>{ inp.value='1,41421356'; upd(1.41421356,true);
+    $('#m0Reveal').classList.remove('hidden'); };
+  upd(1);
+})();
+
+/* ============ 1. Beschriftungsspiel ============ */
+(function(){
+  const slots = [
+    {id:'sl-w', label:'Wurzelzeichen', hint:'das Symbol √ selbst'},
+    {id:'sl-r', label:'Radikand', hint:'die Zahl unter der Wurzel'},
+    {id:'sl-v', label:'Wurzelwert', hint:'das Ergebnis'}
+  ];
+  let sel = null, done = new Set();
+  const host = $('#labelGame');
+  function render(){
+    host.innerHTML = `
+      <div class="task">
+        <div class="center" style="font-size:32px;margin:14px 0 22px;letter-spacing:2px">
+          <span id="mk-w" class="mk">√</span><span id="mk-r" class="mk" style="border-top:1.6px solid currentColor;padding:2px 5px">49</span>
+          <span style="margin:0 8px">=</span><span id="mk-v" class="mk">7</span>
+        </div>
+        <div class="sort-grid" style="grid-template-columns:repeat(3,1fr)">
+          ${slots.map(s=>`<div class="bin" data-slot="${s.id}" style="min-height:70px">
+            <h5>${s.label}</h5>
+            <p class="small muted center" style="margin:2px">${s.hint}</p>
+            <div class="drop small center" style="min-height:26px;color:var(--good);font-weight:700"></div>
+          </div>`).join('')}
+        </div>
+        <p class="small muted center" style="margin-top:10px">Klicke oben ein Element (√ · 49 · 7) an, dann das passende Feld.</p>
+        <div class="msg" id="lgMsg"></div>
+      </div>`;
+    $$('.mk',host).forEach(m=>{
+      m.style.cursor='pointer'; m.style.padding='2px 5px'; m.style.borderRadius='6px';
+      if(done.has(m.id)){ m.style.color='var(--good)'; m.style.cursor='default'; return; }
+      m.onclick=()=>{ sel = m.id; $$('.mk',host).forEach(x=>x.style.background=''); m.style.background='#3a4470'; };
+    });
+    $$('[data-slot]',host).forEach(b=>b.onclick=()=>{
+      if(!sel) return;
+      const want = {'sl-w':'mk-w','sl-r':'mk-r','sl-v':'mk-v'}[b.dataset.slot];
+      const msg = $('#lgMsg');
+      if(sel===want){
+        done.add(sel);
+        const txt = {'mk-w':'√','mk-r':'49','mk-v':'7'}[sel];
+        sel=null; render();
+        $(`[data-slot="${b.dataset.slot}"] .drop`,host).textContent = txt+' ✓';
+        done.forEach(d=>{
+          const s = {'mk-w':'sl-w','mk-r':'sl-r','mk-v':'sl-v'}[d];
+          $(`[data-slot="${s}"] .drop`,host).textContent = {'mk-w':'√','mk-r':'49','mk-v':'7'}[d]+' ✓';
+        });
+        if(done.size===3){ const m2=$('#lgMsg'); m2.className='msg ok'; m2.textContent='✓ Alle drei richtig zugeordnet!'; }
+      } else {
+        msg.className='msg no'; msg.textContent='✗ Das passt nicht. Lies den Hinweis im Feld nochmal.';
+      }
+    });
+  }
+  render();
+})();
+
+mcQuiz('#quiz1', [
+  { q:`Was ist der Radikand in ${rt('81')} = 9 ?`,
+    a:['81','9','√','beides, 81 und 9'], c:0,
+    e:'Der Radikand ist die Zahl <b>unter</b> dem Wurzelzeichen, hier 81. Die 9 ist der Wurzelwert.'},
+  { q:`Wie viel ist ${rt('64')} ?`,
+    a:['8','±8','−8','32'], c:0,
+    e:'Die Quadratwurzel ist per Definition <b>eindeutig und nichtnegativ</b>. Zwar gilt (−8)²=64, aber √64 = 8. Das ± tritt nur beim <i>Lösen von Gleichungen</i> auf (Kap. 4).'},
+  { q:`Existiert ${rt('−16')} in ℝ ?`,
+    a:['Nein — kein Quadrat einer reellen Zahl ist negativ','Ja, das Ergebnis ist −4','Ja, das Ergebnis ist 4','Ja, das Ergebnis ist ±4'], c:0,
+    e:'Gesucht wäre <var>b</var> mit <var>b</var>² = −16. Quadrate sind aber stets ≥ 0. Der Radikand muss ≥ 0 sein.'},
+  { q:`Welche Aussage ist <b>richtig</b>?`,
+    a:['Radikand und Wurzelwert sind beide nie negativ',
+       'Der Radikand darf negativ sein, der Wurzelwert nicht',
+       'Der Wurzelwert darf negativ sein, der Radikand nicht',
+       'Radikand und Wurzelwert dürfen beide negativ sein'], c:0,
+    e:'<b>Beide</b> Bedingungen stehen in der Definition: Der <b>Radikand</b> muss ≥ 0 sein — sonst gibt es die Wurzel gar nicht (√−9 existiert nicht). Und der <b>Wurzelwert</b> ist ≥ 0 — sonst wäre die Wurzel nicht eindeutig (√49 = 7, <b>nicht</b> −7).'},
+  { q:`Für welche <var>a</var> ist ${rt('a')} definiert?`,
+    a:['a ≥ 0','a > 0','alle a ∈ ℝ','a ≤ 0'], c:0,
+    e:'Radikand ≥ 0 — die Null ist ausdrücklich <b>erlaubt</b>: √0 = 0.'}
+], 's1');
+
+/* ============ 2. Maschinen-Animation ============ */
+(function(){
+  const sl=$('#machSl'), v=$('#machV'), cv=$('#machCv'), ctx=cv.getContext('2d'), txt=$('#machTxt');
+  function box(x,y,w,h,fill,stroke){
+    ctx.fillStyle=fill; ctx.strokeStyle=stroke; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(x,y,w,h,12); ctx.fill(); ctx.stroke();
+  }
+  function arrow(x1,y,x2,col){
+    ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x2-10,y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x2,y); ctx.lineTo(x2-12,y-6); ctx.lineTo(x2-12,y+6); ctx.closePath(); ctx.fill();
+  }
+  let order='sq';   // 'sq' = erst x² dann √   ·   'rt' = erst √ dann x²
+  const SQ={sym:'x²', name:'quadrieren', col:'#ffcf5c', panel:'#3a3050'};
+  const RT={sym:'√',  name:'Wurzel ziehen', col:'#5cd6ff', panel:'#2a3a52'};
+
+  function draw(){
+    const x = (+sl.value)/10;
+    v.textContent = de(x);
+    ctx.clearRect(0,0,cv.width,cv.height);
+    const Y=95, H=80, m1=order==='sq'?SQ:RT, m2=order==='sq'?RT:SQ;
+
+    // Werte, Definiertheit und Rückkehr je nach Reihenfolge
+    let mid, out, defined=true, back;   // back = kommt exakt x zurück?
+    let midLbl, outLbl;
+    if(order==='sq'){                    // x → x² → √
+      mid = +(x*x).toFixed(2); out = Math.abs(x);
+      midLbl='x²'; outLbl='√(x²)'; back = x>=0;
+    } else {                             // x → √ → x²
+      defined = x>=0;
+      mid = defined ? +Math.sqrt(x).toFixed(2) : null;
+      out = defined ? x : null;
+      midLbl='√x'; outLbl='(√x)²'; back = defined;
+    }
+    const ok = defined && back;
+
+    // Kästen: Start, Zwischen, Ergebnis
+    box(30,Y,140,H,'#232a48','#2c3556');
+    box(300,Y,140,H, defined?'#232a48':'#2a1414', defined?'#2c3556':'#ff7a7a');
+    if(defined) box(570,Y,140,H, ok?'#12261a':'#2a1414', ok?'#5fe39a':'#ff7a7a');
+    else { ctx.globalAlpha=.4; box(570,Y,140,H,'#232a48','#2c3556'); ctx.globalAlpha=1; }
+    // Maschinen
+    box(190,Y+10,90,H-20,m1.panel,m1.col);
+    box(460,Y+10,90,H-20, defined?m2.panel:'#232a48', defined?m2.col:'#3a4468');
+    ctx.textAlign='center'; ctx.font='bold 17px Segoe UI';
+    ctx.fillStyle=m1.col; ctx.fillText(m1.sym, 235, Y+H/2+2);
+    ctx.fillStyle=defined?m2.col:'#3a4468'; ctx.fillText(m2.sym, 505, Y+H/2+2);
+    ctx.font='13px Segoe UI'; ctx.fillStyle='#9aa6c8';
+    ctx.fillText(m1.name,235,Y+H/2+22);
+    ctx.fillStyle=defined?'#9aa6c8':'#5a6690'; ctx.fillText(m2.name,505,Y+H/2+22);
+    // Pfeile
+    arrow(172,Y+H/2,190,'#9aa6c8'); arrow(282,Y+H/2,300,'#9aa6c8');
+    arrow(442,Y+H/2,460, defined?'#9aa6c8':'#3a4468'); arrow(552,Y+H/2,570, defined?'#9aa6c8':'#3a4468');
+    // Werte
+    ctx.textAlign='center';
+    ctx.font='bold 24px Segoe UI'; ctx.fillStyle='#eaf0ff'; ctx.fillText(de(x),100,Y+H/2+8);
+    if(defined){
+      ctx.fillStyle='#eaf0ff'; ctx.fillText(de(mid),370,Y+H/2+8);
+      ctx.fillStyle= ok?'#5fe39a':'#ff7a7a'; ctx.fillText(de(out),640,Y+H/2+8);
+    } else {
+      ctx.font='bold 30px Segoe UI'; ctx.fillStyle='#ff7a7a'; ctx.fillText('∄',370,Y+H/2+10);
+      ctx.font='bold 22px Segoe UI'; ctx.fillStyle='#5a6690'; ctx.fillText('—',640,Y+H/2+7);
+    }
+    ctx.font='14px Segoe UI'; ctx.fillStyle='#9aa6c8';
+    ctx.fillText('Startzahl x',100,Y-14); ctx.fillText(midLbl,370,Y-14); ctx.fillText(outLbl,640,Y-14);
+    // Rückweg nur, wenn das Ergebnis existiert
+    if(defined){
+      ctx.strokeStyle= ok?'#5fe39a':'#ff7a7a'; ctx.setLineDash([6,6]); ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(640,Y+H+8); ctx.lineTo(640,Y+H+34); ctx.lineTo(100,Y+H+34); ctx.lineTo(100,Y+H+8); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font='bold 15px Segoe UI'; ctx.fillStyle= ok?'#5fe39a':'#ff7a7a'; ctx.textAlign='center';
+      ctx.fillText(ok?'✓ zurück am Start':'✗ NICHT zurück am Start', 370, Y+H+52);
+    } else {
+      ctx.font='bold 15px Segoe UI'; ctx.fillStyle='#ff7a7a'; ctx.textAlign='center';
+      ctx.fillText('✗ die erste Maschine bricht ab', 370, Y+H+52);
+    }
+
+    // Erklärtext
+    const c=v=>de(v);
+    if(order==='sq'){
+      txt.innerHTML = ok
+        ? `<span style="color:var(--good)">✓</span> <b>${c(x)}</b> → quadrieren → <b>${c(mid)}</b> → Wurzel → <b>${c(out)}</b>.
+           Die Wurzel macht das Quadrieren rückgängig: √(x²) = x, weil x ≥ 0.`
+        : `<span style="color:var(--bad)">✗</span> <b>${c(x)}</b> → quadrieren → <b>${c(mid)}</b> → Wurzel → <b>${c(out)}</b>.
+           Das Minuszeichen ist <b>weg</b>! Beim Quadrieren geht das Vorzeichen verloren, und die Wurzel liefert nie ein
+           negatives Ergebnis. Hier gilt √(x²) = <b>|x|</b> = ${c(out)} ≠ x.`;
+    } else {
+      txt.innerHTML = defined
+        ? `<span style="color:var(--good)">✓</span> <b>${c(x)}</b> → Wurzel → <b>${c(mid)}</b> → quadrieren → <b>${c(out)}</b>.
+           Das Quadrieren macht die Wurzel rückgängig: <b>(√x)² = x</b>. Und das klappt für <b>alle x ≥ 0</b> —
+           genau das steht in der ersten Merkzeile.`
+        : `<span style="color:var(--bad)">✗</span> Bei <b>x = ${c(x)}</b> scheitert schon die <b>erste</b> Maschine:
+           <b>√${c(x)} existiert nicht</b>, denn der Radikand ist negativ (Kapitel 1). Darum gilt (√a)² = a nur
+           <b>für a ≥ 0</b> — für negative Zahlen gibt es die Wurzel gar nicht erst. Schiebe den Regler auf x ≥ 0.`;
+    }
+  }
+  function setOrder(o){
+    order=o;
+    $('#machSq').className='btn small'+(o==='sq'?'':' ghost');
+    $('#machRt').className='btn small'+(o==='rt'?'':' ghost');
+    draw();
+  }
+  $('#machSq').onclick=()=>setOrder('sq');
+  $('#machRt').onclick=()=>setOrder('rt');
+  sl.oninput = draw;
+  setOrder('sq');
+})();
+
+mcQuiz('#quiz2', [
+  { q:`Welche Zahl muss man quadrieren, um 144 zu erhalten? (gesucht: der Wurzelwert)`,
+    a:['12','14','72','24'], c:0, e:'12² = 144, also √144 = 12.'},
+  { q:`Vereinfache: (${rt('13')})<sup>2</sup>`,
+    a:['13','169','√13','26'], c:0, e:'Wurzel und Quadrat heben sich auf: (√a)² = a für a ≥ 0.'},
+  { q:`Vereinfache: ${rt('5<sup>2</sup>')}`,
+    a:['5','25','√5','±5'], c:0, e:'√(5²) = √25 = 5. Da 5 ≥ 0, ist |5| = 5 — hier fällt der Betrag nicht auf.'},
+  { q:`Vereinfache: ${rt('(−5)<sup>2</sup>')}`,
+    a:['5','−5','±5','25'], c:0,
+    e:'<b>Genau hier</b> zeigt sich der Unterschied: √((−5)²) = √25 = 5 = |−5|. Das Ergebnis ist <b>+5</b>, nicht −5. Deshalb √(x²) = |x|.'},
+  { q:`Für welche <var>x</var> gilt ${rt('x<sup>2</sup>')} = <var>x</var> ?`,
+    a:['nur für x ≥ 0','für alle x ∈ ℝ','nur für x > 0','für kein x'], c:0,
+    e:'Für x ≥ 0 ist |x| = x, die Gleichung stimmt (auch für x = 0). Für x < 0 liefert die Wurzel −x ≠ x.'}
+], 's2');
+
+/* ============ 3. Quadratzahlen-Tabelle ============ */
+(function(){
+  const ns = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,30];
+  const t = $('#sqTable');
+  t.innerHTML = '<tr><th class="mono">n</th>'+ns.map(n=>`<td class="mono">${n}</td>`).join('')+'</tr>'+
+                '<tr><th class="mono">n²</th>'+ns.map(n=>`<td class="mono sqv">${n*n}</td>`).join('')+'</tr>';
+  let hidden = false;
+  $('#sqHide').onclick = ()=>{
+    hidden = !hidden;
+    $$('.sqv',t).forEach(c=>{ c.style.color = hidden ? 'transparent' : ''; c.style.background = hidden ? '#0c1020' : ''; });
+  };
+  $$('.sqv',t).forEach(c=>c.onclick=()=>{ if(hidden) c.style.color=''; });
+})();
+
+/* ============ 3. Kopfrechen-Trainer ============ */
+(function(){
+  const host = $('#trainer');
+  const BASES = [2,3,4,5,6,7,8,9,11,12,13,15,20,25];
+  function gen(){
+    const kind = ['pot','dec','frac','plain'][(Math.random()*4)|0];
+    const b = BASES[(Math.random()*BASES.length)|0];
+    if(kind==='pot'){
+      const k = 1+((Math.random()*2)|0);          // 10^k
+      const rad = b*b*Math.pow(100,k);
+      return {rq: rad.toLocaleString('de-DE').replace(/\./g,'&thinsp;'), ans: b*Math.pow(10,k),
+        chk: v=>Math.abs(v-b*Math.pow(10,k))<1e-9,
+        sol:`${rt(rad.toLocaleString('de-DE'))} = ${rt(b*b+' · '+Math.pow(100,k).toLocaleString('de-DE'))} = ${b} · ${Math.pow(10,k)} = <b>${b*Math.pow(10,k)}</b>`};
+    }
+    if(kind==='dec'){
+      const k = 1+((Math.random()*2)|0);
+      const val = b/Math.pow(10,k);
+      const rad = +(val*val).toPrecision(12);
+      return {rq: de(rad), ans: val, chk: v=>Math.abs(v-val)<1e-9,
+        sol:`${rt(de(rad))} — die ${2*k} Nachkommastellen werden zu ${k}: ${rt(b*b)} = ${b}, also <b>${de(val)}</b>. Probe: ${de(val)}² = ${de(rad)} ✓`};
+    }
+    if(kind==='frac'){
+      let c = BASES[(Math.random()*BASES.length)|0];
+      if(c===b) c = b+1;
+      return {rq: fr(b*b, c*c), ans: b/c, chk: v=>Math.abs(v-b/c)<1e-9,
+        sol:`${rt(fr(b*b,c*c))} = ${fr(rt(b*b),rt(c*c))} = <b>${fr(b,c)}</b>`, isFrac:[b,c]};
+    }
+    return {rq: b*b, ans: b, chk: v=>Math.abs(v-b)<1e-9,
+      sol:`${b}² = ${b*b}, also ${rt(b*b)} = <b>${b}</b>`};
+  }
+  function parse(s){
+    s = s.trim().replace(',','.').replace(/\s/g,'');
+    if(!s) return NaN;
+    if(s.includes('/')){ const [p,q]=s.split('/'); return parseFloat(p)/parseFloat(q); }
+    return parseFloat(s);
+  }
+  let tasks=[], idx=0, right=0;
+  function start(){
+    tasks = Array.from({length:10}, gen); idx=0; right=0; render();
+  }
+  function render(){
+    if(idx>=tasks.length){
+      const pct = Math.round(right/tasks.length*100);
+      host.innerHTML = `<div class="task center">
+        <p style="font-size:40px;margin:6px">${pct>=80?'🎉':pct>=50?'👍':'💪'}</p>
+        <p style="font-size:19px"><b>${right}</b> von <b>${tasks.length}</b> richtig (${pct}%)</p>
+        <p class="small muted">${pct>=80?'Sehr gut — das sitzt.':'Schau dir die drei Tricks nochmal an und starte neu.'}</p>
+        <button class="btn" id="trAgain">Neue Runde</button></div>`;
+      $('#trAgain').onclick = start;
+      if(right>=8) markDone('s3');
+      return;
+    }
+    const t = tasks[idx];
+    host.innerHTML = `<div class="task">
+      <div class="row" style="justify-content:space-between">
+        <span class="score">Aufgabe <b>${idx+1}</b>/${tasks.length}</span>
+        <span class="score">richtig: <b>${right}</b></span>
+      </div>
+      <div class="q" style="font-size:30px;margin:16px 0">${rt(t.rq)} = ?</div>
+      <div class="row">
+        <input type="text" id="trIn" placeholder="${t.isFrac?'z. B. 3/4':'z. B. 0,7'}" style="width:150px" autocomplete="off">
+        <button class="btn" id="trOk">Prüfen</button>
+        <span class="state" id="trSt"></span>
+      </div>
+      <div class="msg" id="trMsg"></div>
+    </div>`;
+    const inp=$('#trIn'); inp.focus();
+    const go = ()=>{
+      const v = parse(inp.value);
+      const ok = !isNaN(v) && t.chk(v);
+      if(ok) right++;
+      $('#trSt').className='state '+(ok?'ok':'no'); $('#trSt').textContent = ok?'✓':'✗';
+      const m=$('#trMsg'); m.className='msg '+(ok?'ok':'no');
+      m.innerHTML = (ok?'Richtig! ':'Leider nicht. ') + t.sol +
+        ` <button class="btn small ghost" id="trNext" style="margin-left:8px">Weiter →</button>`;
+      $('#trOk').disabled=true; inp.disabled=true;
+      $('#trNext').onclick=()=>{ idx++; render(); };
+      $('#trNext').focus();
+    };
+    $('#trOk').onclick = go;
+    inp.onkeydown = e=>{ if(e.key==='Enter'){ if($('#trOk').disabled) { idx++; render(); } else go(); } };
+  }
+  start();
+})();
+
+mcQuiz('#quiz4', [
+  { q:`Löse: <var>x</var><sup>2</sup> = 49`,
+    a:['𝕃 = {−7; 7}','𝕃 = {7}','𝕃 = {24,5}','𝕃 = { }'], c:0,
+    e:'x = ±√49 = ±7. Beide Zahlen erfüllen die Gleichung: 7² = 49 und (−7)² = 49.'},
+  { q:`Löse: <var>x</var><sup>2</sup> = −25`,
+    a:['𝕃 = { }','𝕃 = {−5}','𝕃 = {−5; 5}','𝕃 = {5}'], c:0,
+    e:'Ein Quadrat ist nie negativ ⟹ keine Lösung in ℝ. (Verwechsle das nicht mit x² = 25, wo −5 eine Lösung <i>ist</i>.)'},
+  { q:`Löse: 3<var>x</var><sup>2</sup> = 108`,
+    a:['𝕃 = {−6; 6}','𝕃 = {36}','𝕃 = {−36; 36}','𝕃 = {18}'], c:0,
+    e:'Erst isolieren: x² = 108 : 3 = 36. Dann x = ±6. <b>Immer erst x² alleinstellen, dann Wurzel ziehen.</b>'},
+  { q:`Löse: <var>x</var><sup>2</sup> = 7`,
+    a:[`𝕃 = {−${rt('7')}; ${rt('7')}}`,'𝕃 = {2,65}','𝕃 = {3,5}','𝕃 = { }'], c:0,
+    e:'√7 ist irrational — 2,65 ist nur gerundet. Die <b>exakte</b> Lösungsmenge schreibt man mit dem Wurzelsymbol.'},
+  { q:`Was ist der Unterschied zwischen ${rt('36')} und der Lösung von <var>x</var><sup>2</sup> = 36 ?`,
+    a:['√36 = 6 ist eine Zahl; x² = 36 ist eine Gleichung mit 𝕃 = {−6; 6}',
+       'Kein Unterschied, beides ergibt ±6',
+       'Kein Unterschied, beides ergibt 6',
+       '√36 = ±6 und x² = 36 hat nur die Lösung 6'], c:0,
+    e:'Das ist <b>die</b> Kernunterscheidung des Kapitels: Das Wurzelsymbol liefert immer genau <b>eine</b> nichtnegative Zahl. Das ± entsteht erst beim <i>Lösen</i> der Gleichung.'},
+  { q:`Löse: <var>x</var><sup>2</sup> + 9 = 9`,
+    a:['𝕃 = {0}','𝕃 = {−3; 3}','𝕃 = { }','𝕃 = {−9; 9}'], c:0,
+    e:'Erst umformen: x² = 9 − 9 = 0. Der Sonderfall mit genau <b>einer</b> Lösung, denn nur 0 · 0 ergibt 0 — hier fallen die beiden Lösungen +0 und −0 zusammen.'}
+], 's4');
+
+/* ============ 5.1 Flächen-Argument: d² = 2 (ohne Pythagoras!) ============ */
+(function(){
+  const cv=$('#areaCv'), ctx=cv.getContext('2d'), txt=$('#arTxt');
+  const u=84, OX=50, OY=170, C=[3.75,0.5];   // OY so, dass y = −0,5 … 1,5 bündig ins Canvas passt
+  const X=x=>OX+x*u, Y=y=>OY-y*u;
+  // Vier kongruente rechtwinklig-gleichschenklige Dreiecke (Schenkel 1, Hypotenuse = d).
+  // Quelle: zwei Einheitsquadrate. Ziel: Windrad mit den rechten Winkeln im Zentrum C —
+  // die vier Hypotenusen bilden dann das Quadrat mit der Seitenlänge d.
+  const SRC=[{R:[1,0],P:[0,0],Q:[1,1]}, {R:[0,1],P:[0,0],Q:[1,1]},
+             {R:[2.3,0],P:[1.3,0],Q:[2.3,1]}, {R:[1.3,1],P:[1.3,0],Q:[2.3,1]}];
+  const DST=[{R:C,P:[C[0]+1,C[1]],Q:[C[0],C[1]+1]}, {R:C,P:[C[0],C[1]+1],Q:[C[0]-1,C[1]]},
+             {R:C,P:[C[0]-1,C[1]],Q:[C[0],C[1]-1]}, {R:C,P:[C[0],C[1]-1],Q:[C[0]+1,C[1]]}];
+  const TXT=[
+    '<b>Schritt 1:</b> Das <b>Einheitsquadrat</b> hat die Seitenlänge 1 — also den Flächeninhalt 1 · 1 = <b>1</b>.',
+    '<b>Schritt 2:</b> Die <b>Diagonale</b> zerteilt es in zwei gleich große Dreiecke — jedes hat also den Flächeninhalt <b>½</b>. Die Diagonale (gelb) ist die längste Seite jedes Dreiecks. Ihre Länge nennen wir <var>d</var>; sie ist noch unbekannt.',
+    '<b>Schritt 3:</b> Nimm <b>vier</b> solche Dreiecke — also zwei Einheitsquadrate. Zusammen haben sie den Flächeninhalt 4 · ½ = <b>2</b>.',
+    '<b>Schritt 4:</b> Lege die vier Dreiecke mit ihren <b>rechten Winkeln</b> in der Mitte zusammen: Es entsteht wieder ein <b>Quadrat</b>! Seine vier Seiten sind genau die Diagonalen (gelb) — es hat also die Seitenlänge <b>d</b>. Und weil die Dreiecke nur <b>umgelegt</b> wurden, ist sein Flächeninhalt immer noch <b>2</b>. Also: <b><var>d</var> · <var>d</var> = 2</b>.'
+  ];
+  let ph=0, k=0, anim=null, busy=false;
+  const lerp=(a,b,t)=>[a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
+  const tri=(i,t)=>({R:lerp(SRC[i].R,DST[i].R,t), P:lerp(SRC[i].P,DST[i].P,t), Q:lerp(SRC[i].Q,DST[i].Q,t)});
+
+  function sq(x0,y0,x1,y1,alpha){
+    ctx.save(); ctx.globalAlpha=alpha;
+    ctx.strokeStyle='#5cd6ff'; ctx.lineWidth=2;
+    ctx.strokeRect(X(x0),Y(y1),(x1-x0)*u,(y1-y0)*u); ctx.restore();
+  }
+  function drawTri(t,fill){
+    ctx.beginPath(); ctx.moveTo(X(t.R[0]),Y(t.R[1])); ctx.lineTo(X(t.P[0]),Y(t.P[1]));
+    ctx.lineTo(X(t.Q[0]),Y(t.Q[1])); ctx.closePath();
+    ctx.fillStyle=fill; ctx.fill();
+    ctx.strokeStyle='rgba(92,214,255,.55)'; ctx.lineWidth=1.5; ctx.stroke();
+    // Hypotenuse = die Diagonale d — sie wird später zur Quadratseite
+    ctx.beginPath(); ctx.moveTo(X(t.P[0]),Y(t.P[1])); ctx.lineTo(X(t.Q[0]),Y(t.Q[1]));
+    ctx.strokeStyle='#ffcf5c'; ctx.lineWidth=3; ctx.stroke();
+  }
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    if(ph===0){
+      sq(0,0,1,1,1);
+      ctx.fillStyle='rgba(92,214,255,.13)'; ctx.fillRect(X(0),Y(1),u,u);
+      ctx.fillStyle='#eaf0ff'; ctx.font='bold 15px Segoe UI';
+      ctx.fillText('Fläche 1', X(0.5), Y(0.5));
+      ctx.fillStyle='#5cd6ff'; ctx.font='13px Segoe UI';
+      ctx.fillText('1', X(0.5), Y(0)+18); ctx.fillText('1', X(0)-14, Y(0.5));
+      ctx.fillStyle='#9aa6c8'; ctx.font='12px Segoe UI';
+      ctx.fillText('Einheitsquadrat', X(0.5), Y(1)-16);
+    } else {
+      const n = ph>=2 ? 4 : 2;
+      if(k<1){ sq(0,0,1,1,(1-k)*.5); if(ph>=2) sq(1.3,0,2.3,1,(1-k)*.5); }
+      for(let i=0;i<n;i++){
+        const t=tri(i,k);
+        drawTri(t, i%2 ? 'rgba(92,214,255,.16)' : 'rgba(92,214,255,.26)');
+        const cx=(t.R[0]+t.P[0]+t.Q[0])/3, cy=(t.R[1]+t.P[1]+t.Q[1])/3;
+        ctx.fillStyle='#eaf0ff'; ctx.font='bold 15px Segoe UI';
+        ctx.fillText('½', X(cx), Y(cy));
+      }
+      if(k<0.35 && ph<3){   // Beschriftung der Diagonale, solange sie noch Diagonale ist.
+        ctx.save(); ctx.globalAlpha=1-k/0.35;
+        // kleines Feld hinter dem d, sonst verschwindet es auf der gelben Linie
+        ctx.fillStyle='#0c1020'; ctx.strokeStyle='#ffcf5c'; ctx.lineWidth=1.2;
+        ctx.beginPath(); ctx.roundRect(X(0.5)-9, Y(0.5)-10, 18, 20, 5); ctx.fill(); ctx.stroke();
+        ctx.fillStyle='#ffcf5c'; ctx.font='italic bold 14px Georgia,serif';
+        ctx.fillText('d', X(0.5), Y(0.5)); ctx.restore();
+      }
+      if(k>0.98){           // fertig montiert: Seiten sind d, Fläche ist 2
+        ctx.fillStyle='#ffcf5c'; ctx.font='italic bold 16px Georgia,serif';
+        ctx.fillText('d', X(C[0]+0.5)+13, Y(C[1]+0.5)-13);
+        ctx.fillText('d', X(C[0]-0.5)-13, Y(C[1]+0.5)-13);
+        ctx.fillText('d', X(C[0]-0.5)-13, Y(C[1]-0.5)+13);
+        ctx.fillText('d', X(C[0]+0.5)+13, Y(C[1]-0.5)+13);
+        ctx.fillStyle='#5fe39a'; ctx.font='bold 15px Segoe UI';
+        ctx.fillText('Fläche = 4 · ½ = 2', X(C[0]), Y(C[1]+1)-24);
+      }
+    }
+    ctx.textBaseline='alphabetic';
+  }
+  function show(){ txt.innerHTML=TXT[ph]; draw(); }
+  function next(){
+    if(busy || ph>=3) return;
+    ph++;
+    if(ph<3){ k=0; show(); return; }
+    // Montage animieren
+    busy=true; $('#arNext').disabled=true; txt.innerHTML=TXT[3];
+    cancelAnimationFrame(anim); let p=0;
+    const go=()=>{ p=Math.min(1,p+0.022); k=1-Math.pow(1-p,3); draw();
+      if(p<1) anim=requestAnimationFrame(go);
+      else { k=1; busy=false; draw(); $('#arNext').textContent='✓ Fertig'; } };
+    go();
+  }
+  $('#arNext').onclick=next;
+  $('#arReset').onclick=()=>{ cancelAnimationFrame(anim); busy=false; ph=0; k=0;
+    $('#arNext').disabled=false; $('#arNext').textContent='▶ Nächster Schritt'; show(); };
+  show();
+})();
+
+/* ============ 5.2 Diagonale auf den Zahlenstrahl ============ */
+(function(){
+  const cv=$('#diagCv'), ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height, ax=110, ay=200, u=105;   // Ursprung Zahlenstrahl, Einheit
+  let t=0, anim=null;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Quadrat
+    const qx=ax, qy=ay-u;
+    ctx.fillStyle='rgba(92,214,255,.10)'; ctx.fillRect(qx,qy,u,u);
+    ctx.strokeStyle='#5cd6ff'; ctx.lineWidth=2; ctx.strokeRect(qx,qy,u,u);
+    ctx.fillStyle='#5cd6ff'; ctx.font='15px Segoe UI'; ctx.textAlign='center';
+    ctx.fillText('1', qx+u/2, qy-8); ctx.save(); ctx.translate(qx-12,qy+u/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('1',0,0); ctx.restore();
+    // Diagonale
+    ctx.strokeStyle='#ffcf5c'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(qx,ay); ctx.lineTo(qx+u,qy); ctx.stroke();
+    ctx.fillStyle='#ffcf5c'; ctx.font='bold 16px Segoe UI';
+    ctx.save(); ctx.translate(qx+u/2-16,qy+u/2-14); ctx.rotate(-Math.PI/4); ctx.fillText('d = √2',0,0); ctx.restore();
+    // Zahlenstrahl
+    const zy=ay+62;
+    ctx.strokeStyle='#5a6690'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(ax-70,zy); ctx.lineTo(W-30,zy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W-30,zy); ctx.lineTo(W-42,zy-5); ctx.lineTo(W-42,zy+5); ctx.closePath(); ctx.fillStyle='#5a6690'; ctx.fill();
+    ctx.font='14px Segoe UI'; ctx.textAlign='center';
+    for(let i=0;i<=5;i++){
+      const px=ax+i*u; if(px>W-40) break;
+      ctx.strokeStyle='#5a6690'; ctx.beginPath(); ctx.moveTo(px,zy-6); ctx.lineTo(px,zy+6); ctx.stroke();
+      ctx.fillStyle='#9aa6c8'; ctx.fillText(i,px,zy+22);
+      for(let k=1;k<10;k++){ const qx2=px+k*u/10; if(qx2>W-40) break;
+        ctx.strokeStyle='#2c3556'; ctx.beginPath(); ctx.moveTo(qx2,zy-3); ctx.lineTo(qx2,zy+3); ctx.stroke(); }
+    }
+    // Kreisbogen (Klappen)
+    const r=u*Math.SQRT2;
+    const a0=-Math.PI/4, a1=0, ang=a0+(a1-a0)*t;
+    ctx.strokeStyle='rgba(255,207,92,.45)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.arc(ax,ay,r,a0,ang,false); ctx.stroke(); ctx.setLineDash([]);
+    // bewegter Radius
+    const px=ax+r*Math.cos(ang), py=ay+r*Math.sin(ang);
+    ctx.strokeStyle='#ffcf5c'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(px,py); ctx.stroke();
+    ctx.fillStyle='#ffcf5c'; ctx.beginPath(); ctx.arc(px,py,5,0,7); ctx.fill();
+    if(t>=1){
+      // Lot auf Zahlenstrahl
+      const zx=ax+r;
+      ctx.strokeStyle='#5fe39a'; ctx.setLineDash([4,4]); ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(zx,ay); ctx.lineTo(zx,zy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='#5fe39a'; ctx.beginPath(); ctx.arc(zx,zy,6,0,7); ctx.fill();
+      ctx.font='bold 16px Segoe UI'; ctx.fillText('√2', zx, zy+40);
+      ctx.font='13px Segoe UI'; ctx.fillStyle='#9aa6c8'; ctx.fillText('≈ 1,41', zx, zy+56);
+    }
+    ctx.textAlign='left'; ctx.font='14px Segoe UI'; ctx.fillStyle='#9aa6c8';
+    ctx.fillText('Einheitsquadrat', qx, qy-28);
+  }
+  function play(){
+    cancelAnimationFrame(anim); t=0;
+    const step=()=>{ t=Math.min(1,t+0.012); draw(); if(t<1) anim=requestAnimationFrame(step); };
+    step();
+  }
+  $('#diagPlay').onclick=play;
+  $('#diagReset').onclick=()=>{ cancelAnimationFrame(anim); t=0; draw(); };
+  draw();
+})();
+
+/* ============ 5.2 Zoom-Lupe auf dem Zahlenstrahl ============ */
+(function(){
+  const S=Math.SQRT2, cv=$('#zmCv'), ctx=cv.getContext('2d'), txt=$('#zmTxt');
+  const sl=$('#zmSl'), v=$('#zmV'), W=cv.width, L=70, R=W-45, KMAX=7;
+  const p10=k=>Math.pow(10,k);
+  const lo=k=>Math.floor(S*p10(k))/p10(k);          // untere Dezimalschranke mit k Stellen
+  const fmt=(x,k)=>de(x.toFixed(k));
+  const ranges=k=>({ A:lo(k), B:lo(k)+1/p10(k),
+                     pA:(k===0?0:lo(k-1)), pB:(k===0?3:lo(k-1)+1/p10(k-1)) });
+  let cur=ranges(0), anim=null;
+
+  function drawAt(k, r){
+    const A=r.A, B=r.B, s=1/p10(k+1);
+    const dig=Math.floor((S-lo(k))/s);              // Ziffer des Teilintervalls, in dem √2 liegt
+    const PX=x=>L+(x-r.pA)/(r.pB-r.pA)*(R-L), MX=x=>L+(x-A)/(B-A)*(R-L);
+    ctx.clearRect(0,0,W,cv.height);
+
+    // ---- Kontextstreifen: wo sind wir gerade?
+    ctx.strokeStyle='#5a6690'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(L,44); ctx.lineTo(R,44); ctx.stroke();
+    ctx.font='13px Segoe UI'; ctx.textAlign='center'; ctx.fillStyle='#9aa6c8';
+    ctx.fillText(fmt(r.pA,Math.max(0,k-1)), L, 30);
+    ctx.fillText(fmt(r.pB,Math.max(0,k-1)), R, 30);
+    if(k===0) for(let i=0;i<=3;i++){ ctx.strokeStyle='#2c3556';
+      ctx.beginPath(); ctx.moveTo(PX(i),38); ctx.lineTo(PX(i),50); ctx.stroke(); }
+    const wx0=PX(A), wx1=PX(B), ww=Math.max(2,wx1-wx0);
+    ctx.fillStyle='rgba(255,207,92,.22)'; ctx.fillRect(wx0,34,ww,20);
+    ctx.strokeStyle='#ffcf5c'; ctx.lineWidth=1.5; ctx.strokeRect(wx0,34,ww,20);
+    ctx.textAlign='left'; ctx.fillStyle='#9aa6c8'; ctx.font='13px Segoe UI';
+    ctx.fillText('Lupenausschnitt', L, 16);
+
+    // ---- Lupentrichter
+    ctx.strokeStyle='rgba(255,207,92,.35)'; ctx.setLineDash([4,4]); ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(wx0,54); ctx.lineTo(L,120); ctx.moveTo(wx1,54); ctx.lineTo(R,120);
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // ---- vergrößerter Zahlenstrahl
+    const Y=150, a0=lo(k);
+    const hx0=MX(a0+dig*s), hx1=MX(a0+(dig+1)*s);
+    ctx.fillStyle='rgba(255,207,92,.18)'; ctx.fillRect(hx0,Y-26,hx1-hx0,52);
+    ctx.strokeStyle='#ffcf5c'; ctx.lineWidth=1.5; ctx.strokeRect(hx0,Y-26,hx1-hx0,52);
+    ctx.strokeStyle='#5a6690'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(L,Y); ctx.lineTo(R,Y); ctx.stroke();
+    ctx.textAlign='center';
+    for(let j=0;j<=10;j++){
+      const x=MX(a0+j*s);
+      if(x<L-30||x>R+30) continue;
+      ctx.strokeStyle=(j===0||j===10)?'#5a6690':'#2c3556'; ctx.lineWidth=(j===0||j===10)?2:1;
+      ctx.beginPath(); ctx.moveTo(x,Y-8); ctx.lineTo(x,Y+8); ctx.stroke();
+      if(j<10){ ctx.fillStyle = j===dig ? '#ffcf5c' : '#5a6690';
+        ctx.font=(j===dig?'bold ':'')+'14px Segoe UI';
+        ctx.fillText(String(j), MX(a0+(j+0.5)*s), Y+24); }
+    }
+    ctx.fillStyle='#9aa6c8'; ctx.font='14px Segoe UI';
+    ctx.fillText(fmt(a0,k), MX(a0), Y+45); ctx.fillText(fmt(a0+1/p10(k),k), MX(a0+1/p10(k)), Y+45);
+    const px=MX(S);
+    ctx.fillStyle='#5fe39a'; ctx.beginPath(); ctx.arc(px,Y,6,0,7); ctx.fill();
+    ctx.font='bold 15px Segoe UI'; ctx.fillText('√2', px, Y-36);
+  }
+
+  function say(k){
+    const s=1/p10(k+1), dig=Math.floor((S-lo(k))/s);
+    txt.innerHTML = `<b>${fmt(lo(k),k)} &lt; √2 &lt; ${fmt(lo(k)+1/p10(k),k)}</b> — der Punkt liegt im Teilintervall mit der Ziffer
+      <b style="color:var(--accent)">${dig}</b>. Das ist die nächste Nachkommastelle: <b>√2 ≈ ${fmt(lo(k+1),k+1)}</b>`
+      + (k>=KMAX
+        ? `<br><span class="small">Und jetzt? Die Lupe könnte <b>immer weiter</b> zoomen: Es kommt <b>immer</b> eine neue Ziffer,
+             und der Punkt trifft <b>nie</b> genau einen Teilstrich. Hört das irgendwann auf? Wiederholt sich die Ziffernfolge
+             wie bei ⅓ = 0,3̅? Das klärt <b>5.3</b>.</span>`
+        : `<br><span class="small muted">Zoome weiter — wie tief kommst du?</span>`);
+  }
+
+  function goTo(k){
+    v.textContent='1 : '+p10(k).toLocaleString('de-DE');
+    say(k);
+    const src=cur, dst=ranges(k);
+    cancelAnimationFrame(anim); let t=0;
+    const go=()=>{ t=Math.min(1,t+1/36);
+      const e=t*t*(3-2*t);   // Ease-in-out: mit der geometrischen Breite ergibt das einen gleichmäßig wirkenden Zoom (sanft an, konstant, sanft aus)
+      const m=lerpView([src.A,src.B],[dst.A,dst.B],e);
+      const c=lerpView([src.pA,src.pB],[dst.pA,dst.pB],e);
+      cur={A:m[0],B:m[1],pA:c[0],pB:c[1]};
+      drawAt(k,cur);
+      if(t<1) anim=requestAnimationFrame(go); else { cur=dst; drawAt(k,cur); }
+    }; go();
+  }
+  sl.oninput=()=>goTo(+sl.value);
+  $('#zmIn').onclick=()=>{ sl.value=Math.min(KMAX,+sl.value+1); goTo(+sl.value); };
+  $('#zmOut').onclick=()=>{ sl.value=Math.max(0,+sl.value-1); goTo(+sl.value); };
+  v.textContent='1 : 1'; say(0); drawAt(0,cur);
+})();
+
+/* ============ 5.3 Beweis-Puzzle ============ */
+(function(){
+  const STEPS = [
+    'Annahme (Gegenteil der Behauptung): √2 ist rational. Dann lässt sie sich als vollständig gekürzter Bruch schreiben: √2 = p/q mit p, q ∈ ℤ, q ≠ 0.',
+    'Beide Seiten quadrieren: 2 = p²/q². Mit q² multiplizieren ergibt: p² = 2q².',
+    'Die rechte Seite 2q² ist ein Vielfaches von 2. Also ist p² eine gerade Zahl.',
+    'Ist p² gerade, so ist auch p gerade (Quadrate ungerader Zahlen sind ungerade). Also gibt es ein k ∈ ℤ mit p = 2k.',
+    'Einsetzen in p² = 2q²: (2k)² = 2q², also 4k² = 2q², also q² = 2k².',
+    'Also ist auch q² gerade — und damit mit derselben Begründung wie oben auch q gerade.',
+    'Widerspruch: p und q sind beide gerade, ließen sich also durch 2 kürzen. Der Bruch war aber laut Annahme vollständig gekürzt.',
+    'Da die Annahme auf einen Widerspruch führt, ist sie falsch: √2 ist nicht rational, also irrational. ∎'
+  ];
+  const pool=$('#pzPool'), target=$('#pzTarget'), msg=$('#pzMsg');
+  let inTarget=[], inPool=[];
+  function render(){
+    target.innerHTML = inTarget.map(i=>`<div class="pz-item" data-i="${i}" data-from="t"><span>${STEPS[i]}</span></div>`).join('')
+      || '<p class="small muted center" style="margin:14px">Noch leer — klicke unten den ersten Beweisschritt an.</p>';
+    pool.innerHTML = inPool.map(i=>`<div class="pz-item" data-i="${i}" data-from="p"><span>${STEPS[i]}</span></div>`).join('')
+      || '<p class="small muted center" style="margin:14px">Vorrat leer — jetzt prüfen!</p>';
+    $$('.pz-item').forEach(el=>el.onclick=()=>{
+      const i=+el.dataset.i;
+      if(el.dataset.from==='p'){ inPool=inPool.filter(x=>x!==i); inTarget.push(i); }
+      else { inTarget=inTarget.filter(x=>x!==i); inPool.push(i); }
+      msg.textContent=''; msg.className='msg'; render();
+    });
+  }
+  function reset(){ inTarget=[]; inPool=shuffle(STEPS.map((_,i)=>i)); msg.textContent=''; msg.className='msg'; render(); }
+  $('#pzReset').onclick=reset;
+  $('#pzCheck').onclick=()=>{
+    if(inTarget.length!==STEPS.length){ msg.className='msg no'; msg.textContent='Es fehlen noch Schritte im Beweis.'; return; }
+    let firstBad=-1;
+    $$('.pz-item',target).forEach((el,pos)=>{
+      const ok = inTarget[pos]===pos;
+      el.classList.toggle('ok',ok); el.classList.toggle('no',!ok);
+      if(!ok && firstBad<0) firstBad=pos;
+    });
+    if(firstBad<0){ msg.className='msg ok'; msg.textContent='✓ Perfekt — das ist der vollständige Widerspruchsbeweis. √2 ist irrational.'; markDone('s5'); }
+    else { msg.className='msg no'; msg.innerHTML=`✗ Ab Schritt <b>${firstBad+1}</b> stimmt die Reihenfolge nicht. Frag dich: Was folgt logisch aus dem Schritt davor?`; }
+  };
+  $('#pzSol').onclick=()=>{
+    inTarget=STEPS.map((_,i)=>i); inPool=[]; render();
+    $$('.pz-item',target).forEach(el=>el.classList.add('ok'));
+    msg.className='msg'; msg.innerHTML='<span class="muted">Lösung eingeblendet. Lies den Beweis einmal von oben nach unten — jeder Schritt folgt zwingend aus dem vorigen.</span>';
+  };
+  reset();
+})();
+
+/* ============ 5.4 Mengendiagramm ============ */
+(function(){
+  const cv=$('#setCv'), ctx=cv.getContext('2d');
+  function rrect(x,y,w,h,r,fill,stroke,lab,labcol){
+    ctx.fillStyle=fill; ctx.strokeStyle=stroke; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=labcol; ctx.font='bold 18px Segoe UI'; ctx.textAlign='left';
+    ctx.fillText(lab, x+11, y+22);
+  }
+  // Boxen so bemessen, dass unter ℤ ein 40px hohes Band bleibt: dort stehen die Zahlen,
+  // die in ℚ, aber nicht in ℤ liegen. Sie dürfen die ℤ-Blase nicht berühren.
+  ctx.clearRect(0,0,cv.width,cv.height);
+  rrect(40,20,800,250,18,'rgba(255,207,92,.07)','#ffcf5c','ℝ  reelle Zahlen','#ffcf5c');   // y 20..270
+  rrect(60,50,470,190,16,'rgba(92,214,255,.09)','#5cd6ff','ℚ  rationale Zahlen','#5cd6ff'); // y 50..240
+  rrect(80,80,340,120,14,'rgba(95,227,154,.10)','#5fe39a','ℤ  ganze Zahlen','#5fe39a');     // y 80..200
+  rrect(100,108,200,74,12,'rgba(255,255,255,.08)','#9aa6c8','ℕ  natürliche','#eaf0ff');     // y 108..182
+  ctx.font='15px Segoe UI'; ctx.fillStyle='#eaf0ff'; ctx.textAlign='left';
+  ctx.fillText('0  1  2  17  √49', 112, 150);
+  ctx.fillText('−5   −12   −√81', 316, 150);
+  ctx.fillText('¾   0,25   0,3̅   −7/3', 96, 224);   // im ℚ-Band unter ℤ
+  ctx.fillStyle='#ffcf5c'; ctx.font='bold 16px Segoe UI';
+  ctx.fillText('ℝ \\ ℚ   irrationale Zahlen', 560, 100);
+  ctx.font='15px Segoe UI'; ctx.fillStyle='#eaf0ff';
+  ctx.fillText('√2    √3    √10    π', 570, 130);
+  ctx.font='14px Segoe UI';
+  ctx.fillText('0,101001000100001…', 570, 154);
+  ctx.font='13px Segoe UI'; ctx.fillStyle='#9aa6c8';
+  ctx.fillText('nicht als Bruch darstellbar', 566, 182);
+  ctx.fillText('unendliche, nicht periodische Dezimalzahl', 566, 198);
+})();
+
+/* ============ 5.4 Sortierspiel ============ */
+(function(){
+  const BINS = [
+    {id:'N', t:'ℕ', sub:'natürlich'},
+    {id:'Z', t:'ℤ \\ ℕ', sub:'ganz, negativ'},
+    {id:'Q', t:'ℚ \\ ℤ', sub:'Bruch, nicht ganz'},
+    {id:'I', t:'ℝ \\ ℚ', sub:'irrational'}
+  ];
+  const ITEMS = [
+    {l:rt('49'),      b:'N', e:'√49 = 7 — eine natürliche Zahl. Das Wurzelzeichen allein macht eine Zahl nicht irrational!'},
+    {l:'−5',          b:'Z', e:'ganz und negativ ⟹ in ℤ, aber nicht in ℕ.'},
+    {l:fr(2,3),       b:'Q', e:'⅔ = 0,6̅ — periodisch, also rational, aber keine ganze Zahl.'},
+    {l:rt('2'),       b:'I', e:'irrational — das haben wir gerade bewiesen.'},
+    {l:'0,25',        b:'Q', e:'0,25 = ¼ — endliche Dezimalzahl ⟹ rational, nicht ganz.'},
+    {l:rt('0,04'),    b:'Q', e:'√0,04 = 0,2 = ⅕ — rational! Kommastellen halbieren (Kap. 3).'},
+    {l:'π',           b:'I', e:'π ist irrational (Beweis deutlich schwerer als bei √2).'},
+    {l:rt('10'),      b:'I', e:'10 ist keine Quadratzahl ⟹ √10 irrational (3² = 9, 4² = 16 — dazwischen liegt keine ganze Zahl).'},
+    {l:'0,3̅',        b:'Q', e:'periodisch ⟹ rational: 0,3̅ = ⅓.'},
+    {l:'0,101001000<br><span style="font-size:11px">100001…</span>', b:'I',
+      e:'<b>Irrational!</b> Unendlich <b>und</b> nicht periodisch: Nach jeder 1 kommt eine Null mehr, die Nullblöcke werden immer länger — es kann also nie eine Periode entstehen. Dass man jede Ziffer vorhersagen kann, ändert daran nichts.'},
+    {l:'0,1̅2̅3̅',      b:'Q', e:'Periode „123“ ⟹ rational (= <sup>123</sup>⁄<sub>999</sub>). Nicht mit 0,101001000… verwechseln — <b>dort</b> gibt es keine Periode!'},
+    {l:'−'+rt('81'),  b:'Z', e:'−√81 = −9. Das Minus steht <b>vor</b> der Wurzel — das ist erlaubt und ergibt eine ganze Zahl.'},
+    {l:'1,4142',      b:'Q', e:'Endliche Dezimalzahl ⟹ rational. Vorsicht: <b>≈ √2, aber nicht gleich √2!</b>'},
+    {l:rt(fr(9,16)),  b:'Q', e:'√(9/16) = ¾ — rational, nicht ganz.'},
+    {l:rt('0'),       b:'N', e:'√0 = 0 ∈ ℕ. Der Radikand darf 0 sein.'},
+    {l:'2·'+rt('3'),  b:'I', e:'Das Vielfache einer irrationalen Zahl (mit rationalem Faktor ≠ 0) bleibt irrational.'}
+  ];
+  const host=$('#sortGame');
+  let sel=null, placed={}, checked=false;
+  function render(){
+    host.innerHTML = `
+      <div class="tok-pool" id="sgPool"></div>
+      <div class="sort-grid">${BINS.map(b=>`
+        <div class="bin" data-bin="${b.id}">
+          <h5>${b.t}<br><span class="muted" style="font-size:11px;font-weight:400">${b.sub}</span></h5>
+          <div class="binbody"></div>
+        </div>`).join('')}</div>
+      <div class="row-btns">
+        <button class="btn" id="sgCheck">Prüfen</button>
+        <button class="btn ghost small" id="sgReset">Neu</button>
+      </div>
+      <div class="msg" id="sgMsg"></div>
+      <div id="sgFeed"></div>`;
+    const pool=$('#sgPool');
+    ITEMS.forEach((it,i)=>{
+      const t=document.createElement('div');
+      t.className='tok'; t.innerHTML=it.l; t.dataset.i=i; t.draggable=!checked;
+      if(checked && placed[i]!==undefined) t.classList.add(placed[i]===it.b?'ok':'no');
+      t.onclick=()=>{ if(checked) return; $$('.tok').forEach(x=>x.classList.remove('sel')); t.classList.add('sel'); sel=i; };
+      t.ondragstart=e=>{ sel=i; e.dataTransfer.setData('text/plain',i); };
+      (placed[i]!==undefined ? $(`[data-bin="${placed[i]}"] .binbody`) : pool).appendChild(t);
+    });
+    $$('[data-bin]',host).forEach(b=>{
+      b.ondragover=e=>{ e.preventDefault(); b.classList.add('hl'); };
+      b.ondragleave=()=>b.classList.remove('hl');
+      b.ondrop=e=>{ e.preventDefault(); b.classList.remove('hl'); if(sel!==null && !checked){ placed[sel]=b.dataset.bin; sel=null; render(); } };
+      b.onclick=()=>{ if(sel!==null && !checked){ placed[sel]=b.dataset.bin; sel=null; render(); } };
+    });
+    $('#sgPool').ondragover=e=>e.preventDefault();
+    $('#sgPool').ondrop=e=>{ e.preventDefault(); if(sel!==null && !checked){ delete placed[sel]; sel=null; render(); } };
+    $('#sgCheck').onclick=check;
+    $('#sgReset').onclick=()=>{ placed={}; sel=null; checked=false; render(); };
+  }
+  function check(){
+    const n=Object.keys(placed).length;
+    if(n<ITEMS.length){ const m=$('#sgMsg'); m.className='msg no'; m.textContent=`Es sind noch ${ITEMS.length-n} Zahlen nicht zugeordnet.`; return; }
+    checked=true; render();
+    const wrong = ITEMS.map((it,i)=>({it,i})).filter(({it,i})=>placed[i]!==it.b);
+    const m=$('#sgMsg');
+    if(!wrong.length){ m.className='msg ok'; m.textContent=`✓ Alle ${ITEMS.length} Zahlen richtig eingeordnet!`; markDone('s5'); }
+    else { m.className='msg no'; m.innerHTML=`${ITEMS.length-wrong.length}/${ITEMS.length} richtig. Schau dir die roten Zahlen an:`; }
+    $('#sgFeed').innerHTML = wrong.length ? `<div class="solution" style="background:#2a1414;border-color:#6b2a2a">
+      <h4 style="color:var(--bad)">Erklärungen</h4>
+      ${wrong.map(({it})=>`<p style="margin:5px 0">${it.l} → <b>${BINS.find(b=>b.id===it.b).t}</b>: ${it.e}</p>`).join('')}
+      </div>` : `<div class="solution"><h4>Alles richtig</h4>
+      <p>Besonders wichtig: <b>${rt('49')}, ${rt('0,04')}, ${rt(fr(9,16))}</b> sind <b>rational</b> — ein Wurzelzeichen
+      allein macht eine Zahl nicht irrational. Und <b>1,4142</b> ist eine ganz normale rationale Dezimalzahl,
+      nur <i>nahe</i> bei √2.</p></div>`;
+    $('#sgReset').onclick=()=>{ placed={}; sel=null; checked=false; render(); };
+  }
+  render();
+})();
+
+/* ============ 6.1 Dezimale Intervallschachtelung ============ */
+(function(){
+  const A=2, S=Math.SQRT2, DMAX=5;
+  const tbl=$('#isTable'), cv=$('#isCv'), ctx=cv.getContext('2d'), txt=$('#isTxt');
+  const W=cv.width, H=cv.height, L=48, R=W-48, AXIS=112;
+  const SUB='₀₁₂₃₄₅₆₇₈₉', sub=n=>String(n).split('').map(d=>SUB[+d]).join('');
+
+  // Alle Intervalle stehen von Anfang an fest — wir schauen im Lauf der Zeit nur näher hin.
+  const ALL=[{lo:1,hi:2,d:0}];
+  for(let d=1;d<=DMAX;d++){
+    const prev=ALL[d-1], step=Math.pow(10,-d);
+    let l=prev.lo, h=prev.hi;
+    for(let k=1;k<=10;k++){
+      const c=+(prev.lo+k*step).toFixed(d+1);
+      if(c*c>A){ l=+(prev.lo+(k-1)*step).toFixed(d); h=c; break; }
+    }
+    ALL.push({lo:l,hi:h,d});
+  }
+  // Ausschnitt, der das Intervall ALL[d] mit seinen zehn Teilstrichen zeigt
+  const viewShow=d => { const iv=ALL[d], len=iv.hi-iv.lo; return [iv.lo-len*0.12, iv.hi+len*0.12]; };
+
+  let dec=0, view=viewShow(0), anim=null, busy=false, probe=null, finishStep=null;
+
+  function table(){
+    let html = '<tr><th>Stelle</th><th>untere Grenze u</th><th class="mono">u²</th><th>obere Grenze o</th><th class="mono">o²</th><th>Länge</th></tr>'
+      + ALL.slice(0,dec+1).map(r=>{
+        const u2=+(r.lo*r.lo).toFixed(6), o2=+(r.hi*r.hi).toFixed(6);
+        return `<tr><td>${r.d}</td>
+          <td class="mono" style="color:var(--good)">${de(r.lo.toFixed(r.d))}</td>
+          <td class="mono">${de(u2)} <span class="muted">&lt; 2</span></td>
+          <td class="mono" style="color:var(--bad)">${de(r.hi.toFixed(r.d))}</td>
+          <td class="mono">${de(o2)} <span class="muted">&gt; 2</span></td>
+          <td class="mono muted">${de(Math.pow(10,-r.d))}</td></tr>`;
+      }).join('');
+    // Live-Probierzeile: die gerade getestete Ziffer mit ihrem Quadrat
+    if(probe){
+      const over=probe.sq>A, cd=de(probe.cand.toFixed(probe.d));
+      html += `<tr style="outline:2px solid var(--accent);outline-offset:-2px">
+        <td>${probe.d}</td>
+        <td class="mono" style="color:var(--accent)">teste ${cd}</td>
+        <td class="mono">${cd}² = ${de(probe.sq)}</td>
+        <td class="mono" colspan="3" style="color:${over?'var(--bad)':'var(--good)'}">
+          ${over?'&gt; 2 → einen zu weit, Ziffer gefunden':'&lt; 2 → passt, nächste Ziffer probieren'}</td></tr>`;
+    }
+    tbl.innerHTML = html;
+  }
+
+  function draw(){
+    const vA=view[0], vB=view[1], X=x=>L+(x-vA)/(vB-vA)*(R-L);
+    ctx.clearRect(0,0,W,H);
+
+    // Achse
+    ctx.strokeStyle='#5a6690'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(L-16,AXIS); ctx.lineTo(R+16,AXIS); ctx.stroke();
+
+    // Teilstriche: die zehn Teile des Intervalls, in dem wir gerade probieren (ALL[dec])
+    const cur=ALL[dec], stp=(cur.hi-cur.lo)/10;
+    ctx.font='13px Segoe UI'; ctx.textAlign='center';
+    Array.from({length:11},(_,k)=>cur.lo+k*stp).forEach(x=>{
+      ctx.strokeStyle='#2c3556'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(X(x),145); ctx.lineTo(X(x),153); ctx.stroke();
+      ctx.fillStyle='#9aa6c8'; ctx.fillText(de(x.toFixed(dec+1)), X(x), 167);
+    });
+
+    // Nur die schon gefundenen Intervalle (d ≤ dec) als Teleskop; das aktuelle füllt den Ausschnitt.
+    const vis = ALL.filter(iv=>iv.d<=dec).map(iv=>({iv, w:X(iv.hi)-X(iv.lo)}))
+                   .filter(o=>o.w>=2.5 && X(o.iv.hi)>L-40 && X(o.iv.lo)<R+40)
+                   .sort((a,b)=>b.w-a.w);
+    vis.forEach((o,i)=>{
+      const h=Math.max(14, 66-i*11), y=AXIS-h/2;
+      const x0=Math.max(L-30, X(o.iv.lo)), x1=Math.min(R+30, X(o.iv.hi));
+      const cur = o.iv.d===dec;
+      ctx.fillStyle = cur ? 'rgba(255,207,92,.30)' : 'rgba(92,214,255,.09)';
+      ctx.fillRect(x0,y,Math.max(2,x1-x0),h);
+      ctx.strokeStyle = cur ? '#ffcf5c' : '#5cd6ff';
+      ctx.lineWidth = cur ? 2.5 : 1.5;
+      ctx.strokeRect(x0,y,Math.max(2,x1-x0),h);
+    });
+    // Legende oben links (Kette I₀ ⊃ I₁ ⊃ …) nur, wenn nicht gerade probiert wird
+    if(!probe) vis.filter(o=>o.iv.d<=dec).sort((a,b)=>a.iv.d-b.iv.d).slice(-4).forEach((o,i)=>{
+      const iv=o.iv, isCur=iv.d===dec;
+      ctx.textAlign='left'; ctx.font=(isCur?'bold ':'')+'13px Segoe UI';
+      ctx.fillStyle = isCur ? '#ffcf5c' : '#5cd6ff';
+      ctx.fillText(`${i?'⊃ ':''}I${sub(iv.d)} = [${de(iv.lo.toFixed(iv.d))}; ${de(iv.hi.toFixed(iv.d))}]   ·   Länge ${de(Math.pow(10,-iv.d))}${isCur?'   ← gerade gefunden':''}`,
+        L+i*14, 19+i*16);
+    });
+
+    // √2 (oben-Label nur ohne Probe, sonst kollidiert es mit der Probe-Anzeige)
+    if(S>=vA && S<=vB){
+      ctx.strokeStyle='rgba(95,227,154,.6)'; ctx.setLineDash([3,3]); ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(X(S),76); ctx.lineTo(X(S),153); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='#5fe39a'; ctx.beginPath(); ctx.arc(X(S),AXIS,5,0,7); ctx.fill();
+      if(!probe){ ctx.textAlign='center'; ctx.font='bold 15px Segoe UI'; ctx.fillText('√2', X(S), 73); }
+    }
+
+    // ----- Probier-Überlagerung -----
+    if(probe){
+      // schon bestandene Ziffern als grüne Punkte
+      for(let j=1;j<probe.k;j++){ const c=cur.lo+j*stp;
+        ctx.fillStyle='#5fe39a'; ctx.beginPath(); ctx.arc(X(c),AXIS,3.5,0,7); ctx.fill(); }
+      // aktuell getestete Ziffer als Marker
+      const over=probe.sq>A, cx=X(probe.cand);
+      ctx.strokeStyle= over?'#ff7a7a':'#5fe39a'; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.moveTo(cx,88); ctx.lineTo(cx,150); ctx.stroke();
+      ctx.fillStyle= over?'#ff7a7a':'#5fe39a'; ctx.beginPath(); ctx.arc(cx,AXIS,5,0,7); ctx.fill();
+      // Callout oben mittig
+      ctx.textAlign='center'; ctx.font='bold 16px Segoe UI'; ctx.fillStyle='#eaf0ff';
+      ctx.fillText('Probe:  '+de(probe.cand.toFixed(probe.d))+'²  =  '+de(probe.sq), (L+R)/2, 40);
+      ctx.font='bold 15px Segoe UI'; ctx.fillStyle= over?'#ff7a7a':'#5fe39a';
+      ctx.fillText(over?'> 2   ✗   einen zu weit — Ziffer gefunden!':'< 2   ✓   passt, nächste Ziffer probieren', (L+R)/2, 60);
+    } else {
+      // Hinweise nur im Ruhezustand
+      ctx.textAlign='left'; ctx.fillStyle='#9aa6c8'; ctx.font='13px Segoe UI';
+      ctx.fillText('Ausschnitt: ['+de(vA.toFixed(Math.max(1,dec)))+'; '+de(vB.toFixed(Math.max(1,dec)))+']   ·   Zoom 1 : '
+        + Math.round(2/(vB-vA)).toLocaleString('de-DE'), L, 197);
+      ctx.fillStyle='#5fe39a';
+      ctx.fillText(dec<DMAX ? 'jedes Intervall liegt ganz im vorigen — und ist 10-mal kürzer'
+                            : 'und so weiter, ohne Ende', L, 215);
+    }
+  }
+
+  function say(){
+    const last=ALL[dec];
+    txt.innerHTML = dec===0
+      ? `Start: 1² = 1 &lt; 2 und 2² = 4 &gt; 2 ⟹ <b>1 &lt; √2 &lt; 2</b>.
+         <span class="small muted">Die kleineren Intervalle sind längst da — sie sind nur noch zu klein zum Hinsehen. Zoome hinein!</span>`
+      : `<b>${de(last.lo.toFixed(dec))} &lt; √2 &lt; ${de(last.hi.toFixed(dec))}</b> — Intervalllänge ${de(Math.pow(10,-dec))}.
+         Wir haben ${dec} Nachkommastelle${dec>1?'n':''} sicher: <b>√2 ≈ ${de(last.lo.toFixed(dec))}</b>.
+         <span class="small muted">Schau die Kästen an: Jedes liegt <b>ganz</b> im nächstgrößeren. Und im gelben steckt schon das nächste — nur noch zu klein zum Lesen.</span>`;
+  }
+
+  function zoomTo(d, dauer){
+    const src=view.slice(), tgt=viewShow(d);
+    busy=true; $('#isNext').disabled=true;
+    cancelAnimationFrame(anim); let t=0;
+    const done=()=>{ view=tgt; busy=false; finishStep=null; draw(); say(); setBtn(); };
+    finishStep=()=>{ cancelAnimationFrame(anim); done(); };
+    const go=()=>{ t=Math.min(1, t+1/dauer);
+      const e=t*t*(3-2*t);   // Ease-in-out: gleichmäßig wirkender Zoom
+      view=lerpView(src,tgt,e); draw();
+      if(t<1) anim=requestAnimationFrame(go); else done();
+    }; go();
+  }
+
+  // Eine getestete Ziffer anzeigen (kein Automatik-Ablauf — jeder Schritt per Klick)
+  function setProbe(d, base, stp, k){
+    const cand=+(base.lo+k*stp).toFixed(d);
+    probe={d, base, stp, k, cand, sq:+(cand*cand).toFixed(6)};
+    table(); draw();
+    txt.innerHTML=`<b>Probiere die ${d}. Nachkommastelle:</b> ${de(cand.toFixed(d))}² = ${de(probe.sq)} ` +
+      (probe.sq>A ? '<span style="color:var(--bad)">&gt; 2 — zu weit! Die Ziffer <b>davor</b> war die richtige.</span>'
+                  : '<span style="color:var(--good)">&lt; 2 — passt. Klicke für die nächste Ziffer.</span>');
+    setBtn();
+  }
+
+  function setBtn(){
+    const b=$('#isNext'); if(busy) return;
+    if(!probe && dec>=DMAX){ b.textContent='✓ genug Stellen'; b.disabled=true; return; }
+    b.disabled=false;
+    b.textContent = !probe ? '▶ nächste Stelle probieren'
+                  : probe.sq>A ? '▶ Intervall einschachteln'
+                  : '▶ nächste Ziffer probieren';
+  }
+
+  // Ein Klick = ein Teilschritt
+  function step(){
+    if(busy) return;
+    if(probe && probe.sq>A){          // gefundene Ziffer → Intervall übernehmen und einzoomen
+      const d=probe.d; probe=null; dec=d; table(); zoomTo(d,45); return;
+    }
+    if(probe){                        // < 2 → nächste Ziffer probieren
+      setProbe(probe.d, probe.base, probe.stp, probe.k+1); return;
+    }
+    if(dec>=DMAX){ txt.innerHTML='<span class="muted">Genug — die Anzeige des TR ist erreicht. Und weiter geht es beliebig lang: die Dezimaldarstellung <b>bricht nie ab</b>. Die nächsten Kästen sind da, nur zu klein für den Bildschirm.</span>'; return; }
+    const d=dec+1, base=ALL[dec];     // Ruhezustand → mit der ersten Ziffer beginnen
+    setProbe(d, base, (base.hi-base.lo)/10, 1);
+  }
+  function reset(){ cancelAnimationFrame(anim); busy=false; probe=null; finishStep=null;
+    dec=0; view=viewShow(0); table(); draw(); say(); setBtn(); }
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden && busy && finishStep) finishStep(); });
+  $('#isNext').onclick=step; $('#isReset').onclick=reset; reset();
+})();
+
+/* ============ 6.1b Schüler schachteln √3 selbst ein ============ */
+(function(){
+  const A=3, KMAX=3, S=Math.sqrt(A);
+  const tbl=$('#ex3Table'), msg=$('#ex3Msg');
+  const p10=k=>Math.pow(10,k);
+  // Anzeige ohne Gleitkomma-Müll: 1,7·1,7 = 2.8899999999999997 → "2,89"
+  const fmt=v=>v.toFixed(8).replace(/0+$/,'').replace(/\.$/,'').replace('.',',');
+  const parse=s=>{ s=(s||'').trim().replace(',','.'); return /^\d*\.?\d+$/.test(s) ? parseFloat(s) : NaN; };
+  let solved=[true,false,false,false];
+
+  function build(){
+    let h='<tr><th>Stelle</th><th>untere Grenze <var>u</var></th><th class="mono"><var>u</var>² — Vergleich mit 3</th>'
+        + '<th>obere Grenze <var>o</var></th><th class="mono"><var>o</var>² — Vergleich mit 3</th><th>Status</th></tr>'
+        + `<tr><td>0</td><td class="mono" style="color:var(--good)">1</td>
+             <td class="mono">1 <span class="muted">&lt; 3</span></td>
+             <td class="mono" style="color:var(--bad)">2</td><td class="mono">4 <span class="muted">&gt; 3</span></td>
+             <td class="small" style="color:var(--good)">✓ vorgegeben</td></tr>`;
+    for(let k=1;k<=KMAX;k++){
+      h+=`<tr id="ex3row-${k}">
+        <td>${k}</td>
+        <td><input type="text" id="exu-${k}" style="width:84px" autocomplete="off" placeholder="?"></td>
+        <td class="mono small" id="exu2-${k}">—</td>
+        <td><input type="text" id="exo-${k}" style="width:84px" autocomplete="off" placeholder="?"></td>
+        <td class="mono small" id="exo2-${k}">—</td>
+        <td class="small" id="exs-${k}"></td></tr>`;
+    }
+    tbl.innerHTML=h;
+    for(let k=1;k<=KMAX;k++){
+      $('#exu-'+k).oninput=()=>check(k);
+      $('#exo-'+k).oninput=()=>check(k);
+    }
+    lock();
+  }
+  function lock(){   // Stelle k nur freigeben, wenn k−1 stimmt
+    for(let k=1;k<=KMAX;k++){
+      const on=solved[k-1];
+      $('#ex3row-'+k).style.opacity = on?'1':'.4';
+      $('#exu-'+k).disabled = !on; $('#exo-'+k).disabled = !on;
+    }
+  }
+  function check(k){
+    const u=parse($('#exu-'+k).value), o=parse($('#exo-'+k).value), step=1/p10(k);
+    // Berechnungen anzeigen, sobald eine Zahl dasteht
+    $('#exu2-'+k).innerHTML = isNaN(u) ? '—' : fmt(u*u) + (u*u<A ? ' <span style="color:var(--good)">&lt; 3 ✓</span>'
+                                                                 : ' <span style="color:var(--bad)">&gt; 3 ✗</span>');
+    $('#exo2-'+k).innerHTML = isNaN(o) ? '—' : fmt(o*o) + (o*o>A ? ' <span style="color:var(--good)">&gt; 3 ✓</span>'
+                                                                 : ' <span style="color:var(--bad)">&lt; 3 ✗</span>');
+    const st=$('#exs-'+k);
+    if(isNaN(u)||isNaN(o)){ st.textContent=''; solved[k]=false; lock(); say(k); return; }
+
+    const genau = v=>Math.abs(v*p10(k)-Math.round(v*p10(k)))<1e-9;   // genau k Nachkommastellen
+    const fasst = u*u<A && o*o>A;                                     // √3 liegt dazwischen
+    const nachbarn = Math.abs((o-u)-step)<1e-9;                       // engstmögliches Intervall
+
+    if(fasst && nachbarn && genau(u) && genau(o)){
+      st.innerHTML='<b style="color:var(--good)">✓ passt</b>'; solved[k]=true; lock();
+      if(k<KMAX) $('#exu-'+(k+1)).focus();
+    } else {
+      st.innerHTML='<span style="color:var(--bad)">✗</span>'; solved[k]=false;
+      for(let j=k+1;j<=KMAX;j++) solved[j]=false;
+      lock();
+    }
+    say(k);
+  }
+  function say(k){
+    const u=parse($('#exu-'+k).value), o=parse($('#exo-'+k).value), step=1/p10(k);
+    if(solved[KMAX]){
+      msg.className='msg ok';
+      msg.innerHTML=`🎉 Fertig! Deine Einschachtelung: <b>1,732 &lt; √3 &lt; 1,733</b>.
+        Der Taschenrechner zeigt <b>√3 ≈ 1,732050808</b> — deine 3 Nachkommastellen stimmen.
+        <span class="small muted">Und genau wie bei √2: Es geht immer weiter, die Ziffern hören nie auf.
+        Auch √3 ist irrational.</span>`;
+      return;
+    }
+    if(isNaN(u)||isNaN(o)){
+      const k0=solved[1]?(solved[2]?3:2):1;
+      const A0=Math.floor(S*p10(k0-1))/p10(k0-1), B0=A0+1/p10(k0-1);
+      msg.className='msg';
+      msg.innerHTML=`<span class="muted">Stelle ${k0}: Teile das Intervall
+        [${fmt(A0)}; ${fmt(B0)}] in zehn Teile. Gesucht sind <var>u</var> und <var>o</var> mit
+        <b>${k0} Nachkommastelle${k0>1?'n':''}</b> und <var>o</var> − <var>u</var> = ${fmt(1/p10(k0))}.</span>`;
+      return;
+    }
+    const genau = v=>Math.abs(v*p10(k)-Math.round(v*p10(k)))<1e-9;
+    msg.className='msg no';
+    if(u*u>=A) msg.innerHTML=`Deine untere Grenze ist <b>zu groß</b>: <var>u</var>² = ${fmt(u*u)} ist nicht kleiner als 3.
+      Nimm eine kleinere Zahl.`;
+    else if(o*o<=A) msg.innerHTML=`Deine obere Grenze ist <b>zu klein</b>: <var>o</var>² = ${fmt(o*o)} ist nicht größer als 3.
+      Nimm eine größere Zahl.`;
+    else if(!genau(u)||!genau(o)) msg.innerHTML=`√3 liegt zwar dazwischen, aber die Grenzen müssen <b>genau
+      ${k} Nachkommastelle${k>1?'n':''}</b> haben.`;
+    else if(Math.abs((o-u)-step)>=1e-9) msg.innerHTML=`√3 liegt zwar dazwischen — aber das Intervall ist noch
+      <b>zu weit</b>. Es muss das engste sein, das mit ${k} Nachkommastelle${k>1?'n':''} möglich ist:
+      <var>o</var> − <var>u</var> = <b>${fmt(step)}</b> (bei dir: ${fmt(o-u)}).`;
+    else msg.innerHTML='Noch nicht ganz.';
+  }
+  $('#ex3Reset').onclick=()=>{ solved=[true,false,false,false]; build();
+    msg.className='msg'; msg.textContent=''; $('#ex3Tipp').innerHTML=''; say(1); };
+  $('#ex3Tip').onclick=()=>{
+    $('#ex3Tipp').innerHTML=`<div class="hint"><b>So gehst du vor:</b> Du weißt schon <b>1 &lt; √3 &lt; 2</b>.
+      Für die 1. Nachkommastelle probierst du der Reihe nach 1,1² = 1,21 · 1,2² = 1,44 · 1,3² = 1,69 …
+      und schaust, <b>wo du zum ersten Mal über 3 springst</b>. Die Zahl davor ist <var>u</var>, die Zahl selbst ist <var>o</var>.
+      <br><span class="small">Danach genauso weiter: das gefundene Intervall wieder in zehn Teile zerlegen.</span></div>`;
+  };
+  build(); say(1);
+})();
+
+/* ============ 6.2 Heron geometrisch — drei Teilschritte pro Klick ============ */
+(function(){
+  const cv=$('#herCv'), ctx=cv.getContext('2d'), txt=$('#herTxt'), msg=$('#herMsg'), btn=$('#herStep');
+  let A=2;                         // Radikand
+  let wSide=A, hSide=1, n=0;       // Rechteckseiten: wSide = x (unten), hSide = y (links)
+  let phase='rest';                // 'rest' | 'mean' | 'area'
+  let busy=false, anim=null, finishStep=null;
+  const bx=120, topPad=40, botPad=112;
+  const nf=(v,k)=>v.toFixed(k).replace('.',',');
+  const nfA=()=>String(A).replace('.',',');
+  const by=()=>cv.height-botPad;
+  function scaleFor(a){
+    const r=Math.sqrt(a);
+    return Math.min((cv.width-bx-150)/Math.max(a,r), (cv.height-topPad-botPad)/Math.max(1,r), 130);
+  }
+
+  // opts: {hlX, hlY, meanTrack:{x0,y0}, xLbl, yLbl}
+  function draw(w,h,opts){
+    opts=opts||{}; const scale=scaleFor(A), B=by(), ww=w*scale, hh=h*scale, s=Math.sqrt(A)*scale;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    // Kopfzeile
+    ctx.textAlign='left'; ctx.font='bold 15px Segoe UI'; ctx.fillStyle='#9aa6c8';
+    ctx.fillText('Schritt n = '+n+'   ·   a = '+nfA(), 20, 26);
+    // Zielquadrat √a
+    ctx.strokeStyle='rgba(95,227,154,.5)'; ctx.setLineDash([5,5]); ctx.lineWidth=2;
+    ctx.strokeRect(bx,B-s,s,s); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(95,227,154,.85)'; ctx.font='bold 13px Segoe UI'; ctx.textAlign='left';
+    ctx.fillText('Zielquadrat, Seite √'+nfA(), bx+s+10, B-s+5);
+    // Rechteck
+    ctx.fillStyle='rgba(92,214,255,.15)'; ctx.fillRect(bx,B-hh,ww,hh);
+    ctx.strokeStyle='#5cd6ff'; ctx.lineWidth=2.5; ctx.strokeRect(bx,B-hh,ww,hh);
+    // Fläche (rot markiert, wenn ≠ a)
+    const area=w*h, off=Math.abs(area-A)>5e-4;
+    ctx.font='bold 17px Segoe UI'; ctx.textAlign='center'; ctx.fillStyle= off?'#ffb46b':'#eaf0ff';
+    ctx.fillText('Fläche = '+nf(area,3)+(off?' ≠ '+nfA():' = '+nfA()), bx+ww/2, B-hh/2+6);
+    // Seitenbeschriftungen
+    ctx.font='bold 16px Segoe UI'; ctx.textAlign='center';
+    ctx.fillStyle= opts.hlX?'#ffcf5c':'#5cd6ff'; ctx.fillText((opts.xLbl||'x')+' = '+nf(w,4), bx+ww/2, B+24);
+    ctx.save(); ctx.translate(bx-16,B-hh/2); ctx.rotate(-Math.PI/2); ctx.textAlign='center';
+    ctx.fillStyle= opts.hlY?'#ffcf5c':'#5cd6ff'; ctx.font='bold 15px Segoe UI';
+    ctx.fillText((opts.yLbl||'y')+' = '+nf(h,4),0,0); ctx.restore();
+    // Mittelwert-Schiene (Phase ①): x und y aneinandergelegt, Mitte markiert
+    if(opts.meanTrack){
+      const {x0,y0}=opts.meanTrack, ty=B+44, wx=x0*scale, wy=y0*scale, mid=bx+(wx+wy)/2;
+      ctx.fillStyle='#5cd6ff'; ctx.fillRect(bx,ty,wx,9);
+      ctx.fillStyle='#8bb8e8'; ctx.fillRect(bx+wx,ty,wy,9);
+      ctx.font='12px Segoe UI'; ctx.textAlign='center'; ctx.fillStyle='#9aa6c8';
+      ctx.fillText('x = '+nf(x0,3), bx+wx/2, ty+24);
+      ctx.fillText('y = '+nf(y0,3), bx+wx+wy/2, ty+24);
+      ctx.strokeStyle='#ffcf5c'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(mid,ty-8); ctx.lineTo(mid,ty+16); ctx.stroke();
+      ctx.fillStyle='#ffcf5c'; ctx.font='bold 12px Segoe UI';
+      ctx.fillText('½(x+y)', mid, ty-12);
+      // goldene Leitlinie: Mitte der Schiene = neue Breite des Rechtecks
+      ctx.strokeStyle='rgba(255,207,92,.6)'; ctx.setLineDash([4,4]); ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(mid,ty); ctx.lineTo(mid,B-Math.max(hh,s)-6); ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+
+  function animate(frames, drawFn, done){
+    busy=true; btn.disabled=true; cancelAnimationFrame(anim); let t=0;
+    finishStep=()=>{ cancelAnimationFrame(anim); drawFn(1); busy=false; finishStep=null; done(); };
+    const go=()=>{ t=Math.min(1,t+1/frames); const e=t*t*(3-2*t); drawFn(e);
+      if(t<1) anim=requestAnimationFrame(go); else { busy=false; finishStep=null; done(); } };
+    go();
+  }
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden && busy && finishStep) finishStep(); });
+
+  function setBtn(){
+    if(busy) return;
+    if(phase==='rest' && Math.abs(wSide-hSide)<1e-12){ btn.textContent='✓ Quadrat erreicht'; btn.disabled=true; return; }
+    btn.disabled=false;
+    btn.textContent = phase==='rest' ? '▶ 1. Mittelwert bilden'
+                    : phase==='mean' ? '▶ 2. Fläche wiederherstellen'
+                    : '▶ 3. neues Rechteck zeigen';
+  }
+
+  function step(){
+    if(busy) return;
+    if(phase==='rest'){
+      if(Math.abs(wSide-hSide)<1e-12){ setBtn(); return; }
+      const w0=wSide, h0=hSide, xm=(w0+h0)/2;
+      animate(26, e=>draw(w0+(xm-w0)*e, h0, {hlX:true, meanTrack:{x0:w0,y0:h0}}),
+        ()=>{ wSide=xm; phase='mean';
+          const area=xm*h0;
+          txt.innerHTML=`<b>① Mittelwert:</b> Die neue Seite ist die <b>Hälfte der Summe</b> der beiden alten Seiten:
+            x<sub>neu</sub> = ½ · (${nf(w0,4)} + ${nf(h0,4)}) = <b>${nf(xm,6)}</b>.
+            <br><span class="small">Dadurch stimmt die Fläche vorübergehend <b>nicht</b> mehr:
+            ${nf(xm,4)} · ${nf(h0,4)} = <b>${nf(area,4)}</b> ≠ ${nfA()}. Das reparieren wir gleich.</span>`;
+          setBtn(); });
+    } else if(phase==='mean'){
+      const h0=hSide, ym=A/wSide;
+      animate(26, e=>draw(wSide, h0+(ym-h0)*e, {hlY:true}),
+        ()=>{ hSide=ym; phase='area';
+          txt.innerHTML=`<b>② Flächenbedingung:</b> Die andere Seite ergibt sich daraus, dass die Fläche wieder ${nfA()} sein soll:
+            y<sub>neu</sub> = ${nfA()} / ${nf(wSide,4)} = <b>${nf(ym,6)}</b>.
+            <br><span class="small">Probe: ${nf(wSide,4)} · ${nf(ym,4)} = <b>${nf(wSide*ym,4)}</b> ✓ — die Fläche ist wieder ${nfA()}.</span>`;
+          setBtn(); });
+    } else {   // area → neues Rechteck fertig
+      n++; phase='rest'; draw(wSide,hSide,{});
+      const lo=Math.min(wSide,hSide), hi=Math.max(wSide,hSide), r=Math.sqrt(A);
+      if(Math.abs(wSide-hSide)<1e-9){
+        txt.innerHTML=`<b>③ Fertig:</b> Das Rechteck ist ein <b>Quadrat</b> mit Seite ${nf(wSide,6)} — so genau der Rechner
+          rechnen kann, ist √${nfA()} erreicht.`;
+      } else {
+        const err=Math.abs(wSide-r), digits=err>0?Math.max(0,Math.floor(-Math.log10(err))):12;
+        txt.innerHTML=`<b>③ Neues Rechteck</b> (Schritt ${n}): x<sub>${n}</sub> = ${nf(wSide,6)}, y<sub>${n}</sub> = ${nf(hSide,6)}.
+          <br><span class="small">Einschachtelung: <b>${nf(lo,6)} &lt; √${nfA()} &lt; ${nf(hi,6)}</b> — eine Seite zu klein,
+          die andere zu groß. ${Number.isInteger(r)?`√${nfA()} = ${r} wird nur im Grenzwert exakt getroffen.`
+            :`Bereits <b>${digits} Nachkommastelle${digits===1?'':'n'}</b> korrekt.`} Klicke weiter für den nächsten Mittelwert.</span>`;
+      }
+      setBtn();
+    }
+  }
+  function reset(){
+    cancelAnimationFrame(anim); busy=false; finishStep=null;
+    wSide=A; hSide=1; n=0; phase='rest'; draw(wSide,hSide,{}); setBtn();
+    const lo=Math.min(A,1), hi=Math.max(A,1);
+    txt.innerHTML = `<b>Start:</b> Rechteck mit Flächeninhalt ${nfA()} und den Seiten x<sub>0</sub> = ${nfA()} (Radikand) und
+      y<sub>0</sub> = 1. Fläche ${nfA()} · 1 = ${nfA()} ✓.` +
+      (A===1 ? ' Es ist schon ein Quadrat — √1 = 1, nichts zu tun.'
+             : ` Eine Seite zu groß, eine zu klein: <b>${String(lo).replace('.',',')} &lt; √${nfA()} &lt; ${String(hi).replace('.',',')}</b>.
+                 Klicke „1. Mittelwert bilden“.`);
+  }
+  function setA(){
+    const v=parseFloat($('#herA').value.trim().replace(',','.'));
+    if(isNaN(v)){ msg.className='msg no small'; msg.textContent='Bitte eine Zahl eingeben.'; return; }
+    if(v<=0){ msg.className='msg no small';
+      msg.innerHTML='Der Radikand muss <b>größer als 0</b> sein: für a &lt; 0 gibt es √a in ℝ nicht (Kapitel 1), und bei a = 0 würde die Formel durch 0 teilen.'; return; }
+    if(v>10000){ msg.className='msg no small'; msg.textContent='Bitte höchstens 10000 — sonst wird das Rechteck unleserlich schmal.'; return; }
+    A=v; msg.className='msg small'; msg.innerHTML=`<span class="muted">Radikand auf a = ${nfA()} gesetzt — Start bei x<sub>0</sub> = ${nfA()}.</span>`;
+    reset();
+  }
+  $('#herStep').onclick=step;
+  $('#herReset').onclick=reset;
+  $('#herSet').onclick=setA;
+  $('#herA').onkeydown=e=>{ if(e.key==='Enter') setA(); };
+  reset();
+})();
+
+/* ============ 6.2b Animierte Iteration der Heron-Formel ============ */
+(function(){
+  const cv=$('#itCv'), ctx=cv.getContext('2d'), txt=$('#itTxt'), tbl=$('#itTable');
+  const W=cv.width, H=cv.height, BY=82;           // Grundlinie der Formel (vertikal mittig im Canvas)
+  const SLOTW=126, SLOTH=42, RESW=158;
+  let a=2, x=2, n=0, nxt=null, anim=null, busy=false;
+  let applied=false;        // vor „Übernehmen“ steht die Formel symbolisch da (x₀, a, leeres Ergebnis)
+  const nf=v=>{ if(!isFinite(v)) return '—';
+    return (Math.abs(v)>=1e7?v.toExponential(4):v.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')).replace('.',','); };
+  const sub=s=>String(s).split('').map(c=>'₀₁₂₃₄₅₆₇₈₉'.charAt(+c)||c).join('');
+
+  // Layout einmal berechnen (feste Feldbreiten → stabile Zielpunkte für die Animation)
+  function layout(){
+    ctx.font='24px "Cambria Math",Georgia,serif';
+    const wLead=ctx.measureText('x').width + 28 + ctx.measureText(' = ½ · ( ').width;
+    const wPlus=ctx.measureText(' + ').width, wClose=ctx.measureText(' )').width, wEq2=ctx.measureText(' = ').width;
+    const total = wLead + SLOTW + wPlus + SLOTW + wClose + wEq2 + RESW;
+    let X=(W-total)/2;
+    const P={};
+    P.leadX=X; X+=wLead;
+    P.slotA={x:X, y:BY-SLOTH/2, w:SLOTW, h:SLOTH}; X+=SLOTW;
+    P.plusX=X; X+=wPlus;
+    P.slotB={x:X, y:BY+6, w:SLOTW, h:SLOTH};                 // Nenner des Bruchs, etwas tiefer
+    P.fracNumY=BY-24; P.fracBarY=BY-2; X+=SLOTW;
+    P.closeX=X; X+=wClose;
+    P.eq2X=X; X+=wEq2;
+    P.res={x:X, y:BY-SLOTH/2, w:RESW, h:SLOTH};
+    return P;
+  }
+  function slotBox(b, val, col, label){
+    ctx.fillStyle='#0c1020'; ctx.strokeStyle=col; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(b.x,b.y,b.w,b.h,8); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#eaf0ff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    if(val && typeof val==='object'){
+      // "x₀" mit echtem Index zeichnen — das Unicode-₀ sieht in der Serif-Schrift wie ein 'o' aus
+      const F='bold 20px "Cambria Math",Georgia,serif', FS='bold 14px "Cambria Math",Georgia,serif';
+      ctx.font=F; const wB=ctx.measureText(val.base).width;
+      ctx.font=FS; const wS=ctx.measureText(val.sub).width;
+      const x0=b.x+b.w/2-(wB+wS)/2;
+      ctx.textAlign='left';
+      ctx.font=F;  ctx.fillText(val.base, x0, b.y+b.h/2);
+      ctx.font=FS; ctx.fillText(val.sub, x0+wB, b.y+b.h/2+7);
+      ctx.textAlign='center';
+    } else {
+      ctx.font='bold 20px "Cambria Math",Georgia,serif';
+      ctx.fillText(val, b.x+b.w/2, b.y+b.h/2);
+    }
+    if(label){
+      ctx.fillStyle=col; ctx.font='bold 15px Segoe UI'; ctx.textBaseline='alphabetic';
+      ctx.fillText(label, b.x+b.w/2, b.y+b.h+17);
+    }
+  }
+  // opts: {slot, res, dim, fly:{val,t}, symbolic}
+  function render(opts){
+    const P=layout(); ctx.clearRect(0,0,W,H);
+    const sym=!!opts.symbolic;
+    ctx.textAlign='left'; ctx.textBaseline='middle';
+    // x_{n+1} =  ½ · (
+    ctx.fillStyle='#eaf0ff'; ctx.font='24px "Cambria Math",Georgia,serif';
+    const wx=ctx.measureText('x').width;      // Breite von 'x' bei 24px messen, BEVOR die Schrift wechselt
+    ctx.fillText('x', P.leadX, BY);
+    ctx.font='18px "Cambria Math",Georgia,serif'; ctx.fillStyle='#9aa6c8';
+    ctx.fillText(sub(n+1), P.leadX+wx+2, BY+5);
+    ctx.fillStyle='#eaf0ff'; ctx.font='24px "Cambria Math",Georgia,serif';
+    ctx.fillText(' = ½ · ( ', P.leadX+wx+28, BY);
+    // Slot A (x_n)
+    slotBox(P.slotA, opts.slot, '#5cd6ff', sym?null:'x'+sub(n));
+    // +
+    ctx.fillStyle='#eaf0ff'; ctx.font='24px "Cambria Math",Georgia,serif';
+    ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(' + ', P.plusX, BY);
+    // Bruch: Zähler ist a — symbolisch das 'a' selbst, sonst der Wert mit kleinem 'a' DARÜBER
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#ffcf5c';
+    ctx.font='bold 20px "Cambria Math",Georgia,serif';
+    ctx.fillText(sym?'a':nf(a), P.slotB.x+P.slotB.w/2, P.fracNumY);
+    if(!sym){
+      ctx.font='italic 15px Georgia,serif';
+      ctx.fillText('a', P.slotB.x+P.slotB.w/2, P.fracNumY-22);
+    }
+    ctx.strokeStyle='#eaf0ff'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(P.slotB.x, P.fracBarY); ctx.lineTo(P.slotB.x+P.slotB.w, P.fracBarY); ctx.stroke();
+    slotBox(P.slotB, opts.slot, '#5cd6ff', sym?null:'x'+sub(n));
+    // )  =
+    ctx.fillStyle='#eaf0ff'; ctx.font='24px "Cambria Math",Georgia,serif'; ctx.textAlign='left';
+    ctx.fillText(' )', P.closeX, BY); ctx.fillText(' = ', P.eq2X, BY);
+    // Ergebnis x_{n+1} — vor „Übernehmen“ leer
+    slotBox(P.res, opts.res, opts.dim?'#3a4468':'#5fe39a', sym?null:'x'+sub(n+1));
+    // fliegende Werte: vom Ergebnis in beide x_n-Felder
+    if(opts.fly){
+      const from={x:P.res.x+P.res.w/2, y:P.res.y+P.res.h/2};
+      [P.slotA,P.slotB].forEach(b=>{
+        const to={x:b.x+b.w/2, y:b.y+b.h/2};
+        const px=from.x+(to.x-from.x)*opts.fly.t, py=from.y+(to.y-from.y)*opts.fly.t;
+        ctx.font='bold 17px "Cambria Math",Georgia,serif';
+        const w=Math.max(70, ctx.measureText(opts.fly.val).width+18), h=30;
+        ctx.globalAlpha=0.35+0.65*(1-Math.abs(0.5-opts.fly.t)*2);
+        ctx.fillStyle='#ffcf5c';
+        ctx.beginPath(); ctx.roundRect(px-w/2, py-h/2, w, h, 7); ctx.fill();
+        ctx.globalAlpha=1; ctx.fillStyle='#241a00';
+        ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(opts.fly.val, px, py);
+      });
+    }
+  }
+  const history=[];
+  function table(){
+    tbl.innerHTML='<tr><th>n</th><th class="mono">x_n</th><th class="mono">x_n²</th><th>Abweichung von a</th></tr>'
+      + (history.length ? '' : '<tr><td colspan="4" class="muted small">Noch nichts übernommen.</td></tr>')
+      + history.map(r=>{ const d=Math.abs(r.x*r.x-a);
+        return `<tr><td>${r.n}</td><td class="mono" style="color:var(--accent2)">${nf(r.x)}</td>
+          <td class="mono">${nf(r.x*r.x)}</td>
+          <td class="mono ${d<1e-9?'':'muted'}" style="${d<1e-9?'color:var(--good)':''}">${d<1e-12?'0 (exakt)':d.toExponential(2).replace('.',',')}</td></tr>`;
+      }).join('');
+  }
+  let finishStep=null;
+  function step(){
+    if(!applied || busy || nxt==null) return;
+    if(Math.abs(x-nxt)<1e-12){ txt.innerHTML='<span class="muted">Der Wert ändert sich nicht mehr — so genau der Rechner rechnen kann, ist das Ergebnis erreicht.</span>'; return; }
+    busy=true; $('#itNext').disabled=true;
+    const flyVal=nf(nxt);
+    const finish=()=>{
+      x=nxt; n++; nxt=0.5*(x+a/x); history.push({n,x});
+      render({slot:nf(x), res:nf(nxt)}); table();
+      txt.innerHTML=`Das Ergebnis <b>${nf(x)}</b> ist jetzt an beiden <var>x</var>-Stellen eingesetzt — und daraus
+        entsteht <b>x${sub(n+1)} = ${nf(nxt)}</b>. <span class="muted">Klicke weiter.</span>`;
+      busy=false; $('#itNext').disabled=false; finishStep=null;
+    };
+    finishStep=finish;
+    cancelAnimationFrame(anim); let t=0;
+    const go=()=>{ t=Math.min(1,t+0.028); const e=t*t*(3-2*t);
+      render({slot:nf(x), res:nf(nxt), dim:true, fly:{val:flyVal, t:e}});
+      if(t<1) anim=requestAnimationFrame(go); else finish();
+    }; go();
+  }
+  // Wechselt der Nutzer mitten in der Animation den Tab, springt sie sofort ans Ende,
+  // damit die Taste nicht gesperrt hängen bleibt (requestAnimationFrame pausiert im Hintergrund).
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden && busy && finishStep){ cancelAnimationFrame(anim); finishStep(); }
+  });
+  function setAX(){
+    const av=parseFloat($('#itA').value.trim().replace(',','.'));
+    const xv=parseFloat($('#itX').value.trim().replace(',','.'));
+    if(isNaN(av)||av<=0){ txt.innerHTML='<span style="color:var(--bad)">Der Radikand a muss größer als 0 sein.</span>'; return; }
+    if(isNaN(xv)||xv<=0){ txt.innerHTML='<span style="color:var(--bad)">Der Startwert x₀ muss größer als 0 sein (sonst Division durch 0).</span>'; return; }
+    cancelAnimationFrame(anim); busy=false; applied=true; $('#itNext').disabled=false;
+    a=av; x=xv; n=0; nxt=0.5*(x+a/x); history.length=0; history.push({n:0,x});
+    render({slot:nf(x), res:nf(nxt)}); table();
+    txt.innerHTML=`Start: <b>a = ${nf(a)}</b>, <b>x₀ = ${nf(x)}</b>. In beiden <var>x</var>-Feldern steht x₀,
+      daraus ergibt sich <b>x₁ = ${nf(nxt)}</b>. Klicke „Nächster Schritt“.`;
+  }
+  // Ausgangszustand: die Formel steht symbolisch da, das Ergebnisfeld ist leer
+  function showSymbolic(){
+    cancelAnimationFrame(anim); busy=false; applied=false; finishStep=null;
+    n=0; nxt=null; history.length=0;
+    $('#itNext').disabled=true;
+    render({slot:{base:'x', sub:'0'}, res:'', symbolic:true}); table();
+    txt.innerHTML='Trage oben einen Radikanden <b>a</b> und einen Startwert <b>x</b><sub>0</sub> ein und klicke '
+      + '<b>Übernehmen</b> — dann erscheinen die Zahlen in der Formel.';
+  }
+  $('#itSet').onclick=setAX;
+  $('#itNext').onclick=step;
+  $('#itReset').onclick=()=>{ $('#itA').value='2'; $('#itX').value='2'; showSymbolic(); };
+  ['itA','itX'].forEach(id=>$('#'+id).onkeydown=e=>{ if(e.key==='Enter') setAX(); });
+  showSymbolic();
+})();
+
+/* ============ 6.3 Heron-Drill von Hand ============ */
+(function(){
+  const host=$('#heronDrill'), A=2;
+  const xs=[A]; for(let i=0;i<4;i++) xs.push(0.5*(xs[i]+A/xs[i]));   // Start mit dem Radikanden, wie in 6.2
+  let idx=1;
+  function render(){
+    if(idx>4){
+      host.innerHTML = `<div class="solution">
+        <h4>✓ Geschafft — alle vier Schritte richtig</h4>
+        <p>Nach nur <b>4 Schritten</b>: x₄ = ${xs[4].toFixed(9).replace('.',',')}.
+        Der Taschenrechner zeigt √2 ≈ 1,414213562. <b>Identisch</b> im Rahmen der Anzeige.</p>
+        <p class="small">Beachte, wie schnell das geht: 2 → 1,5 → 1,416… → 1,414215… → 1,414213562…
+        Die Zahl der richtigen Stellen <b>verdoppelt</b> sich jedes Mal (1 → 2 → 5 → 11 Stellen).
+        Deshalb rechnet auch dein TR intern so ähnlich — und nicht Ziffer für Ziffer wie in 6.1.</p></div>`;
+      markDone('s6'); return;
+    }
+    const prev=xs[idx-1], want=xs[idx];
+    host.innerHTML = `<div class="task">
+      <p class="small muted">Schritt ${idx} von 4</p>
+      <div class="q" style="font-size:17px">
+        x<sub>${idx-1}</sub> = <b class="mono">${prev.toFixed(6).replace('.',',')}</b> &nbsp;⟹&nbsp;
+        x<sub>${idx}</sub> = ½ · ( x<sub>${idx-1}</sub> + 2 / x<sub>${idx-1}</sub> ) = ?
+      </div>
+      <div class="row">
+        <input type="text" id="hdIn" placeholder="6 Nachkommastellen" style="width:190px" autocomplete="off">
+        <button class="btn" id="hdOk">Prüfen</button>
+        <span class="state" id="hdSt"></span>
+      </div>
+      <div class="msg" id="hdMsg"></div>
+      <details><summary>TR-Tastenfolge zeigen</summary>
+        <div class="hint">Tippe: <span class="kbd">( ${prev.toFixed(6).replace('.',',')} + 2 ÷ ${prev.toFixed(6).replace('.',',')} ) ÷ 2 =</span><br>
+        <span class="small">Profi-Tipp: Mit der <span class="kbd">ANS</span>-Taste geht es ohne Abtippen —
+        gib einmal <span class="kbd">2 =</span> ein, dann <span class="kbd">( ANS + 2 ÷ ANS ) ÷ 2 =</span> und drücke
+        danach nur noch wiederholt <span class="kbd">=</span>. Das <b>ist</b> die Iteration.</span></div>
+      </details>
+    </div>`;
+    const inp=$('#hdIn'); inp.focus();
+    const go=()=>{
+      const v=parseFloat(inp.value.trim().replace(',','.'));
+      const ok = !isNaN(v) && Math.abs(v-want)<5e-6;
+      $('#hdSt').className='state '+(ok?'ok':'no'); $('#hdSt').textContent=ok?'✓':'✗';
+      const m=$('#hdMsg'); m.className='msg '+(ok?'ok':'no');
+      if(ok){
+        m.innerHTML=`Richtig: x<sub>${idx}</sub> = ${want.toFixed(6).replace('.',',')}
+          &nbsp;<span class="small muted">(Probe: ${want.toFixed(6).replace('.',',')}² = ${(want*want).toFixed(6).replace('.',',')} — schon nah an 2)</span>
+          <button class="btn small ghost" id="hdNext" style="margin-left:8px">Weiter →</button>`;
+        $('#hdNext').onclick=()=>{ idx++; render(); };
+      } else {
+        m.innerHTML=`Noch nicht. Rechne: 2 ÷ ${prev.toFixed(6).replace('.',',')} = ${(A/prev).toFixed(6).replace('.',',')},
+          dann + ${prev.toFixed(6).replace('.',',')} = ${(prev+A/prev).toFixed(6).replace('.',',')}, dann ÷ 2.`;
+      }
+    };
+    $('#hdOk').onclick=go;
+    inp.onkeydown=e=>{ if(e.key==='Enter') go(); };
+  }
+  render();
+})();
+
+/* ============ 6.4a Zellen-Erklärer im Aufbau-Schema ============ */
+(function(){
+  const EX = {
+    ecke:{t:'Die Adresse einer Zelle', h:'Jede Zelle hat eine Adresse aus <b>Spaltenbuchstabe + Zeilennummer</b> — z. B. <b>B4</b>: Spalte B, Zeile 4. Mit dieser Adresse spricht eine Formel andere Zellen an. Das ist der ganze Trick der Tabellenkalkulation: Statt Zahlen schreibt man <b>Adressen</b> — dann rechnet das Blatt automatisch neu, wenn sich etwas ändert.'},
+    colA:{t:'Spalte A — der Schrittzähler n', h:'Hier steht nur, <b>der wievielte</b> Schritt es ist: 0, 1, 2, 3, … Diese Spalte rechnet nichts aus, sie hilft nur beim Lesen — sie entspricht dem n in x<sub>n</sub>.'},
+    colB:{t:'Spalte B — die Näherungswerte x', h:'Das Herzstück. Hier steht in jeder Zeile ein <b>besserer Näherungswert</b> für '+rt('a')+' als in der Zeile darüber. Von oben nach unten gelesen ist das genau die Folge x₀, x₁, x₂, … aus 6.2.'},
+    colC:{t:'Spalte C — die Kontrolle', h:'Hier wird jeder Näherungswert <b>quadriert</b>. Wenn x wirklich '+rt('a')+' ist, muss x² den Radikanden a ergeben. Je näher C an a liegt, desto besser ist die Näherung in B. Das ist die Probe aus Kapitel 1.'},
+    row1:{t:'Zeile 1 — die Vorgabe', h:'Hier steht der <b>Radikand</b>. Diese Zeile wird <b>nicht</b> mitgerechnet, sie ist die Eingabe für das ganze Blatt. Alle Formeln greifen mit <b>$B$1</b> auf sie zu.'},
+    row2:{t:'Zeile 2 — die Überschriften', h:'Reiner Text zur Orientierung: Was steht in welcher Spalte? <span class="small muted">Vorsicht: Weil hier Text steht, gibt eine Formel, die versehentlich auf B2 zeigt, einen Fehler. Genau das passiert, wenn man das $ vergisst!</span>'},
+    row3:{t:'Zeile 3 — der Start (n = 0)', h:'Die <b>erste</b> Zeile der Iteration. Sie enthält keine Heron-Formel, sondern nur den Startwert x₀. Sie wird auch <b>nicht</b> nach unten gezogen — sie ist der Anfang.'},
+    row4:{t:'Zeile 4 — der eigentliche Rechenschritt', h:'Die <b>wichtigste</b> Zeile: Sie berechnet aus der Zeile darüber die nächste Näherung. <b>Nur diese eine Zeile</b> wird nach unten gezogen — und wird dadurch zur ganzen Iteration.'},
+    row5:{t:'Zeile 5 und weiter — Kopien', h:'Ab hier steht überall dasselbe wie in Zeile 4 — nur mit angepassten Bezügen. Zeile 5 nimmt Zeile 4 als Vorgänger, Zeile 6 nimmt Zeile 5, und so weiter. <b>Du schreibst eine Formel, der Rechner macht daraus hundert.</b>'},
+    A1:{t:'A1 — nur eine Beschriftung', h:'Reiner Text als Überschrift. Er wird nicht gerechnet.'},
+    C1:{t:'C1 — ein Kommentar', h:'Nur ein Hinweis für den Leser, damit man weiß, was die 2 in B1 bedeutet. Auf Kommentarzellen zeigt keine Formel.'},
+    A2:{t:'A2 — Spaltenüberschrift „n“', h:'Text. Sagt: In Spalte A steht der Schrittzähler.'},
+    B2:{t:'B2 — Spaltenüberschrift „x_n“', h:'Text. Sagt: In Spalte B stehen die Näherungswerte.<br><span class="small">Merke dir diese Zelle: Wenn du in B4 das <b>$</b> vergisst und dann ziehst, zeigt B5 plötzlich auf <b>B2</b> — und dort steht Text statt einer Zahl. Ergebnis: #FEHLER.</span>'},
+    C2:{t:'C2 — Spaltenüberschrift „x_n²“', h:'Text. Sagt: In Spalte C steht die Kontrollrechnung.'},
+    B1:{t:'B1 — der Radikand a', h:'Hier steht die Zahl, aus der die Wurzel gezogen wird: a = 2, gesucht ist also '+rt('2')+'. <b>Diese eine Zelle steuert das ganze Blatt</b> — änderst du sie auf 9, rechnet alles neu und liefert '+rt('9')+' = 3.'},
+    A3:{t:'A3 — der Schrittzähler n', h:'Wir starten bei n = 0. Diese Spalte rechnet nichts, sie nummeriert nur die Schritte.'},
+    B3:{t:'B3 — der Startwert x₀', h:'<b>=$B$1</b> holt den Radikanden selbst als Startwert — das ist das Rechteck a × 1 aus 6.2.<br>Warum nicht einfach <span class="kbd">2</span> eintippen? Weil das Blatt dann bei einer Änderung von B1 <b>falsch</b> würde. So bleibt alles an B1 gekoppelt.'},
+    C3:{t:'C3 — die Kontrolle x₀²', h:'<b>=B3^2</b> quadriert den Näherungswert. Je näher das Ergebnis an a = 2 liegt, desto besser die Näherung. Das ist genau die Probe aus Kapitel 1: ('+rt('a')+')² = a.'},
+    A4:{t:'A4 — n um eins hochzählen', h:'<b>=A3+1</b> nimmt den Wert der Zelle <b>darüber</b> und addiert 1. A3 ist ein <b>relativer</b> Bezug: Beim Ziehen nach unten wird daraus automatisch =A4+1, =A5+1, …'},
+    B4:{t:'B4 — die Heron-Formel', h:'<b>=(B3+$B$1/B3)/2</b> ist genau x<sub>n+1</sub> = ½ · ( x<sub>n</sub> + a/x<sub>n</sub> ).<br>· <b>B3</b> = der Vorgängerwert x<sub>n</sub> — <b>relativ</b>, wandert beim Ziehen mit (B4, B5, …).<br>· <b>$B$1</b> = der Radikand a — <b>absolut</b>, bleibt auf B1 stehen.<br><span class="small muted">Geometrisch: Die eine Rechteckseite ist B3, die andere $B$1/B3, und der Mittelwert wird die neue Seite.</span>'},
+    C4:{t:'C4 — die Kontrolle x₁²', h:'<b>=B4^2</b> — dieselbe Probe eine Zeile tiefer. Beim Ziehen wird daraus =B5^2, =B6^2, …'},
+    Z:{t:'Nach unten ziehen', h:'Zeile 4 markieren und am Anfasser unten rechts nach unten ziehen. Die Tabellenkalkulation passt dabei <b>alle relativen Bezüge</b> automatisch an — genau das macht aus <b>einer</b> Formel die ganze <b>Iteration</b>. Die absoluten Bezüge ($B$1) bleiben stehen.'}
+  };
+  const box=$('#xpBox');
+  box.innerHTML='<span class="muted">Tippe oben auf eine farbige Zelle — hier erscheint dann die Erklärung.</span>';
+  $$('.xp').forEach(td=>td.onclick=()=>{
+    const e=EX[td.dataset.x]; if(!e) return;
+    $$('.xp').forEach(x=>x.classList.remove('sel')); td.classList.add('sel');
+    box.innerHTML=`<div class="ref">${e.t}</div><p style="margin:6px 0 0">${e.h}</p>`;
+  });
+})();
+
+/* ============ 6.4b Mini-Tabellenkalkulation zum Selberbauen ============ */
+(function(){
+  const COLS=['A','B','C'], ROWS=14;
+  const START={A1:'a', B1:'2', C1:'Radikand', A2:'n', B2:'x_n', C2:'x_n^2'};
+  const LOCKED=new Set(['A1','C1','A2','B2','C2']);      // B1 bleibt änderbar
+  const grid=$('#xsGrid'), msg=$('#xsMsg');
+  let raw={...START};
+
+  const fmt=v=>{
+    if(!isFinite(v)) return '#FEHLER';
+    const s = Math.abs(v)>=1e10 ? v.toExponential(4) : v.toFixed(9).replace(/0+$/,'').replace(/\.$/,'');
+    return s.replace('.',',');
+  };
+  const num=s=>{ s=String(s).trim().replace(',','.'); return /^[+-]?\d*\.?\d+$/.test(s)?parseFloat(s):NaN; };
+
+  /* --- Formelauswertung: Zahlen, Zellbezüge (mit $), + − * / ^ und Klammern --- */
+  function tokenize(s){
+    const t=[]; let i=0;
+    while(i<s.length){
+      const rest=s.slice(i);
+      if(/^\s/.test(rest)){ i++; continue; }
+      let m;
+      if((m=/^\$?[A-Za-z]\$?\d+/.exec(rest))){ t.push({k:'ref',v:m[0].toUpperCase()}); i+=m[0].length; continue; }
+      if((m=/^\d+([.,]\d+)?/.exec(rest))){ t.push({k:'num',v:parseFloat(m[0].replace(',','.'))}); i+=m[0].length; continue; }
+      if('+-*/^()'.includes(rest[0])){ t.push({k:rest[0]}); i++; continue; }
+      throw new Error('„'+rest[0]+'“ verstehe ich nicht');
+    }
+    return t;
+  }
+  function evalF(src, seen){
+    const t=tokenize(src); let p=0;
+    const peek=()=>t[p], eat=k=>{ if(t[p]&&t[p].k===k){p++;return true;} return false; };
+    const expr=()=>{ let v=term(); for(;;){ if(eat('+')) v+=term(); else if(eat('-')) v-=term(); else return v; } };
+    const term=()=>{ let v=power(); for(;;){ if(eat('*')) v*=power();
+      else if(eat('/')){ const d=power(); if(d===0) throw new Error('Division durch 0'); v/=d; } else return v; } };
+    const power=()=>{ const b=unary(); return eat('^') ? Math.pow(b,power()) : b; };   // rechtsassoziativ
+    const unary=()=>{ if(eat('-')) return -unary(); if(eat('+')) return unary(); return primary(); };
+    function primary(){
+      const x=peek(); if(!x) throw new Error('Formel unvollständig');
+      if(x.k==='num'){ p++; return x.v; }
+      if(x.k==='ref'){ p++; return cellVal(x.v.replace(/\$/g,''), seen); }
+      if(eat('(')){ const v=expr(); if(!eat(')')) throw new Error('Klammer fehlt'); return v; }
+      throw new Error('Unerwartetes Zeichen');
+    }
+    const v=expr(); if(p<t.length) throw new Error('Formel nicht lesbar'); return v;
+  }
+  function cellVal(ref, seen){
+    const s=(raw[ref]||'').trim();
+    if(s==='') return 0;
+    if(s[0]==='='){
+      if(seen.has(ref)) throw new Error('Zirkelbezug bei '+ref);
+      seen.add(ref); const v=evalF(s.slice(1),seen); seen.delete(ref); return v;
+    }
+    const n=num(s); if(isNaN(n)) throw new Error(ref+' enthält Text');
+    return n;
+  }
+  function compute(ref){
+    const s=(raw[ref]||'').trim();
+    if(s==='') return {kind:'empty',txt:''};
+    if(s[0]!=='='){ const n=num(s); return isNaN(n)?{kind:'text',txt:s}:{kind:'num',v:n,txt:fmt(n)}; }
+    try{ const v=cellVal(ref,new Set()); return {kind:'num',v,txt:fmt(v)}; }
+    catch(e){ return {kind:'err',txt:'#FEHLER',msg:e.message}; }
+  }
+  // Beim Ziehen wandern relative Bezüge mit, absolute ($) bleiben stehen
+  const shift=(f,d)=> (!f||f[0]!=='=') ? f
+    : '='+f.slice(1).replace(/(\$?)([A-Za-z])(\$?)(\d+)/g,(m,dc,col,dr,row)=>dc+col+dr+(dr?row:(+row+d)));
+
+  function build(){
+    let h='<div class="xh"></div>'+COLS.map(c=>`<div class="xh">${c}</div>`).join('');
+    for(let r=1;r<=ROWS;r++){
+      h+=`<div class="xh">${r}</div>`;
+      for(const c of COLS) h+=`<input data-ref="${c+r}" ${LOCKED.has(c+r)?'readonly':''} autocomplete="off" spellcheck="false">`;
+    }
+    grid.innerHTML=h;
+    grid.querySelectorAll('input').forEach(inp=>{
+      const ref=inp.dataset.ref;
+      inp.onfocus=()=>{ $('#xsRef').textContent=ref; $('#xsFx').value=raw[ref]||''; inp.value=raw[ref]||''; };
+      inp.onblur=()=>{ if(!LOCKED.has(ref)) raw[ref]=inp.value; paint(); };
+      inp.onkeydown=e=>{
+        if(e.key==='Enter'){ if(!LOCKED.has(ref)) raw[ref]=inp.value; paint();
+          const nx=grid.querySelector(`input[data-ref="${ref[0]}${+ref.slice(1)+1}"]`); nx?nx.focus():inp.blur(); }
+        else if(e.key==='Escape'){ inp.value=raw[ref]||''; inp.blur(); }
+      };
+    });
+    paint();
+  }
+  function paint(){
+    grid.querySelectorAll('input').forEach(inp=>{
+      if(document.activeElement===inp) return;
+      const ref=inp.dataset.ref, c=compute(ref);
+      inp.value=c.txt; inp.className=c.kind==='err'?'err':(c.kind==='text'?'txt':'');
+      inp.title = c.kind==='err' ? c.msg : (raw[ref]||'');
+    });
+  }
+  $('#xsFx').onkeydown=e=>{
+    if(e.key!=='Enter') return;
+    const ref=$('#xsRef').textContent;
+    if(LOCKED.has(ref)){ msg.className='msg no'; msg.textContent=ref+' ist eine feste Beschriftung.'; return; }
+    raw[ref]=$('#xsFx').value; paint();
+  };
+  $('#xsFill').onclick=()=>{
+    const leer=COLS.filter(c=>!(raw[c+'4']||'').trim());
+    if(leer.length){ msg.className='msg no';
+      msg.innerHTML=`Zeile 4 ist noch nicht vollständig — es fehlt ${leer.map(c=>'<b>'+c+'4</b>').join(', ')}.`; return; }
+    for(const c of COLS){ const src=raw[c+'4']; for(let r=5;r<=ROWS;r++) raw[c+r]=shift(src,r-4); }
+    paint(); msg.className='msg ok';
+    msg.innerHTML=`Zeile 4 wurde bis Zeile ${ROWS} kopiert. Klicke eine Zelle an und schau in die Formelzeile:
+      Die relativen Bezüge sind mitgewandert, <span class="kbd">$B$1</span> ist stehengeblieben.`;
+  };
+  $('#xsCheck').onclick=()=>{
+    const errs=[]; const a=compute('B1');
+    if(a.kind!=='num'||a.v<=0) errs.push('<b>B1</b> muss eine positive Zahl sein — das ist der Radikand.');
+    if(!errs.length) for(let r=3;r<=ROWS;r++){ const v=compute('A'+r);
+      if(v.kind!=='num'||Math.abs(v.v-(r-3))>1e-9){ errs.push(`<b>A${r}</b> sollte ${r-3} ergeben (Schrittzähler n). Formel: <span class="kbd">=A${r-1}+1</span>`); break; } }
+    if(!errs.length){ const b3=compute('B3');
+      if(b3.kind!=='num'||Math.abs(b3.v-a.v)>1e-9) errs.push('<b>B3</b> (Startwert x₀) soll den Radikanden aus B1 übernehmen: <span class="kbd">=$B$1</span>'); }
+    if(!errs.length){ let x=a.v;
+      for(let r=4;r<=ROWS;r++){ x=0.5*(x+a.v/x); const b=compute('B'+r);
+        if(b.kind!=='num'||Math.abs(b.v-x)>1e-9){ errs.push(`<b>B${r}</b> stimmt nicht — erwartet: ${fmt(x)}.
+          Steht dort <span class="kbd">=(B${r-1}+$B$1/B${r-1})/2</span>? ${b.kind==='err'?'<br>Fehler in der Zelle: '+b.msg:''}`); break; } } }
+    if(!errs.length) for(let r=3;r<=ROWS;r++){ const b=compute('B'+r), c=compute('C'+r);
+      if(c.kind!=='num'||Math.abs(c.v-b.v*b.v)>1e-9){ errs.push(`<b>C${r}</b> soll die Kontrolle B${r}² sein: <span class="kbd">=B${r}^2</span>`); break; } }
+    if(!errs.length){   // Härtetest: hängt wirklich alles an B1?
+      const keep=raw.B1; raw.B1='9';
+      const b3=compute('B3'), bl=compute('B'+ROWS); raw.B1=keep;
+      if(b3.kind!=='num'||Math.abs(b3.v-9)>1e-9)
+        errs.push('Fast! <b>Härtetest:</b> Setzt man B1 = 9, müsste B3 auch 9 werden. Bei dir nicht — in B3 steht eine feste Zahl statt <span class="kbd">=$B$1</span>.');
+      else if(bl.kind!=='num'||Math.abs(bl.v-3)>1e-6)
+        errs.push(`Fast! <b>Härtetest:</b> Setzt man B1 = 9, müsste B${ROWS} ≈ 3 herauskommen (√9 = 3) — bei dir ${bl.txt}. Irgendwo steckt die 2 fest verdrahtet statt <span class="kbd">$B$1</span>.`);
+    }
+    if(errs.length){ msg.className='msg no'; msg.innerHTML='✗ '+errs[0]; }
+    else { msg.className='msg ok';
+      msg.innerHTML=`🎉 <b>Dein Blatt funktioniert!</b> B${ROWS} = ${compute('B'+ROWS).txt} — das ist √2 auf alle Stellen,
+        die der Rechner anzeigt. Und der Härtetest ist bestanden: Änderst du B1, rechnet das ganze Blatt richtig neu.
+        <span class="small muted">Probiere es aus — trage in B1 eine 9 ein.</span>`;
+      markDone('s6'); }
+  };
+  $('#xsReset').onclick=()=>{ raw={...START}; build(); msg.className='msg'; msg.textContent=''; $('#xsFx').value=''; };
+  $('#xsHelp').onclick=()=>{
+    $('#xsGuide').innerHTML=`<div class="hint">
+      <b>Schritt für Schritt:</b>
+      <ol style="margin:6px 0;padding-left:20px;line-height:1.8">
+        <li><b>A3</b> anklicken, <span class="kbd">0</span> eintippen, Enter. <span class="small muted">Der Schrittzähler startet bei n = 0.</span></li>
+        <li><b>B3</b>: <span class="kbd">=$B$1</span> <span class="small muted">— Startwert ist der Radikand selbst.</span></li>
+        <li><b>C3</b>: <span class="kbd">=B3^2</span> <span class="small muted">— die Kontrolle: Wie nah ist x₀² schon an 2?</span></li>
+        <li><b>A4</b>: <span class="kbd">=A3+1</span> <span class="small muted">— eins hochzählen.</span></li>
+        <li><b>B4</b>: <span class="kbd">=(B3+$B$1/B3)/2</span> <span class="small muted">— die Heron-Formel ½·(x + a/x).</span></li>
+        <li><b>C4</b>: <span class="kbd">=B4^2</span></li>
+        <li>Auf <b>„↓ Zeile 4 nach unten ziehen“</b> klicken.</li>
+        <li>Auf <b>„Blatt prüfen“</b> klicken.</li>
+      </ol>
+      <span class="small">Tipp: Klicke nach dem Ziehen auf <b>B7</b> und schau in die Formelzeile oben — du siehst,
+      wie B3 zu B6 geworden ist, <span class="kbd">$B$1</span> aber stehen blieb. Genau darum geht es beim <span class="kbd">$</span>.</span>
+    </div>`;
+  };
+  build();
+
+  /* --- Konvergenz aus dem eigenen Blatt messen --- */
+  const conv=[], ctbl=$('#xsConvTable'), cmsg=$('#xsConvMsg');
+  function ctable(){
+    ctbl.innerHTML='<tr><th>Radikand a</th><th>Startwert x₀</th><th>konstant ab Schritt n</th><th>Ergebnis</th><th>√a laut TR</th></tr>'
+      + (conv.length ? conv.map(r=>`<tr><td class="mono">${r.a}</td><td class="mono">${r.x0}</td>
+          <td class="mono"><b style="color:var(--accent)">${r.n}</b></td><td class="mono">${r.erg}</td>
+          <td class="mono muted">${r.ref}</td></tr>`).join('')
+        : '<tr><td colspan="5" class="muted small">Noch nichts gemessen — wähle oben eine Einstellung und klicke „Messen“.</td></tr>');
+  }
+  $$('[data-preset]').forEach(b=>b.onclick=()=>{
+    const [a,x0]=b.dataset.preset.split('|');
+    raw.B1=a; raw.B3=(a===x0)?'=$B$1':x0; paint();
+    cmsg.className='msg'; cmsg.innerHTML=`<span class="muted">B1 = ${a} und B3 = ${a===x0?'=$B$1 (also '+a+')':x0} ins Blatt geschrieben. Jetzt „Messen“.</span>`;
+  });
+  $('#xsMeasure').onclick=()=>{
+    const vals=[];
+    for(let r=3;r<=ROWS;r++){ const c=compute('B'+r);
+      if(c.kind!=='num'){ cmsg.className='msg no';
+        cmsg.innerHTML=`In <b>B${r}</b> steht noch kein gültiger Wert. Baue erst das Blatt oben fertig und ziehe Zeile 4 nach unten.`; return; }
+      vals.push(c.v); }
+    const a=compute('B1').v, fin=vals[vals.length-1];
+    if(Math.abs(vals[vals.length-2]-fin)>1e-9){ cmsg.className='msg no';
+      cmsg.innerHTML=`Dein Blatt ist nach ${ROWS-3} Schritten <b>noch nicht fertig</b> — der Wert ändert sich in der letzten Zeile noch.
+        Bei so großen Radikanden bräuchtest du <b>mehr Zeilen</b>. Genau darum zieht man in der Praxis großzügig nach unten.`; return; }
+    let n=vals.length-1;
+    for(let i=0;i<vals.length;i++) if(Math.abs(vals[i]-fin)<1e-9){ n=i; break; }
+    conv.push({a:fmt(a), x0:fmt(vals[0]), n, erg:fmt(fin), ref:fmt(Math.sqrt(a))});
+    ctable(); cmsg.className='msg ok';
+    cmsg.innerHTML=`Gemessen: ab Schritt <b>n = ${n}</b> (Zeile ${n+3}) ändert sich nichts mehr — Ergebnis ${fmt(fin)}.
+      ${conv.length>1?'<span class="small muted">Vergleiche die Zeilen der Tabelle: Was ändert der Startwert, was der Radikand?</span>':''}`;
+  };
+  ctable();
+})();
+
+/* ============ 6.4c TK-Simulation (Referenz) ============ */
+(function(){
+  const tbl=$('#tkTable'), txt=$('#tkTxt');
+  function run(){
+    const a=parseFloat($('#tkA').value.replace(',','.'));
+    const x0=parseFloat($('#tkX').value.replace(',','.'));
+    if(isNaN(a)||isNaN(x0)){ txt.innerHTML='<span style="color:var(--bad)">Bitte Zahlen eingeben.</span>'; return; }
+    if(a<0){ txt.innerHTML='<span style="color:var(--bad)">Der Radikand muss ≥ 0 sein — √(negativ) gibt es in ℝ nicht (Kap. 1).</span>'; return; }
+    if(x0<=0){ txt.innerHTML='<span style="color:var(--bad)">Der Startwert muss > 0 sein, sonst teilt die Formel durch 0 oder läuft ins Negative.</span>'; return; }
+    let x=x0; const rows=[];
+    for(let n=0;n<=7;n++){ rows.push({n,x,x2:x*x}); x=0.5*(x+a/x); }
+    tbl.innerHTML = '<tr><th>Zeile</th><th class="mono">A: n</th><th class="mono">B: x_n</th><th class="mono">C: x_n²</th><th>Abweichung von a</th></tr>'
+      + rows.map((r,i)=>{
+        const d=Math.abs(r.x2-a);
+        return `<tr><th class="mono">${i+3}</th><td class="mono">${r.n}</td>
+          <td class="mono" style="color:var(--accent)">${r.x.toFixed(10).replace('.',',')}</td>
+          <td class="mono">${r.x2.toFixed(10).replace('.',',')}</td>
+          <td class="mono ${d<1e-9?'':'muted'}" style="${d<1e-9?'color:var(--good)':''}">${d<1e-12?'0 (exakt in der Anzeige)':d.toExponential(2)}</td></tr>`;
+      }).join('');
+    const ref=Math.sqrt(a);
+    txt.innerHTML = `TR-Wert: <b class="mono">√${de(a)} = ${ref.toFixed(10).replace('.',',')}</b> — die Tabelle erreicht das
+      nach ca. <b>${rows.findIndex(r=>Math.abs(r.x-ref)<1e-9)>=0 ? rows.findIndex(r=>Math.abs(r.x-ref)<1e-9) : '5–6'} Schritten</b>.
+      <span class="muted">Probier auch mal einen absurden Startwert wie 100 — das Verfahren findet trotzdem hin, es braucht nur ein paar Zeilen mehr.
+      Und: Ein <b>Radikand ohne Quadratzahl</b> (z. B. 3, 5, 7) liefert eine Spalte, die nie „glatt“ wird — die Zahl ist eben irrational.</span>`;
+  }
+  $('#tkRun').onclick=run;
+  ['tkA','tkX'].forEach(id=>$('#'+id).onkeydown=e=>{ if(e.key==='Enter') run(); });
+  run();
+})();
+
+mcQuiz('#quiz6', [
+  { q:`Du tippst ${rt('2')} in den Taschenrechner. Im Display steht <span class="mono">1,414213562</span>. Welche Aussage stimmt?`,
+    a:['Das ist ein gerundeter Näherungswert: √2 ≈ 1,414213562',
+       'Das ist der exakte Wert: √2 = 1,414213562',
+       'Das ist der exakte Wert, aber nur bis zur letzten angezeigten Stelle',
+       '√2 hat genau 9 Nachkommastellen'], c:0,
+    e:'Eine irrationale Zahl <b>kann</b> in keiner endlichen Dezimaldarstellung exakt stehen — die Ziffern hören nie auf. Deshalb <b>≈</b> und nicht <b>=</b>. Die exakte Schreibweise ist das Symbol √2 selbst.'},
+  { q:`Ist das eine Intervallschachtelung? <span class="mono">[1; 2], [1,4; 2], [1,41; 2], [1,414; 2], …</span>`,
+    a:['Nein — sie liegen zwar ineinander, werden aber nicht beliebig klein',
+       'Ja — beide Bedingungen sind erfüllt',
+       'Nein — sie liegen nicht ineinander',
+       'Nein — die Intervalle werden immer länger'], c:0,
+    e:'Bedingung <b>(1)</b> ist erfüllt, <b>(2)</b> nicht: Die obere Grenze bleibt bei 2 stehen, die Länge wird nie kleiner als 2 − √2 ≈ 0,586. <b>Folge:</b> In allen Intervallen liegen alle Zahlen von √2 bis 2 — unendlich viele statt genau einer.'},
+  { q:`Ist das eine Intervallschachtelung? <span class="mono">[0; 1], [2; 2,5], [4; 4,25], [6; 6,125], …</span>`,
+    a:['Nein — die Längen werden zwar beliebig klein, aber die Intervalle liegen nicht ineinander',
+       'Ja — die Längen werden beliebig klein, das genügt',
+       'Nein — die Längen werden nicht beliebig klein',
+       'Ja — beide Bedingungen sind erfüllt'], c:0,
+    e:'Bedingung <b>(2)</b> ist erfüllt (Längen 1; 0,5; 0,25; 0,125; …), <b>(1)</b> nicht: [2; 2,5] liegt nicht in [0; 1], die Intervalle springen davon. <b>Folge:</b> Es gibt gar keine Zahl, die in allen liegt.'},
+  { q:`Welche Rolle spielen die beiden Bedingungen?`,
+    a:['(1) sorgt dafür, dass mindestens eine Zahl gefangen bleibt, (2) dafür, dass höchstens eine übrig bleibt',
+       '(1) sorgt für die Eindeutigkeit, (2) für die Existenz',
+       '(1) und (2) sagen dasselbe — eine davon würde genügen',
+       'Beide sind technische Feinheiten ohne Folgen für das Ergebnis'], c:0,
+    e:'Zusammen ergeben sie <b>genau eine</b> Zahl. Fehlt (2), bleiben unendlich viele übrig; fehlt (1), womöglich gar keine. (Die Rollen nicht vertauschen: <b>(1)</b> = Existenz, <b>(2)</b> = Eindeutigkeit.)'},
+  { q:`Beim Heron-Verfahren hat das Rechteck die Seiten <var>x</var> und <var>y</var> = <var>a</var>/<var>x</var>. Warum liegt ${rt('a')} <b>immer</b> zwischen <var>x</var> und <var>y</var>?`,
+    a:['Weil x · y = a: ist die eine Seite zu klein, muss die andere zu groß sein',
+       'Weil der Mittelwert immer größer ist als beide Seiten',
+       'Weil x immer kleiner als √a ist',
+       'Das ist reiner Zufall'], c:0,
+    e:'Das Rechteck hat immer den Flächeninhalt a. Wären <b>beide</b> Seiten kleiner als √a, wäre die Fläche kleiner als √a · √a = a — Widerspruch. Genau das macht Heron zu einer Intervallschachtelung.'},
+  { q:`In der TK-Formel <span class="kbd">=(B3+$B$1/B3)/2</span>: Was bewirkt das <span class="kbd">$</span>?`,
+    a:['B1 bleibt beim Kopieren nach unten fest (absoluter Bezug) — der Radikand geht nicht verloren',
+       'Es formatiert die Zelle als Währung',
+       'Es macht den Bezug relativ, sodass er mitwandert',
+       'Es rundet das Ergebnis'], c:0,
+    e:'Relativer Bezug B3 wandert beim Ziehen mit (B4, B5, …) — das ist gewollt, denn jede Zeile braucht den <b>Vorgängerwert</b>. Der Radikand in B1 muss aber stehenbleiben.'},
+  { q:`Welchen Vorteil hat Heron gegenüber der dezimalen Intervallschachtelung aus 6.1?`,
+    a:['Die Zahl der korrekten Stellen verdoppelt sich pro Schritt statt +1 pro Durchgang',
+       'Heron liefert im Gegensatz dazu das exakte Ergebnis',
+       'Heron funktioniert auch für negative Radikanden',
+       'Es gibt keinen Unterschied'], c:0,
+    e:'Beides sind Intervallschachtelungen und beide liefern nur Näherungswerte. Heron konvergiert nur drastisch schneller: 4 Schritte reichen für die volle TR-Anzeige.'}
+], 's6');
+
+/* ============ 7.1 Definitionsmengen ============ */
+mcQuiz('#quiz7a', [
+  { q:`Bestimme 𝔻 für <var>T</var>(<var>x</var>) = ${rt('<var>x</var> + 5')}`,
+    a:['𝔻 = [−5; ∞[','𝔻 = [5; ∞[','𝔻 = ]−5; ∞[','𝔻 = ℝ'], c:0,
+    e:'x + 5 ≥ 0 ⟺ x ≥ −5. Die −5 gehört <b>dazu</b>: √0 = 0 ist definiert ⟹ eckige Klammer.'},
+  { q:`Bestimme 𝔻 für <var>T</var>(<var>x</var>) = ${rt('3 − <var>x</var>')}`,
+    a:['𝔻 = ]−∞; 3]','𝔻 = [3; ∞[','𝔻 = [−3; ∞[','𝔻 = ℝ'], c:0,
+    e:'3 − x ≥ 0 ⟺ 3 ≥ x ⟺ x ≤ 3. <b>Falle:</b> Bei „−x“ dreht sich beim Umformen das Ungleichheitszeichen um.'},
+  { q:`Bestimme 𝔻 für <var>T</var>(<var>x</var>) = ${rt('2<var>x</var> − 7')}`,
+    a:['𝔻 = [3,5; ∞[','𝔻 = [7; ∞[','𝔻 = [−3,5; ∞[','𝔻 = ]3,5; ∞['], c:0,
+    e:'2x − 7 ≥ 0 ⟺ 2x ≥ 7 ⟺ x ≥ 3,5. Division durch +2 — Zeichen bleibt.'},
+  { q:`Bestimme 𝔻 für <var>T</var>(<var>x</var>) = ${rt('<var>x</var><sup>2</sup> + 1')}`,
+    a:['𝔻 = ℝ','𝔻 = [−1; ∞[','𝔻 = [1; ∞[','𝔻 = [0; ∞['], c:0,
+    e:'x² ≥ 0 für alle x, also ist x² + 1 ≥ 1 > 0 <b>immer</b>. Keine Einschränkung.'},
+  { q:`Bestimme 𝔻 für <var>T</var>(<var>x</var>) = ${fr('4', rt('<var>x</var> − 2'))}`,
+    a:['𝔻 = ]2; ∞[','𝔻 = [2; ∞[','𝔻 = ]−∞; 2[','𝔻 = ℝ \\ {2}'], c:0,
+    e:'<b>Zwei</b> Bedingungen: Radikand x − 2 ≥ 0 <b>und</b> Nenner ≠ 0, also √(x−2) ≠ 0 ⟹ x ≠ 2. Zusammen: x > 2 ⟹ <b>runde</b> Klammer.'},
+  { q:`Bestimme 𝔻 für <var>T</var>(<var>x</var>) = ${rt('−<var>x</var><sup>2</sup>')}`,
+    a:['𝔻 = {0}','𝔻 = ℝ','𝔻 = { }','𝔻 = ]−∞; 0]'], c:0,
+    e:'Knifflig: −x² ≥ 0 ⟺ x² ≤ 0. Da x² ≥ 0 immer gilt, bleibt <b>nur</b> x² = 0, also x = 0. 𝔻 enthält genau eine Zahl.'}
+], 's7');
+
+/* ============ 7.2 Betrag-Tabelle ============ */
+(function(){
+  const sl=$('#absSl'), v=$('#absV'), t=$('#absTable');
+  function upd(){
+    const x=(+sl.value)/10; v.textContent=de(x);
+    const sq=+(x*x).toFixed(2), w=Math.sqrt(sq), ab=Math.abs(x);
+    const ok = Math.abs(w-x)<1e-9;
+    t.innerHTML = `
+      <tr><th>Term</th><th>Rechnung</th><th>Wert</th><th>Vergleich mit ${rt('<var>x</var><sup>2</sup>')}</th></tr>
+      <tr><td class="mono"><var>x</var></td><td class="mono">—</td><td class="mono" style="font-size:16px">${de(x)}</td>
+          <td style="color:${ok?'var(--good)':'var(--bad)'};font-weight:700">${ok?'✓ gleich':'✗ UNGLEICH'}</td></tr>
+      <tr><td class="mono"><var>x</var><sup>2</sup></td><td class="mono">${de(x)} · ${de(x)}</td><td class="mono">${de(sq)}</td><td class="muted">Zwischenschritt</td></tr>
+      <tr style="background:#0c1020"><td class="mono">${rt('<var>x</var><sup>2</sup>')}</td><td class="mono">${rt(de(sq))}</td>
+          <td class="mono" style="font-size:16px;color:var(--accent)">${de(+w.toFixed(2))}</td><td class="muted">immer ≥ 0</td></tr>
+      <tr><td class="mono">|<var>x</var>|</td><td class="mono">Betrag von ${de(x)}</td><td class="mono" style="font-size:16px;color:var(--good)">${de(+ab.toFixed(2))}</td>
+          <td style="color:var(--good);font-weight:700">✓ immer gleich</td></tr>`;
+  }
+  sl.oninput=upd; upd();
+})();
+
+mcQuiz('#quiz7b', [
+  { q:`Vereinfache: ${rt('(<var>x</var> − 4)<sup>2</sup>')}`,
+    a:['|x − 4|','x − 4','4 − x','x² − 4'], c:0,
+    e:'√(a²) = |a| mit a = x − 4. Für x < 4 wäre x − 4 negativ — die Wurzel liefert aber nie ein negatives Ergebnis. <b>Betrag nötig.</b>'},
+  { q:`Vereinfache: ${rt('9<var>x</var><sup>2</sup>')}`,
+    a:['3|x|','3x','9|x|','|3x²|'], c:0,
+    e:'√(9x²) = √9 · √(x²) = 3 · |x| = 3|x|. Die 3 ist positiv und darf ohne Betrag heraus, das x nicht.'},
+  { q:`Vereinfache: ${rt('<var>a</var><sup>2</sup>')} für <var>a</var> &lt; 0`,
+    a:['−a','a','|a|² ','−|a|'], c:0,
+    e:'Für a < 0 ist |a| = −a, und −a ist dann <b>positiv</b>. Beispiel a = −6: √36 = 6 = −(−6) ✓. Das Minuszeichen macht das Ergebnis hier nicht negativ!'},
+  { q:`Vereinfache: (${rt('<var>x</var> − 1')})<sup>2</sup> — beachte die Reihenfolge!`,
+    a:['x − 1 (ohne Betrag, denn 𝔻 = [1; ∞[)','|x − 1|','x² − 1','1 − x'], c:0,
+    e:'<b>Wichtiger Unterschied zu 7.2 Aufg. 1:</b> Hier steht die Wurzel <i>innen</i>. Damit der Term existiert, muss x − 1 ≥ 0 sein — die Definitionsmenge erzwingt das Vorzeichen bereits. (√a)² = a, kein Betrag nötig.'},
+  { q:`Für welche <var>x</var> gilt ${rt('(<var>x</var> − 2)<sup>2</sup>')} = <var>x</var> − 2 ?`,
+    a:['für x ≥ 2','für alle x ∈ ℝ','für x ≤ 2','für kein x'], c:0,
+    e:'Die linke Seite ist |x − 2|. Sie ist genau dann gleich x − 2, wenn x − 2 ≥ 0, also x ≥ 2. Für x < 2 gilt stattdessen |x − 2| = 2 − x.'}
+], 's7');
+
+/* ============ 7.3 Binome ============ */
+mcQuiz('#quiz7c', [
+  { q:`Vereinfache: ${rt('<var>x</var><sup>2</sup> + 10<var>x</var> + 25')}`,
+    a:['|x + 5|','x + 5','|x − 5|','x + 25'], c:0,
+    e:'25 = 5², 10x = 2·x·5 ⟹ 1. binomische Formel: x²+10x+25 = (x+5)². Also √((x+5)²) = <b>|x + 5|</b>.'},
+  { q:`Vereinfache: ${rt('<var>x</var><sup>2</sup> − 14<var>x</var> + 49')}`,
+    a:['|x − 7|','x − 7','|x + 7|','x² − 7'], c:0,
+    e:'49 = 7², 14x = 2·x·7, Vorzeichen minus ⟹ 2. binomische Formel: (x − 7)². Wurzel ⟹ |x − 7|.'},
+  { q:`Vereinfache: ${rt('4<var>x</var><sup>2</sup> + 12<var>x</var> + 9')}`,
+    a:['|2x + 3|','2x + 3','|2x − 3|','2|x| + 3'], c:0,
+    e:'4x² = (2x)², 9 = 3², 12x = 2·(2x)·3 ⟹ (2x + 3)². Wurzel ⟹ |2x + 3|. <b>Nicht</b> 2|x|+3 — der Betrag steht um den <b>ganzen</b> Term.'},
+  { q:`Löse den Betrag auf: ${rt('<var>x</var><sup>2</sup> − 6<var>x</var> + 9')} für <var>x</var> = 1`,
+    a:['2','−2','4','8'], c:0,
+    e:'√(x²−6x+9) = |x − 3|. Einsetzen: |1 − 3| = |−2| = <b>2</b>. Wer den Betrag vergisst, erhält fälschlich −2 — und die Wurzel ist nie negativ. Probe: 1−6+9 = 4, √4 = 2 ✓'},
+  { q:`Für welche <var>x</var> gilt ${rt('<var>x</var><sup>2</sup> − 8<var>x</var> + 16')} = <var>x</var> − 4 (ohne Betrag)?`,
+    a:['für x ≥ 4','für alle x ∈ ℝ','für x ≤ 4','für kein x'], c:0,
+    e:'Der Term ist |x − 4|. Die Betragsstriche darf man nur weglassen, wenn x − 4 ≥ 0, also <b>x ≥ 4</b>. Für x < 4 ist das Ergebnis 4 − x.'},
+  { q:`Welcher Term unter der Wurzel ist ein <b>vollständiges Quadrat</b> — lässt sich also zu einem Betrag vereinfachen?`,
+    a:['x² + 20x + 100','x² + 5x + 25','x² + 3x + 9','x² + 7x + 49'], c:0,
+    e:'x² + 20x + 100 = (x + 10)², denn 100 = 10² <b>und</b> 20x = 2·x·10 ✓ — die Wurzel ist |x + 10|. Bei den anderen passt das <b>mittlere Glied</b> nicht: Es müsste jeweils das <b>doppelte</b> Produkt sein (bei 25 also 10x, bei 9 also 6x, bei 49 also 14x). Immer das mittlere Glied prüfen!'}
+], 's7');
+
+/* ============ 7.4 Gemischt ============ */
+mcQuiz('#quiz7d', [
+  { q:`<var>T</var>(<var>x</var>) = ${rt('<var>x</var><sup>2</sup> − 4<var>x</var> + 4')}. Bestimme 𝔻 und vereinfache.`,
+    a:['𝔻 = ℝ, T(x) = |x − 2|','𝔻 = [2; ∞[, T(x) = x − 2','𝔻 = ℝ, T(x) = x − 2','𝔻 = [4; ∞[, T(x) = |x − 2|'], c:0,
+    e:'Der Radikand ist (x − 2)² — ein Quadrat, also <b>nie negativ</b> ⟹ 𝔻 = ℝ, keine Einschränkung. Vereinfacht: |x − 2| (Betrag, da x − 2 negativ sein kann).'},
+  { q:`Löse: <var>x</var><sup>2</sup> = 12. Exakte Lösungsmenge?`,
+    a:[`𝕃 = {−2${rt('3')}; 2${rt('3')}}`,'𝕃 = {−3,46; 3,46}','𝕃 = {−6; 6}',`𝕃 = {${rt('12')}}`], c:0,
+    e:'x = ±√12 = ±√(4·3) = ±2√3. 3,46 ist nur gerundet, und beide Vorzeichen gehören dazu.'},
+  { q:`Vereinfache: ${rt('(3 − <var>x</var>)<sup>2</sup>')} für <var>x</var> &gt; 3`,
+    a:['x − 3','3 − x','|3 − x|, mehr geht nicht','x + 3'], c:0,
+    e:'√((3−x)²) = |3 − x|. Für x > 3 ist 3 − x <b>negativ</b>, also |3 − x| = −(3 − x) = <b>x − 3</b>. Die Zusatzinfo x > 3 erlaubt das Auflösen des Betrags.'},
+  { q:`Welche Aussage über ${rt('<var>x</var>')} · ${rt('<var>x</var>')} ist richtig?`,
+    a:['= x für x ≥ 0','= |x| für alle x','= x für alle x','= x²'], c:0,
+    e:'√x · √x = (√x)² = x — aber nur dort, wo √x überhaupt existiert: 𝔻 = [0; ∞[. Innerhalb von 𝔻 ist x ≥ 0, ein Betrag wäre sinnlos.'},
+  { q:`<var>T</var>(<var>x</var>) = ${rt('<var>x</var> − 1')} + ${rt('5 − <var>x</var>')}. Bestimme 𝔻.`,
+    a:['𝔻 = [1; 5]','𝔻 = [1; ∞[','𝔻 = ]−∞; 5]','𝔻 = ℝ'], c:0,
+    e:'<b>Beide</b> Wurzeln müssen definiert sein: x − 1 ≥ 0 ⟹ x ≥ 1 <b>und</b> 5 − x ≥ 0 ⟹ x ≤ 5. Der <b>Durchschnitt</b>: 1 ≤ x ≤ 5, also 𝔻 = [1; 5].'},
+  { q:`Wo steckt der Fehler? &nbsp;<span class="mono">√(x²) = x ⟹ für x = −3: √9 = −3</span>`,
+    a:['√(x²) = |x|, nicht x. Richtig: √9 = 3 = |−3|',
+       'Kein Fehler, die Rechnung stimmt',
+       '(−3)² ist nicht 9',
+       '√9 = ±3, also stimmt es auch für −3'], c:0,
+    e:'Die Wurzel liefert per Definition (Kap. 1) <b>nie</b> ein negatives Ergebnis. Der Fehler entsteht durch das fehlende Betragszeichen. Und √9 = 3, nicht ±3 — das ± gäbe es nur beim Lösen von x² = 9.'}
+], 's7');
+
+/* fertig */
+highlightNav();
+</script>
+</body>
+</html>
